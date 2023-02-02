@@ -11,5 +11,5 @@
 ## Team
 - Ben Moore (@benhmoore) - Lead
 - Maxwell Lam // mvl57 // lam.maxwell2020@gmail.com
-- Prathyusha Mustiyala (@prathyushamust) - 
+- Prathyusha Mustiyala (@prathyushamust) - Backend (Python)
 -
