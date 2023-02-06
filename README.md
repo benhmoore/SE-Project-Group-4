@@ -9,7 +9,7 @@ An E-Commerce Website implemented with Django and React.
 |  - [React](https://reactjs.org) (Javascript) | - [Django](https://reactjs.org) (Python) <br> - [MySQL](https://www.mysql.com)  |
 
 ### Objectives
-To create a welcoming and intuitive shopping experience for buyers and sellers
+To create a welcoming and intuitive shopping experience for buyers and sellers.
 
 ### Features
 - Intuitive interfaces for Admins, Sellers, and Customers
