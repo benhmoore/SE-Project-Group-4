@@ -19,10 +19,10 @@ To create a welcoming and intuitive shopping experience for buyers and sellers
 ### Team
 
 Our team consists of 
-- Maxwell Lam (Backend),
-- Prathyusha Mustiyala (Backend), 
-- Justin Necaise (Frontend), and 
-- Ben Moore (Lead/Frontend).
+- Maxwell Lam - mvl57 (Backend),
+- Prathyusha Mustiyala - pm1112 (Backend), 
+- Justin Necaise - jtn242 (Frontend), and 
+- Ben Moore - bhm128 (Lead/Frontend).
 
 Contact information for each team member can be found below.
 
