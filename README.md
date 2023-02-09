@@ -6,10 +6,12 @@ An E-Commerce Website implemented with Django and React.
 
 | Frontend | Backend |
 | -------- | ------- |
-|  - [React](https://reactjs.org) (Javascript) | - [Django](https://reactjs.org) (Python) <br> - [MySQL](https://www.mysql.com)  |
+|  - [React](https://reactjs.org) (Javascript) | - [Django](https://reactjs.org) (Python) <br> - [MySQL](https://www.mysql.com) <br> - [Microsoft SQL Server Management Studio](https://learn.microsoft.com/en-us/sql/ssms/sql-server-management-studio-ssms?view=sql-server-ver16) |
+
+
 
 ### Objectives
-To create a welcoming and intuitive shopping experience for buyers and sellers
+To create a welcoming and intuitive shopping experience for buyers and sellers.
 
 ### Features
 - Intuitive interfaces for Admins, Sellers, and Customers
