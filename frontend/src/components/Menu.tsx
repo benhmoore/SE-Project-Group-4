@@ -72,8 +72,8 @@ const Menu = () => {
               aria-label="Search"
             />
           </form>
-          <Link to={"auth"} className="ms-3 me-3 nav-link">
-            <strong>Sign In</strong>
+          <Link to={"login"} className="ms-3 me-3 nav-link">
+            Sign In
           </Link>
         </div>
       </div>

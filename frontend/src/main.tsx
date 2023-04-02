@@ -6,7 +6,7 @@ import "bootstrap/dist/js/bootstrap.min.js";
 
 // Routes
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Root from "./routes/root";
+import Root from "./routes/Root";
 import Login from "./routes/Login";
 
 const router = createBrowserRouter([
@@ -15,7 +15,7 @@ const router = createBrowserRouter([
     element: <Root />,
     children: [
       {
-        path: "/auth",
+        path: "/signin",
         element: <Login />,
       },
     ],

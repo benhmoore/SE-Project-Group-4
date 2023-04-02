@@ -4,6 +4,7 @@ import { Link, Form } from "react-router-dom";
 import axios from "axios";
 
 const Login = () => {
+  console.log("CALLED!!!");
   const login = () => {
     console.log("Login initiated!");
     axios
