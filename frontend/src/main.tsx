@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-import "bootstrap/dist/css/bootstrap.min.css";
+import "./css/custom.css?r=3";
 import "bootstrap/dist/js/bootstrap.min.js";
 
 // Routes
