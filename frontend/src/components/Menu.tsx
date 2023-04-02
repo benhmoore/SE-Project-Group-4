@@ -72,7 +72,7 @@ const Menu = () => {
               aria-label="Search"
             />
           </form>
-          <Link to={"login"} className="ms-3 me-3 nav-link">
+          <Link to={"signin"} className="ms-3 me-3 nav-link">
             Sign In
           </Link>
         </div>

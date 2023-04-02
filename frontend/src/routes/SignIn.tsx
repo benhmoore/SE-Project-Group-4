@@ -3,10 +3,9 @@ import { Link, Form } from "react-router-dom";
 
 import axios from "axios";
 
-const Login = () => {
-  console.log("CALLED!!!");
+const SignIn = () => {
   const login = () => {
-    console.log("Login initiated!");
+    console.log("Sign initiated!");
     axios
       .post("auth/login", {
         email: "example@email.com",
@@ -24,8 +23,8 @@ const Login = () => {
       <div className="container">
         <div className="row">
           <div className="col-md-6 mt-4">
-            <h1>Login</h1>
-            <p>To do buy and sell on our platform, you'll need to login.</p>
+            <h1>Sign In</h1>
+            <p>To buy and sell on our platform, you'll need to login.</p>
             <p>
               Don't have an account?{" "}
               <Link style={{ textDecoration: "none" }}>Create one.</Link>
@@ -39,7 +38,7 @@ const Login = () => {
                     id="floatingInput"
                     placeholder="name@example.com"
                   />
-                  <label for="floatingInput">Email address</label>
+                  <label htmlFor="floatingInput">Email address</label>
                 </div>
                 <div className="form-floating">
                   <input
@@ -48,7 +47,7 @@ const Login = () => {
                     id="floatingPassword"
                     placeholder="Password"
                   />
-                  <label for="floatingPassword">Password</label>
+                  <label htmlFor="floatingPassword">Password</label>
                 </div>
                 <button
                   type="submit"
@@ -69,4 +68,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignIn;
