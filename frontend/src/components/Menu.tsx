@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Menu = () => {
   return (
-    <nav className="navbar navbar-expand-md navbar-light bg-light">
+    <nav className="navbar navbar-expand-md navbar-dark bg-primary">
       <div className="container-fluid">
         <Link to={"/"} className="navbar-brand">
           E-Commerce
@@ -23,58 +23,55 @@ const Menu = () => {
         <div className="collapse navbar-collapse" id="navbarScroll">
           <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
             <li className="nav-item">
-              <a className="nav-link" aria-current="page">
-                Browse
-              </a>
+              <a className="nav-link">Browse All</a>
             </li>
-            <li className="nav-item">
-              <a className="nav-link">Link</a>
+            <li>
+              <form className="d-flex mx-auto ms-2">
+                <input
+                  className="form-control me-2"
+                  style={{ width: "400px" }}
+                  type="search"
+                  placeholder="Search marketplace"
+                  aria-label="Search"
+                />
+              </form>
             </li>
+          </ul>
+          <ul className="navbar-nav">
             <li className="nav-item dropdown">
               <a
-                className="nav-link dropdown-toggle"
+                className="nav-link btn dropdown-toggle"
                 id="navbarScrollingDropdown"
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Link
+                Account
               </a>
               <ul
-                className="dropdown-menu"
+                className="dropdown-menu dropdown-menu-end"
                 aria-labelledby="navbarScrollingDropdown"
               >
                 <li>
-                  <a className="dropdown-item">Action</a>
-                </li>
-                <li>
-                  <a className="dropdown-item">Another action</a>
+                  <Link to={"signin"} className="dropdown-item text-dark">
+                    Sign In
+                  </Link>
                 </li>
                 <li>
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <a className="dropdown-item">Something else here</a>
+                  <a className="dropdown-item">Orders</a>
+                </li>
+                <li>
+                  <hr className="dropdown-divider" />
+                </li>
+                <li>
+                  <a className="dropdown-item">Sign Out</a>
                 </li>
               </ul>
             </li>
-            <li className="nav-item">
-              <a className="nav-link disabled" aria-disabled="true">
-                Link
-              </a>
-            </li>
           </ul>
-          <form className="d-flex">
-            <input
-              className="form-control me-2"
-              type="search"
-              placeholder="Search for products"
-              aria-label="Search"
-            />
-          </form>
-          <Link to={"auth"} className="ms-3 me-3 nav-link">
-            <strong>Sign In</strong>
-          </Link>
         </div>
       </div>
     </nav>
