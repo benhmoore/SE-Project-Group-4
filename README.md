@@ -6,7 +6,7 @@ An E-Commerce Website implemented with Django and React.
 
 | Frontend | Backend |
 | -------- | ------- |
-|  - [React](https://reactjs.org) (Javascript) <br> - [Vite](https://vitejs.dev) <br> - [Vitest](https://vitest.dev) <br> - [Bootstrap 5](https://getbootstrap.com) | - [Django](https://reactjs.org) (Python) <br> - [MySQL](https://www.mysql.com) <br> - [Microsoft SQL Server Management Studio](https://learn.microsoft.com/en-us/sql/ssms/sql-server-management-studio-ssms?view=sql-server-ver16) |
+|  - [React](https://reactjs.org) (Typescript) <br> - [Vite](https://vitejs.dev) <br> - [Vitest](https://vitest.dev) <br> - [Bootstrap 5](https://getbootstrap.com) <br> - [Sass](https://sass-lang.com) | - [Django](https://reactjs.org) (Python) <br> - [SQLite](https://sqlite.org/index.html) |
 
 
 
