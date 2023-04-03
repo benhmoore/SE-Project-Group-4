@@ -1,7 +1,7 @@
 import React from "react";
 import renderer from "react-test-renderer";
 
-import Root from "../routes/Root";
+import Root from "../routes/App";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { routes } from "../routes/routes";
 
