@@ -1,4 +1,8 @@
 # E-Commerce Website
+
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/benhmoore/SE-Project-Group-4/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/benhmoore/SE-Project-Group-4/tree/main)
+
+
 ## Description
 An E-Commerce Website implemented with Django and React.
 
