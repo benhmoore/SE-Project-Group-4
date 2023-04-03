@@ -3,9 +3,14 @@ $primary: #bb5a00;
 
 // Borders
 $border-radius: 0.15rem;
-$border-width: 2px;
+$border-width: 1.5px;
+
+$btn-border-radius: 2rem;
+
+$dropdown-divider-bg: #f1f1f1;
 
 // Font
+$font-size-base: 1rem;
 $font-family-sans-serif: "Helvetica Neue", "Roboto", -apple-system, sans-serif;
 $headings-font-family: Georgia, 'Times New Roman', Times, serif;
 
@@ -17,6 +22,18 @@ $headings-font-family: Georgia, 'Times New Roman', Times, serif;
     font-weight:600;
 }
 
+button {
+    cursor: pointer;
+}
+
+// Disable selection within navbar
+.navbar {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .navbar .nav-link {
   color: #fff;
 }
@@ -24,14 +41,29 @@ $headings-font-family: Georgia, 'Times New Roman', Times, serif;
 // Set the border color of the search input within the .navbar
 .navbar .form-control {
     // The border color should be a tinted version of the primary color
-    border-color: shade-color($primary, 30%);
+    border-color: shade-color($primary, 15%);
 }
 
 .navbar .btn {
     // The border color should be a tinted version of the primary color
     background-color: tint-color($primary, 30%);
-    padding:0;
+    padding:5px;
     padding-left:5vw;
     padding-right:5vw;
 }
 
+.dropdown-menu {
+    padding-top:2px;
+    padding-bottom:2px
+}
+
+// Remove padding from dropdown-divider
+.dropdown-divider {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.navbar .btn-secondary {
+    background-color: transparent;
+    border-color: tint-color($primary, 30%);
+}

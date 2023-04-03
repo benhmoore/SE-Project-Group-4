@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import Menu from "../components/Menu";
+import Menu from "../components/menu/Menu";
 
 it("should render the Menu component", () => {
   const wrapper = render(<Menu />, { wrapper: BrowserRouter });

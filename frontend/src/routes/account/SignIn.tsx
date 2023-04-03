@@ -1,11 +1,15 @@
 import React from "react";
 import { Link, Form } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 import axios from "axios";
 
 const SignIn = () => {
-  const login = () => {
+  const [authenticated, setAuthenticated] = useOutletContext();
+
+  const handleLogin = () => {
     console.log("Sign initiated!");
+    setAuthenticated(true);
     axios
       .post("auth/login", {
         email: "example@email.com",
@@ -18,6 +22,7 @@ const SignIn = () => {
         console.log(err);
       });
   };
+
   return (
     <>
       <div className="container">
@@ -27,7 +32,9 @@ const SignIn = () => {
             <p>To buy and sell on our platform, you'll need to login.</p>
             <p>
               Don't have an account?{" "}
-              <Link style={{ textDecoration: "none" }}>Create one.</Link>
+              <Link to={"../user/create"} style={{ textDecoration: "none" }}>
+                Create one.
+              </Link>
             </p>
             <div className="card p-3">
               <Form>
@@ -37,6 +44,7 @@ const SignIn = () => {
                     className="form-control"
                     id="floatingInput"
                     placeholder="name@example.com"
+                    required
                   />
                   <label htmlFor="floatingInput">Email address</label>
                 </div>
@@ -46,20 +54,21 @@ const SignIn = () => {
                     className="form-control"
                     id="floatingPassword"
                     placeholder="Password"
+                    required
                   />
                   <label htmlFor="floatingPassword">Password</label>
                 </div>
                 <button
                   type="submit"
                   className="btn btn-primary btn-block mt-3"
-                  onClick={login}
+                  onClick={handleLogin}
                 >
                   Submit
                 </button>
               </Form>
             </div>
             <p className="forgot-password text-right small mt-3">
-              Forgot <a href="#">password?</a>
+              Forgot <Link to={"../user/forgot"}>password?</Link>
             </p>
           </div>
         </div>
