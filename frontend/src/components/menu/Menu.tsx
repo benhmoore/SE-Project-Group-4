@@ -12,7 +12,7 @@ const Menu = ({ authenticated, setAuthenticated }: Props) => {
   const location = useLocation();
 
   return (
-    <nav className="navbar navbar-expand-md navbar-dark bg-primary">
+    <nav className="navbar navbar-expand-md navbar-dark text-light bg-primary">
       <div className="container-fluid">
         <Link to={"/"} className="navbar-brand">
           E-Commerce
@@ -32,7 +32,7 @@ const Menu = ({ authenticated, setAuthenticated }: Props) => {
           <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
             <li className="nav-item">
               <Link
-                className={`nav-link ${
+                className={`nav-link btn ${
                   location.pathname === "/" ? "active" : ""
                 }`}
                 to={"/"}
@@ -43,8 +43,7 @@ const Menu = ({ authenticated, setAuthenticated }: Props) => {
             <li>
               <form className="d-flex mx-auto ms-2">
                 <input
-                  className="form-control me-2"
-                  style={{ width: "400px" }}
+                  className="form-control navbar-search me-2"
                   type="search"
                   placeholder="Search marketplace"
                   aria-label="Search"
