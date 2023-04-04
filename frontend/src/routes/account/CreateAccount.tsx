@@ -77,12 +77,15 @@ const CreateAccount = () => {
                     <label htmlFor="floatingPassword">Confirm Password</label>
                   </div>
                 </fieldset>
-                <button
+                {/* <button
                   type="submit"
                   className="btn btn-primary btn-block mt-3"
                 >
                   Continue
-                </button>
+                </button> */}
+                <Link to={"../user/payment"} className={"btn btn-primary mt-3"}>
+                  Continue
+                </Link>
               </Form>
             </div>
           </div>
