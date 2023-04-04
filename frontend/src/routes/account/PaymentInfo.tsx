@@ -3,7 +3,7 @@ import React from "react";
 import { Link, Form } from "react-router-dom";
 
 interface Props {
-  signingUp: boolean;
+  signingUp?: boolean;
 }
 
 const PaymentInfo = ({ signingUp = false }: Props) => {
