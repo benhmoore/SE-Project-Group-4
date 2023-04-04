@@ -1,7 +1,7 @@
 import React from "react";
 
 import { BsPersonCircle, BsFillCartFill, BsCart } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface Props {
   authenticated: boolean;
@@ -9,6 +9,8 @@ interface Props {
 }
 
 const AccountMenu = ({ authenticated, setAuthenticated }: Props) => {
+  const location = useLocation();
+
   const handleLogout = () => {
     setAuthenticated(false);
   };
@@ -17,7 +19,12 @@ const AccountMenu = ({ authenticated, setAuthenticated }: Props) => {
     return (
       <ul className="navbar-nav">
         <li className="nav-item">
-          <Link to={"user/signin"} className="nav-link btn">
+          <Link
+            to={"user/signin"}
+            className={`nav-link btn ${
+              location.pathname === "/user/signin" ? "active" : ""
+            }`}
+          >
             Sign In
           </Link>
         </li>
@@ -26,9 +33,13 @@ const AccountMenu = ({ authenticated, setAuthenticated }: Props) => {
   return (
     <ul className="navbar-nav">
       <li className="nav-item me-2">
-        <Link to={"cart"} className="nav-link btn btn-secondary pe-3">
-          <BsCart style={{ marginRight: 5, marginLeft: 3, marginBottom: 3 }} />
-          Cart
+        <Link
+          to={"cart"}
+          className={`nav-link btn btn-secondary pe-3 ${
+            location.pathname === "/cart" ? "active" : ""
+          }`}
+        >
+          <BsCart style={{ marginLeft: 5, marginBottom: 3 }} />
         </Link>
       </li>
       <li className="nav-item dropdown">

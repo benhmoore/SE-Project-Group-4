@@ -12,62 +12,103 @@ $dropdown-divider-bg: #f1f1f1;
 // Font
 $font-size-base: 1rem;
 $font-family-sans-serif: "Helvetica Neue", "Roboto", -apple-system, sans-serif;
-$headings-font-family: Georgia, 'Times New Roman', Times, serif;
+$headings-font-family: Georgia, "Times New Roman", Times, serif;
 
 @import "../../node_modules/bootstrap/scss/bootstrap";
 
 .navbar .navbar-brand {
-    // font-weight: 700;
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    font-weight:600;
+  // font-weight: 700;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-weight: 600;
 }
 
 button {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 // Disable selection within navbar
 .navbar {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .navbar .nav-link {
   color: #fff;
+  border-radius: 2em;
+
+  padding: 5px;
+  padding-left: 5vw;
+  padding-right: 5vw;
+  margin-top: 1px;
+
+  border: solid;
+  border-color: tint-color($primary, 30%);
+  border-width: 1.5px;
 }
 
-// Set the border color of the search input within the .navbar
-.navbar .form-control {
-    // The border color should be a tinted version of the primary color
-    border-color: shade-color($primary, 15%);
+.navbar .active {
+  background-color: #fff !important;
+  color: $primary !important;
 }
+
+// .navbar .btn:focus {
+//   background-color: red;
+// }
 
 .navbar .btn {
-    // The border color should be a tinted version of the primary color
-    background-color: tint-color($primary, 30%);
-    padding:5px;
-    padding-left:5vw;
-    padding-right:5vw;
+  // The border color should be a tinted version of the primary color
+  background-color: tint-color($primary, 30%);
+  padding: 5px;
+  padding-left: 5vw;
+  padding-right: 5vw;
 }
 
 .dropdown-menu {
-    padding-top:2px;
-    padding-bottom:2px
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 // Remove padding from dropdown-divider
 .dropdown-divider {
-    margin-top: 2px;
-    margin-bottom: 2px;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 .navbar .btn-secondary {
-    background-color: transparent;
-    border-color: tint-color($primary, 30%);
+  background-color: transparent;
+  border-color: tint-color($primary, 30%);
+}
+
+.navbar .navbar-search {
+  border-radius: 2em;
+  border-color: tint-color($primary, 30%);
+  width: 350px;
+}
+
+.product-card {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0);
+  transition: 0.2s;
+  bottom: 0px;
+  background-color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+
+.product-card .card-footer {
+  border: 0px;
+  background-color: rgba(0, 0, 0, 0);
+  padding-bottom: 15px;
+  padding-top: 15px;
+}
+
+.product-card:hover,
+.product-card:focus {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  bottom: 5px;
+  background-color: rgba(255, 255, 255, 1);
 }
 
 .product-card-menu {
-    width:200px;
+  width: 200px;
 }

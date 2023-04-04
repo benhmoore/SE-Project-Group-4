@@ -10788,10 +10788,19 @@ button {
 
 .navbar .nav-link {
   color: #fff;
+  border-radius: 2em;
+  padding: 5px;
+  padding-left: 5vw;
+  padding-right: 5vw;
+  margin-top: 1px;
+  border: solid;
+  border-color: #cf8c4d;
+  border-width: 1.5px;
 }
 
-.navbar .form-control {
-  border-color: #9f4d00;
+.navbar .active {
+  background-color: #fff !important;
+  color: #bb5a00 !important;
 }
 
 .navbar .btn {
@@ -10814,6 +10823,34 @@ button {
 .navbar .btn-secondary {
   background-color: transparent;
   border-color: #cf8c4d;
+}
+
+.navbar .navbar-search {
+  border-radius: 2em;
+  border-color: #cf8c4d;
+  width: 350px;
+}
+
+.product-card {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0);
+  transition: 0.2s;
+  bottom: 0px;
+  background-color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+
+.product-card .card-footer {
+  border: 0px;
+  background-color: rgba(0, 0, 0, 0);
+  padding-bottom: 15px;
+  padding-top: 15px;
+}
+
+.product-card:hover,
+.product-card:focus {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  bottom: 5px;
+  background-color: rgb(255, 255, 255);
 }
 
 .product-card-menu {

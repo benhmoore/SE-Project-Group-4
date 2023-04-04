@@ -6,11 +6,17 @@ import { useState } from "react";
 
 export default function App() {
   const [authenticated, setAuthenticated] = useState(false);
+  const [user, setUser] = useState({ username: "", token: "" });
 
   return (
     <div>
       <Menu authenticated={authenticated} setAuthenticated={setAuthenticated} />
-      <Outlet context={[authenticated, setAuthenticated]} />
+      <Outlet
+        context={{
+          authenticated: authenticated,
+          setAuthenticated: setAuthenticated,
+        }}
+      />
     </div>
   );
 }
