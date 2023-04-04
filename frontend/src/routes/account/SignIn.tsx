@@ -5,7 +5,7 @@ import { useOutletContext } from "react-router-dom";
 import axios from "axios";
 
 const SignIn = () => {
-  const [authenticated, setAuthenticated] = useOutletContext();
+  const { authenticated, setAuthenticated } = useOutletContext();
 
   const handleLogin = () => {
     console.log("Sign initiated!");

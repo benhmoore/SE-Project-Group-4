@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import AccountMenu from "./AccountMenu";
 
 interface Props {
@@ -9,8 +9,10 @@ interface Props {
 }
 
 const Menu = ({ authenticated, setAuthenticated }: Props) => {
+  const location = useLocation();
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav className="navbar navbar-expand-md navbar-dark bg-primary">
       <div className="container-fluid">
         <Link to={"/"} className="navbar-brand">
           E-Commerce
@@ -29,7 +31,14 @@ const Menu = ({ authenticated, setAuthenticated }: Props) => {
         <div className="collapse navbar-collapse" id="navbarScroll">
           <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
             <li className="nav-item">
-              <a className="nav-link">Browse</a>
+              <Link
+                className={`nav-link ${
+                  location.pathname === "/" ? "active" : ""
+                }`}
+                to={"/"}
+              >
+                Browse
+              </Link>
             </li>
             <li>
               <form className="d-flex mx-auto ms-2">

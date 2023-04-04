@@ -36,6 +36,17 @@ button {
 
 .navbar .nav-link {
   color: #fff;
+  border-radius:2em;
+
+  padding:5px;
+padding-left:5vw;
+padding-right:5vw;
+margin-top:2px;
+}
+
+.navbar .active {
+    background-color: #fff !important;
+    color: $primary !important;
 }
 
 // Set the border color of the search input within the .navbar

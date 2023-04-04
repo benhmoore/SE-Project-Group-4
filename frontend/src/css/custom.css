@@ -10788,6 +10788,16 @@ button {
 
 .navbar .nav-link {
   color: #fff;
+  border-radius: 2em;
+  padding: 5px;
+  padding-left: 5vw;
+  padding-right: 5vw;
+  margin-top: 2px;
+}
+
+.navbar .active {
+  background-color: #fff !important;
+  color: #bb5a00 !important;
 }
 
 .navbar .form-control {
