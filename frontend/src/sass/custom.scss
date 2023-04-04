@@ -17,7 +17,6 @@ $headings-font-family: Georgia, "Times New Roman", Times, serif;
 @import "../../node_modules/bootstrap/scss/bootstrap";
 
 .navbar .navbar-brand {
-  // font-weight: 700;
   font-family: Georgia, "Times New Roman", Times, serif;
   font-weight: 600;
 }
@@ -34,7 +33,7 @@ button {
   user-select: none;
 }
 
-.navbar .nav-link {
+.header-menu .nav-link {
   color: #fff;
   border-radius: 2em;
 
@@ -48,7 +47,7 @@ button {
   border-width: 1.5px;
 }
 
-.navbar .active {
+.header-menu .active {
   background-color: #fff !important;
   color: $primary !important;
 }
@@ -57,12 +56,23 @@ button {
 //   background-color: red;
 // }
 
-.navbar .btn {
+.header-menu .btn {
   // The border color should be a tinted version of the primary color
   background-color: tint-color($primary, 30%);
   padding: 5px;
   padding-left: 5vw;
   padding-right: 5vw;
+}
+
+.header-menu .btn-secondary {
+  background-color: transparent;
+  border-color: tint-color($primary, 30%);
+}
+
+.header-menu .navbar-search {
+  border-radius: 2em;
+  border-color: tint-color($primary, 30%);
+  width: 350px;
 }
 
 .dropdown-menu {
@@ -76,17 +86,6 @@ button {
   margin-bottom: 2px;
 }
 
-.navbar .btn-secondary {
-  background-color: transparent;
-  border-color: tint-color($primary, 30%);
-}
-
-.navbar .navbar-search {
-  border-radius: 2em;
-  border-color: tint-color($primary, 30%);
-  width: 350px;
-}
-
 .product-card {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0);
   transition: 0.2s;
@@ -97,7 +96,7 @@ button {
 
 .product-card .card-footer {
   border: 0px;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: transparent;
   padding-bottom: 15px;
   padding-top: 15px;
 }
@@ -108,7 +107,19 @@ button {
   bottom: 5px;
   background-color: rgba(255, 255, 255, 1);
 }
-
 .product-card-menu {
   width: 200px;
+}
+
+.price-pill .input-group-text {
+  font-family: $headings-font-family;
+}
+
+.product-menu {
+  background-color: transparent;
+}
+
+.product-view .card-header {
+  background-color: transparent;
+  border: 0px;
 }

@@ -10786,7 +10786,7 @@ button {
   user-select: none;
 }
 
-.navbar .nav-link {
+.header-menu .nav-link {
   color: #fff;
   border-radius: 2em;
   padding: 5px;
@@ -10798,16 +10798,27 @@ button {
   border-width: 1.5px;
 }
 
-.navbar .active {
+.header-menu .active {
   background-color: #fff !important;
   color: #bb5a00 !important;
 }
 
-.navbar .btn {
+.header-menu .btn {
   background-color: #cf8c4d;
   padding: 5px;
   padding-left: 5vw;
   padding-right: 5vw;
+}
+
+.header-menu .btn-secondary {
+  background-color: transparent;
+  border-color: #cf8c4d;
+}
+
+.header-menu .navbar-search {
+  border-radius: 2em;
+  border-color: #cf8c4d;
+  width: 350px;
 }
 
 .dropdown-menu {
@@ -10820,17 +10831,6 @@ button {
   margin-bottom: 2px;
 }
 
-.navbar .btn-secondary {
-  background-color: transparent;
-  border-color: #cf8c4d;
-}
-
-.navbar .navbar-search {
-  border-radius: 2em;
-  border-color: #cf8c4d;
-  width: 350px;
-}
-
 .product-card {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0);
   transition: 0.2s;
@@ -10841,7 +10841,7 @@ button {
 
 .product-card .card-footer {
   border: 0px;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: transparent;
   padding-bottom: 15px;
   padding-top: 15px;
 }
@@ -10855,6 +10855,19 @@ button {
 
 .product-card-menu {
   width: 200px;
+}
+
+.price-pill .input-group-text {
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+.product-menu {
+  background-color: transparent;
+}
+
+.product-view .card-header {
+  background-color: transparent;
+  border: 0px;
 }
 
 /*# sourceMappingURL=custom.css.map */

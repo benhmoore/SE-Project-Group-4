@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import Menu from "../components/menu/Menu";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
+import Footer from "../components/Footer";
 
 export default function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -17,6 +18,7 @@ export default function App() {
           setAuthenticated: setAuthenticated,
         }}
       />
+      <Footer />
     </div>
   );
 }

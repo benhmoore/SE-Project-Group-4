@@ -13,6 +13,7 @@ const Browse = () => {
               name="Product"
               description="This is a very detailed description of what this product is and who it's for."
               price={100}
+              product_id={123}
             />
           </div>
           <div className="col-sm">
@@ -23,6 +24,7 @@ const Browse = () => {
               name="Product"
               description="This is a very detailed description of what this product is and who it's for."
               price={100}
+              product_id={123}
             />
           </div>
         </div>
