@@ -12,7 +12,7 @@ const Menu = ({ authenticated, setAuthenticated }: Props) => {
   const location = useLocation();
 
   return (
-    <nav className="navbar navbar-expand-md navbar-dark text-light bg-primary">
+    <nav className="navbar header-menu navbar-expand-md navbar-dark text-light bg-primary">
       <div className="container-fluid">
         <Link to={"/"} className="navbar-brand">
           E-Commerce

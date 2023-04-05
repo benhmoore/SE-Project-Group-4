@@ -5,6 +5,7 @@ import SignIn from "./account/SignIn";
 import App from "./App";
 import Cart from "./order/Cart";
 import Browse from "./browse/Browse";
+import ProductPage from "./browse/ProductPage";
 
 export const routes = [
   {
@@ -15,6 +16,14 @@ export const routes = [
         path: "",
         element: <Browse />,
       },
+
+      // Product Routes
+      {
+        path: "/product/:id",
+        element: <ProductPage />,
+      },
+
+      // User Routes
       {
         path: "/user/signin",
         element: <SignIn />,
