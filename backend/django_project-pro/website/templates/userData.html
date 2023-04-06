@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Persons</title>
+</head>
+<body>
+    <h1>Rows Here Outside!:</h1>
+    <ul>
+    {% for oneRow in rowAll %}
+        <li>{{ oneRow.username }}</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
