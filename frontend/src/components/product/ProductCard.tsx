@@ -11,7 +11,7 @@ interface Props {
   price: number;
   description: string;
   image: string;
-  product_id: number;
+  productId: number;
 }
 
 const ProductCard = ({
@@ -19,15 +19,15 @@ const ProductCard = ({
   price,
   description,
   image,
-  product_id = -1,
+  productId = -1,
 }: Props) => {
   var navigate = useNavigate();
   const handleClick = () => {
-    return navigate(`/product/${product_id}`);
+    return navigate(`/product/${productId}`);
   };
 
   return (
-    <div className="card product-card p-4" onClick={handleClick}>
+    <div className="card product-card p-4 mt-4" onClick={handleClick}>
       <div className="text-center">
         <h1 style={{ fontSize: "10em", color: "rgba(0, 0, 0, 0.1)" }}>
           <Skeleton />
@@ -37,7 +37,7 @@ const ProductCard = ({
       <p>{description || <Skeleton count="2" />}</p>
       <div className="card-footer">
         <div className="d-grid gap-2 d-md-flex justify-content-md-end price-pill">
-          <PricePill price={price} product_id={product_id} />
+          <PricePill price={price} productId={productId} />
         </div>
       </div>
     </div>
