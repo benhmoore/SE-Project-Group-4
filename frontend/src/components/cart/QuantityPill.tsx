@@ -2,11 +2,16 @@ import { useState } from "react";
 import { BiMinusCircle, BiPlusCircle } from "react-icons/bi";
 
 interface Props {
+  cartItemId: number;
   quantity: number;
-  setQuantity: (quantity: number) => void;
+  handleQuantityChange: (cartItemId: number, newQuantity: number) => void;
 }
 
-const QuantityPill = ({ quantity, setQuantity }: Props) => {
+const QuantityPill = ({
+  cartItemId,
+  quantity,
+  handleQuantityChange,
+}: Props) => {
   return (
     <div className="btn-group border align-middle" role="group">
       <button
@@ -15,7 +20,10 @@ const QuantityPill = ({ quantity, setQuantity }: Props) => {
         data-bs-toggle="tooltip"
         data-bs-placement="bottom"
         title="Tooltip on bottom"
-        onClick={() => setQuantity(Math.max(quantity - 1, 1))}
+        onClick={() => {
+          const newQuantity = Math.max(quantity - 1, 1);
+          handleQuantityChange(cartItemId, newQuantity);
+        }}
       >
         <BiMinusCircle />
       </button>
@@ -29,7 +37,10 @@ const QuantityPill = ({ quantity, setQuantity }: Props) => {
       <button
         type="button"
         className="btn bg-light"
-        onClick={() => setQuantity(Math.min(quantity + 1, 99))}
+        onClick={() => {
+          const newQuantity = Math.max(quantity + 1, 1);
+          handleQuantityChange(cartItemId, newQuantity);
+        }}
       >
         <BiPlusCircle />
       </button>
