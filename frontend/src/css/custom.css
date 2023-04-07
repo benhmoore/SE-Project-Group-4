@@ -10777,6 +10777,10 @@ textarea.form-control-lg {
 
 button {
   cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .navbar {
@@ -10792,7 +10796,7 @@ button {
   padding: 5px;
   padding-left: 5vw;
   padding-right: 5vw;
-  margin-top: 1px;
+  margin-top: 2px;
   border: solid;
   border-color: #cf8c4d;
   border-width: 1.5px;

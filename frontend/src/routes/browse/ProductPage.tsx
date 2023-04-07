@@ -2,6 +2,7 @@ import React from "react";
 import PricePill from "../../components/product/PricePill";
 import ProductMenu from "../../components/product/ProductMenu";
 import Skeleton from "react-loading-skeleton";
+import { BsQuote } from "react-icons/bs";
 
 const ProductPage = () => {
   return (
@@ -11,9 +12,9 @@ const ProductPage = () => {
           <div className="card product-view p-4">
             <div className="card-header">
               <ProductMenu />
-              <div class="container text-center">
-                <div class="row align-items-start">
-                  <div class="col">
+              <div className="container text-center">
+                <div className="row align-items-start">
+                  <div className="col">
                     <div className="text-center">
                       <h1
                         style={{
@@ -25,8 +26,7 @@ const ProductPage = () => {
                       </h1>
                     </div>
                   </div>
-                  <div class="col text-start">
-                    <h2>Product Description</h2>
+                  <div className="col text-start mt-3">
                     <p>
                       This is a long-winded description of the selected product.
                     </p>

@@ -23,6 +23,10 @@ $headings-font-family: Georgia, "Times New Roman", Times, serif;
 
 button {
   cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 // Disable selection within navbar
@@ -40,7 +44,7 @@ button {
   padding: 5px;
   padding-left: 5vw;
   padding-right: 5vw;
-  margin-top: 1px;
+  margin-top: 2px;
 
   border: solid;
   border-color: tint-color($primary, 30%);
@@ -51,10 +55,6 @@ button {
   background-color: #fff !important;
   color: $primary !important;
 }
-
-// .navbar .btn:focus {
-//   background-color: red;
-// }
 
 .header-menu .btn {
   // The border color should be a tinted version of the primary color
@@ -107,6 +107,7 @@ button {
   bottom: 5px;
   background-color: rgba(255, 255, 255, 1);
 }
+
 .product-card-menu {
   width: 200px;
 }
