@@ -2,29 +2,27 @@ import { useState } from "react";
 
 import QuantityPill from "./QuantityPill";
 import { MdClose } from "react-icons/md";
+import { priceFormatter } from "../../utils/PriceFormatter";
 
 interface Props {
   productId: number;
   cartItemId: number;
   price: number;
-  initQuantity?: number;
   name: string;
+  quantity: number;
+  handleQuantityChange: (cartItemId: number, newQuantity: number) => void;
+  handleDeleteCartItem: (cartItemId: number) => void;
 }
 const CartItem = ({
   productId,
   cartItemId,
   price,
-  initQuantity = 1,
+  quantity,
   name,
+  handleQuantityChange,
+  handleDeleteCartItem,
 }: Props) => {
-  const [quantity, setQuantity] = useState(initQuantity);
-
   const [showDelete, setShowDelete] = useState(false);
-
-  const priceFormatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
 
   return (
     <tr
@@ -36,6 +34,7 @@ const CartItem = ({
           <button
             className="btn btn-sm btn-danger"
             style={{ borderRadius: "2em" }}
+            onClick={() => handleDeleteCartItem(cartItemId)}
           >
             <MdClose />
           </button>
@@ -43,18 +42,18 @@ const CartItem = ({
       </td>
       <td className="align-middle">{name}</td>
       <td className="text-center align-middle">
-        <QuantityPill quantity={quantity} setQuantity={setQuantity} />
+        <QuantityPill
+          cartItemId={cartItemId}
+          quantity={quantity}
+          handleQuantityChange={handleQuantityChange}
+        />
       </td>
       <td className="text-end align-middle">
         {priceFormatter.format(price * quantity)}
-        {quantity > 1 && (
-          <>
-            <br />
-            <small className="text-secondary ms-2">
-              {priceFormatter.format(price)} each
-            </small>
-          </>
-        )}
+        <br />
+        <small className="text-secondary ms-2">
+          {quantity > 1 && <span> {priceFormatter.format(price)} each</span>}
+        </small>
       </td>
     </tr>
   );

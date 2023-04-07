@@ -1,12 +1,74 @@
 import React from "react";
+import { useState } from "react";
 import { BsFillBagPlusFill } from "react-icons/bs";
 import { BiMinus, BiPlusCircle, BiMinusCircle, BiPlus } from "react-icons/bi";
 import QuantityPill from "../../components/cart/QuantityPill";
+import { CartItemObject } from "../../utils/CartItemFactory";
 import Dialog from "../../components/Dialog";
 import CartItem from "../../components/cart/CartItem";
+import CartItemFactory from "../../utils/CartItemFactory";
+import CartSummary from "../../components/cart/CartSummary";
+import CartItems from "../../components/cart/CartItems";
 
 const Cart = () => {
   const [show, setShow] = React.useState(false);
+
+  var serverItems: Array<CartItemObject> = [
+    {
+      productId: 1,
+      cartItemId: 1,
+      price: 5,
+      quantity: 1,
+      name: "Cat Food",
+    },
+    {
+      productId: 2,
+      cartItemId: 2,
+      price: 10.0,
+      quantity: 1,
+      name: "Dog Food",
+    },
+    {
+      productId: 3,
+      cartItemId: 3,
+      price: 20,
+      quantity: 1,
+      name: "Fish Food",
+    },
+  ];
+
+  // Create states for quantity changes
+  const [cartItems, setCartItems] = useState(serverItems);
+
+  const [subtotal, setSubtotal] = React.useState(
+    cartItems.reduce((a, b) => a + b.price * b.quantity, 0)
+  );
+
+  const handleQuantityChange = (cartItemId: number, newQuantity: number) => {
+    // Update quantity in cartItems
+    let newCartItems = cartItems.map((item) => {
+      if (item.cartItemId === cartItemId) {
+        item.quantity = newQuantity;
+      }
+      return item;
+    });
+    setCartItems(newCartItems);
+  };
+
+  const handleDeleteCartItem = (cartItemId: number) => {
+    // Remove item from cartItems
+    let newCartItems = cartItems.filter(
+      (item) => item.cartItemId !== cartItemId
+    );
+    setCartItems(newCartItems);
+
+    // Recalculate subtotal
+    let running_subtotal = 0;
+    for (let i = 0; i < newCartItems.length; i++) {
+      running_subtotal += newCartItems[i].price * newCartItems[i].quantity;
+    }
+    setSubtotal(running_subtotal);
+  };
 
   return (
     <>
@@ -35,14 +97,18 @@ const Cart = () => {
                 </tr>
               </thead>
               <tbody>
-                <CartItem name="Cat Food" price={12.5} />
-                <CartItem price={100.99} />
-                <CartItem price={599.99} />
+                <CartItems
+                  cartItems={cartItems}
+                  handleDeleteCartItem={handleDeleteCartItem}
+                  handleQuantityChange={handleQuantityChange}
+                  cartSubtotal={subtotal}
+                  setCartSubtotal={setSubtotal}
+                />
               </tbody>
             </table>
           </div>
           <div className="col-md-4 mt-4 border-start border-bottom p-4 bg-white">
-            <h2>Cart Summary</h2>
+            <CartSummary subtotal={subtotal} />
           </div>
         </div>
       </div>
