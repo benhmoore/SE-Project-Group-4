@@ -3,38 +3,63 @@ import PricePill from "../../components/product/PricePill";
 import ProductMenu from "../../components/product/ProductMenu";
 import Skeleton from "react-loading-skeleton";
 import { BsQuote } from "react-icons/bs";
+import { useLocation } from "react-router-dom";
+import Axios from "axios";
 
 const ProductPage = () => {
+  // Get the product ID from the URL
+  const url = useLocation().pathname;
+  const parts = url.split("/");
+  const productId = parts[parts.length - 1];
+
+  const [product, setProduct] = React.useState({
+    name: "",
+    price: 0,
+    description: "",
+    image: "",
+    productId: -1,
+  });
+
+  // Get products from server
+  React.useEffect(() => {
+    Axios.get(`/products/${productId}`)
+      .then((response) => {
+        setProduct(response.data.products[0]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   return (
     <>
       <div className="container">
         <div className="row mt-4">
           <div className="card product-view p-4">
             <div className="card-header">
-              <ProductMenu />
+              <ProductMenu
+                name={product.name}
+                price={product.price}
+                productId={product.productId}
+              />
               <div className="container text-center">
                 <div className="row align-items-start">
                   <div className="col">
                     <div className="text-center">
-                      <h1
-                        style={{
-                          fontSize: "10em",
-                          color: "rgba(0, 0, 0, 0.1)",
-                        }}
-                      >
-                        <Skeleton />
-                      </h1>
+                      <img
+                        src={product.image}
+                        className="card-img rounded"
+                        alt={product.name}
+                      />
                     </div>
                   </div>
                   <div className="col text-start mt-3">
-                    <p>
-                      This is a long-winded description of the selected product.
-                    </p>
+                    <p>{product.description}</p>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="card-footer bg-white">
+            <div className="card-footer bg-white mt-3">
               <div className="row">
                 <div className="col-6 mt-4">
                   <h2>Reviews</h2>

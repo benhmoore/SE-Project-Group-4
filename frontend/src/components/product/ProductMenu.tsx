@@ -1,7 +1,13 @@
 import React from "react";
 import PricePill from "./PricePill";
 
-const ProductMenu = () => {
+interface Props {
+  price: number;
+  productId: number;
+  name: string;
+}
+
+const ProductMenu = ({ price, productId, name }: Props) => {
   return (
     <>
       <nav className="navbar product-menu navbar-expand-lg navbar-light">
@@ -17,11 +23,11 @@ const ProductMenu = () => {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <h1 className="mt-2">Product Title</h1>
+          <h1 className="mt-2">{name}</h1>
           <div className="collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="ms-3 nav-item">
-                <PricePill price={100} product_id={123} />
+                <PricePill price={price} productId={productId} />
               </li>
               <li className="nav-item">
                 <a className="nav-link" aria-current="page" href="#">
