@@ -1,19 +1,20 @@
 import React from "react";
 
 import { BsPersonCircle, BsFillCartFill, BsCart } from "react-icons/bs";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useOutletContext } from "react-router-dom";
 
 interface Props {
   authenticated: boolean;
   setAuthenticated: (authenticated: boolean) => void;
+  handleLogout: () => void;
 }
 
-const AccountMenu = ({ authenticated, setAuthenticated }: Props) => {
+const AccountMenu = ({
+  authenticated,
+  setAuthenticated,
+  handleLogout,
+}: Props) => {
   const location = useLocation();
-
-  const handleLogout = () => {
-    setAuthenticated(false);
-  };
 
   if (!authenticated)
     return (

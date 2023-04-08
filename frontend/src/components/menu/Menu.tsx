@@ -1,14 +1,15 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useOutletContext } from "react-router-dom";
 import AccountMenu from "./AccountMenu";
 
 interface Props {
   authenticated: boolean;
   setAuthenticated: (authenticated: boolean) => void;
+  handleLogout: () => void;
 }
 
-const Menu = ({ authenticated, setAuthenticated }: Props) => {
+const Menu = ({ authenticated, setAuthenticated, handleLogout }: Props) => {
   const location = useLocation();
 
   return (
@@ -54,6 +55,7 @@ const Menu = ({ authenticated, setAuthenticated }: Props) => {
           <AccountMenu
             authenticated={authenticated}
             setAuthenticated={setAuthenticated}
+            handleLogout={handleLogout}
           />
         </div>
       </div>

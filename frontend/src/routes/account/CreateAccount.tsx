@@ -48,13 +48,13 @@ const CreateAccount = () => {
                 <fieldset>
                   <div className="form-floating mb-3">
                     <input
-                      type="email"
+                      type="username"
                       className="form-control"
                       id="floatingInput"
                       placeholder="name@example.com"
                       required
                     />
-                    <label htmlFor="floatingInput">Email address</label>
+                    <label htmlFor="floatingInput">Username</label>
                   </div>
                   <div className="form-floating mb-2">
                     <input
