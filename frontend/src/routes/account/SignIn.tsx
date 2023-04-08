@@ -5,22 +5,14 @@ import { useOutletContext } from "react-router-dom";
 import axios from "axios";
 
 const SignIn = () => {
-  const { authenticated, setAuthenticated } = useOutletContext();
+  const { authenticated, setAuthenticated, handleLogin } = useOutletContext();
 
-  const handleLogin = () => {
-    console.log("Sign initiated!");
-    setAuthenticated(true);
-    axios
-      .post("auth/login", {
-        email: "example@email.com",
-        password: "example.password",
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleLogin(username, password);
   };
 
   return (
@@ -40,13 +32,14 @@ const SignIn = () => {
               <Form>
                 <div className="form-floating mb-3">
                   <input
-                    type="email"
+                    type="username"
                     className="form-control"
                     id="floatingInput"
                     placeholder="name@example.com"
+                    onChange={(e) => setUsername(e.target.value)}
                     required
                   />
-                  <label htmlFor="floatingInput">Email address</label>
+                  <label htmlFor="floatingInput">Username</label>
                 </div>
                 <div className="form-floating">
                   <input
@@ -54,6 +47,7 @@ const SignIn = () => {
                     className="form-control"
                     id="floatingPassword"
                     placeholder="Password"
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                   <label htmlFor="floatingPassword">Password</label>
@@ -61,7 +55,7 @@ const SignIn = () => {
                 <button
                   type="submit"
                   className="btn btn-primary btn-block mt-3"
-                  onClick={handleLogin}
+                  onClick={handleSubmit}
                 >
                   Submit
                 </button>

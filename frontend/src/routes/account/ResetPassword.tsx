@@ -19,13 +19,13 @@ const ResetPassword = () => {
               <Form>
                 <div className="form-floating">
                   <input
-                    type="email"
+                    type="username"
                     className="form-control"
                     id="floatingInput"
                     placeholder="name@example.com"
                     required
                   />
-                  <label htmlFor="floatingInput">Email address</label>
+                  <label htmlFor="floatingInput">Username</label>
                 </div>
                 <button
                   type="submit"
