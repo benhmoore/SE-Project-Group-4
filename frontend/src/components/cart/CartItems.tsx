@@ -1,9 +1,9 @@
-import React from "react";
 import { useEffect } from "react";
+import { JSONCartItem } from "../../utils/props/JSONCartItem";
 import CartItem from "./CartItem";
 
 interface Props {
-  cartItems: Array<Object>;
+  cartItems: Array<JSONCartItem>;
   cartSubtotal: number;
   setCartSubtotal: (subtotal: number) => void;
   handleQuantityChange: (cartItemId: number, newQuantity: number) => void;
@@ -42,7 +42,6 @@ const CartItems = ({
         price={cartItems[i].price}
         name={cartItems[i].name}
         quantity={cartItems[i].quantity}
-        setQuantity={cartItems[i].setQuantity}
         handleQuantityChange={handleQuantityChange}
         handleDeleteCartItem={handleDeleteCartItem}
       />

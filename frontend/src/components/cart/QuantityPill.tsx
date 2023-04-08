@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { BiMinusCircle, BiPlusCircle } from "react-icons/bi";
 
 interface Props {

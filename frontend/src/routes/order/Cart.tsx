@@ -1,19 +1,13 @@
-import React from "react";
 import { useState } from "react";
-import { BsFillBagPlusFill } from "react-icons/bs";
-import { BiMinus, BiPlusCircle, BiMinusCircle, BiPlus } from "react-icons/bi";
-import QuantityPill from "../../components/cart/QuantityPill";
-import { CartItemObject } from "../../utils/CartItemFactory";
 import Dialog from "../../components/Dialog";
-import CartItem from "../../components/cart/CartItem";
-import CartItemFactory from "../../utils/CartItemFactory";
 import CartSummary from "../../components/cart/CartSummary";
 import CartItems from "../../components/cart/CartItems";
+import { JSONCartItem } from "../../utils/props/JSONCartItem";
 
 const Cart = () => {
-  const [show, setShow] = React.useState(false);
+  const [show, setShow] = useState(false);
 
-  var serverItems: Array<CartItemObject> = [
+  var serverItems: Array<JSONCartItem> = [
     {
       productId: 1,
       cartItemId: 1,
@@ -40,7 +34,7 @@ const Cart = () => {
   // Create states for quantity changes
   const [cartItems, setCartItems] = useState(serverItems);
 
-  const [subtotal, setSubtotal] = React.useState(
+  const [subtotal, setSubtotal] = useState(
     cartItems.reduce((a, b) => a + b.price * b.quantity, 0)
   );
 
