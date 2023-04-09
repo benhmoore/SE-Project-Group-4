@@ -4,12 +4,12 @@ import Skeleton from "react-loading-skeleton";
 
 interface Props {
   price: number;
-  product_id: number;
+  productId: number;
 }
 
-const PricePill = ({ price, product_id = -1 }: Props) => {
+const PricePill = ({ price, productId = -1 }: Props) => {
   return (
-    <div className="product-card-menu price-pill input-group me-md-2">
+    <div className="product-card-menu price-pill input-group me-md-2 justify-content-end">
       <div
         className="input-group-text"
         style={{

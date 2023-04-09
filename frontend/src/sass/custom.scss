@@ -109,7 +109,7 @@ button {
 }
 
 .product-card-menu {
-  width: 200px;
+  width: 300px;
 }
 
 .price-pill .input-group-text {
@@ -123,4 +123,8 @@ button {
 .product-view .card-header {
   background-color: transparent;
   border: 0px;
+}
+
+img {
+  border-radius: 1rem;
 }

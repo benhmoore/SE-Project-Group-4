@@ -26,7 +26,7 @@ export default function App() {
     let formData = new FormData();
     formData.append("username", username);
     formData.append("password", password);
-    Axios.post("http://localhost:8000/user/signin", formData)
+    Axios.post("/user/signin", formData)
       .then(function (response) {
         console.log(response);
         localStorage.setItem("token", response.data.token);

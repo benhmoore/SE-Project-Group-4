@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "./mocks/requests.tsx";
 
 import "./css/custom.css?r=3";
 import "bootstrap/dist/js/bootstrap.min.js";

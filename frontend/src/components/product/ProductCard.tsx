@@ -23,18 +23,20 @@ const ProductCard = ({
 }: Props) => {
   var navigate = useNavigate();
   const handleClick = () => {
-    return navigate(`/product/${productId}`);
+    return navigate(`/product/${productId}`, {
+      state: { productId: productId },
+    });
   };
 
   return (
     <div className="card product-card p-4 mt-4" onClick={handleClick}>
-      <div className="text-center">
-        <h1 style={{ fontSize: "10em", color: "rgba(0, 0, 0, 0.1)" }}>
-          <Skeleton />
-        </h1>
+      <div className="text-center mb-3">
+        {<img src={image} className="card-img rounded" alt={name} /> || (
+          <Skeleton height={200} />
+        )}
       </div>
       <h2>{name || <Skeleton />}</h2>
-      <p>{description || <Skeleton count="2" />}</p>
+      <p>{description.substring(0, 100) + "..." || <Skeleton count={2} />}</p>
       <div className="card-footer">
         <div className="d-grid gap-2 d-md-flex justify-content-md-end price-pill">
           <PricePill price={price} productId={productId} />
