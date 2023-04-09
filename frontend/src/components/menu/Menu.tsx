@@ -1,7 +1,13 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import Button from "react-bootstrap/Button";
-import { Link, useLocation, useOutletContext } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useOutletContext,
+} from "react-router-dom";
 import AccountMenu from "./AccountMenu";
+import Axios from "axios";
 
 interface Props {
   authenticated: boolean;
@@ -11,6 +17,29 @@ interface Props {
 
 const Menu = ({ authenticated, setAuthenticated, handleLogout }: Props) => {
   const location = useLocation();
+
+  const navigate = useNavigate();
+
+  const [isSearching, setIsSearching] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleClickSearch = (event: React.MouseEvent) => {
+    if (isSearching) return;
+    setIsSearching(true);
+
+    // Check if the user is on the search page
+    if (location.pathname !== "/")
+      if (searchQuery.length > 0)
+        return navigate("/", { state: { searchQuery } });
+      else return navigate("/");
+  };
+
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    // Get all products from server
+    navigate("/", { state: { searchQuery } });
+  };
 
   return (
     <nav className="navbar header-menu navbar-expand-md navbar-dark text-light bg-primary">
@@ -42,12 +71,15 @@ const Menu = ({ authenticated, setAuthenticated, handleLogout }: Props) => {
               </Link>
             </li>
             <li>
-              <form className="d-flex mx-auto ms-2">
+              <form className="d-flex mx-auto ms-2" onSubmit={handleSearch}>
                 <input
                   className="form-control navbar-search me-2"
                   type="search"
                   placeholder="Search marketplace"
                   aria-label="Search"
+                  onClick={handleClickSearch}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  onBlur={() => setIsSearching(false)}
                 />
               </form>
             </li>
