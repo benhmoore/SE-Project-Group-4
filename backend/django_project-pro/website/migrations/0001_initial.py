@@ -42,4 +42,25 @@ class Migration(migrations.Migration):
                 ('approval_status', models.IntegerField())
             ],
         ),
+
+        migrations.CreateModel(
+          name='ShoppingCart',
+            fields = [
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('user_id', models.IntegerField()),
+                ('order_status', models.IntegerField())
+            ],
+        ),
+
+
+        migrations.CreateModel(
+          name="ShoppingCartItem",
+            fields = [
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('shopping_cart_id', models.IntegerField()),
+                ('product_id', models.IntegerField()),
+                ('quantity', models.IntegerField())
+            ],
+        ),
+
     ]

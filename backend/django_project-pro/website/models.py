@@ -23,3 +23,12 @@ class Product(models.Model):
     num_sales = models.IntegerField()
     inventory = models.IntegerField()
     approval_status = models.IntegerField()
+
+class ShoppingCart(models.Model):
+    user_id = models.IntegerField()
+    order_status = models.IntegerField()
+
+class ShoppingCartItem(models.Model):
+    shopping_cart_id = models.IntegerField()
+    product_id = models.IntegerField()
+    quantity = models.IntegerField()

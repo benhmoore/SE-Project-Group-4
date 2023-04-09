@@ -24,6 +24,7 @@ def generate_random_string(length):
     password = ''.join(secrets.choice(alphabet) for i in range(length))
     return password
 
+#Delete later
 def print_stuff(request):
     rowAll = User.objects.all()
     for oneRow in rowAll:
@@ -39,9 +40,9 @@ def basic_login(request):
             rowAll = User.objects.all()
             for oneRow in rowAll:
                 if (oneRow.username == enteredUserName):
-                    print("Username Found")
+                    # print("Username Found")
                     if (oneRow.password_hash == enteredPassword):
-                        print("Correct Password - Login Successful")
+                        # print("Correct Password - Login Successful")
 
                         tokenSwitch = True
                         while(tokenSwitch):
@@ -55,6 +56,25 @@ def basic_login(request):
             return JsonResponse({'message': 'Authentication Failed'}, status=401)
 
 def print_products(request):
-    productAll = Product.Objects.all()
-    for eachProduct in productAll:
-        print(eachProduct.name)
+    productAll = Product.objects.all()
+
+    # for eachProduct in productAll:
+    #     print(eachProduct.name)
+
+
+    data = [{
+        'id': productAll.id,
+        'name': productAll.name,
+        'description': productAll.description,
+        'price': productAll.price,
+        'seller': productAll.seller,
+        'image_id': productAll.image_id,
+        'num_sales': productAll.num_sales,
+        'inventory': productAll.inventory,
+        'approval_status': productAll.approval_status
+    } for eachProduct in productAll]
+
+    print(data)
+    return JsonResponse(data, safe = False)
+
+
