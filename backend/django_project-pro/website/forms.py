@@ -6,6 +6,6 @@ class SigninForm(forms.Form):
     password = forms.CharField(label='password', max_length=100)
 
 
-class MyForm(forms.Form):
-    usernameForm = forms.CharField(label='Username')
-    passwordForm = forms.CharField(label='Password')
+# class MyForm(forms.Form):
+#     usernameForm = forms.CharField(label='Username')
+#     passwordForm = forms.CharField(label='Password')
