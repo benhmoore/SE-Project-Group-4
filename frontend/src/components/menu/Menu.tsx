@@ -42,56 +42,86 @@ const Menu = ({ authenticated, setAuthenticated, handleLogout }: Props) => {
   };
 
   return (
-    <nav className="navbar header-menu navbar-expand-md navbar-dark text-light bg-primary">
-      <div className="container-fluid">
-        <Link to={"/"} className="navbar-brand">
-          E-Commerce
-        </Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarScroll"
-          aria-controls="navbarScroll"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarScroll">
-          <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
-            <li className="nav-item">
-              <Link
-                className={`nav-link btn ${
-                  location.pathname === "/" ? "active" : ""
-                }`}
-                to={"/"}
-              >
-                Browse
-              </Link>
-            </li>
-            <li>
-              <form className="d-flex mx-auto ms-2" onSubmit={handleSearch}>
-                <input
-                  className="form-control navbar-search me-2"
-                  type="search"
-                  placeholder="Search marketplace"
-                  aria-label="Search"
-                  onClick={handleClickSearch}
-                  onChange={(event) => setSearchQuery(event.target.value)}
-                  onBlur={() => setIsSearching(false)}
-                />
-              </form>
-            </li>
-          </ul>
-          <AccountMenu
-            authenticated={authenticated}
-            setAuthenticated={setAuthenticated}
-            handleLogout={handleLogout}
-          />
+    <>
+      <nav className="navbar header-menu navbar-expand-md navbar-dark text-light bg-primary">
+        <div className="container-fluid">
+          <Link to={"/"} className="navbar-brand">
+            E-Commerce
+          </Link>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarScroll"
+            aria-controls="navbarScroll"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarScroll">
+            <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
+              <li className="nav-item">
+                <Link
+                  className={`nav-link btn ${
+                    location.pathname === "/" ? "active" : ""
+                  }`}
+                  to={"/"}
+                >
+                  Browse
+                </Link>
+              </li>
+              <li>
+                <form className="d-flex mx-auto ms-2" onSubmit={handleSearch}>
+                  <input
+                    className="form-control navbar-search me-2"
+                    type="search"
+                    placeholder="Search marketplace"
+                    aria-label="Search"
+                    onClick={handleClickSearch}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    onBlur={() => setIsSearching(false)}
+                  />
+                </form>
+              </li>
+            </ul>
+            <AccountMenu
+              authenticated={authenticated}
+              setAuthenticated={setAuthenticated}
+              handleLogout={handleLogout}
+            />
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+      {/* <div className="container-fluid">
+        <div className="row">
+          <div className="card">
+            <ul className="list-group list-group-flush">
+              <li className="list-group-item">
+                <Link
+                  className={`nav-link btn ${
+                    location.pathname === "/cart" ? "active" : ""
+                  }`}
+                  to={"/cart"}
+                >
+                  Cart
+                </Link>
+              </li>
+              <li className="list-group-item">
+                <Link
+                  className={`nav-link btn ${
+                    location.pathname === "/orders" ? "active" : ""
+                  }`}
+                  to={"/orders"}
+                >
+                  Orders
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div> */}
+    </>
   );
 };
 
