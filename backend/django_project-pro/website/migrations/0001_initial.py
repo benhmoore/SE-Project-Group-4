@@ -23,6 +23,23 @@ class Migration(migrations.Migration):
                 ('address', models.CharField(max_length=255)),
                 ('balance', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('payment_method', models.CharField(max_length=255)),
+                ('token_id', models.CharField(max_length=255))
+            ],
+        ),
+
+        migrations.CreateModel(
+          name='Product',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('category', models.CharField(max_length=255)),
+                ('name', models.CharField(max_length=255)),
+                ('description', models.CharField(max_length=255)),
+                ('price', models.DecimalField(decimal_places=2, max_digits = 10)),
+                ('seller', models.CharField(max_length=255)),
+                ('image_id', models.CharField(max_length=255)),
+                ('num_sales', models.IntegerField()),
+                ('inventory', models.IntegerField()),
+                ('approval_status', models.IntegerField())
             ],
         ),
     ]

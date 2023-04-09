@@ -11,3 +11,15 @@ class User(models.Model):
     balance = models.DecimalField(decimal_places=2, max_digits = 10)
     payment_method = models.CharField(max_length=255)
     token_id = models.CharField(max_length=255)
+
+
+class Product(models.Model):
+    category = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    price = models.DecimalField(decimal_places=2, max_digits = 10)
+    seller = models.CharField(max_length=255)
+    image_id = models.CharField(max_length=255)
+    num_sales = models.IntegerField()
+    inventory = models.IntegerField()
+    approval_status = models.IntegerField()
