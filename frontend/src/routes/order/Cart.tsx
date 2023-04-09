@@ -1,52 +1,49 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Dialog from "../../components/Dialog";
 import CartSummary from "../../components/cart/CartSummary";
 import CartItems from "../../components/cart/CartItems";
 import { JSONCartItem } from "../../utils/props/JSONCartItem";
+import Axios from "axios";
 
 const Cart = () => {
   const [show, setShow] = useState(false);
 
-  var serverItems: Array<JSONCartItem> = [
-    {
-      productId: 1,
-      cartItemId: 1,
-      price: 5,
-      quantity: 1,
-      name: "Cat Food",
-    },
-    {
-      productId: 2,
-      cartItemId: 2,
-      price: 10.0,
-      quantity: 1,
-      name: "Dog Food",
-    },
-    {
-      productId: 3,
-      cartItemId: 3,
-      price: 20,
-      quantity: 1,
-      name: "Fish Food",
-    },
-  ];
-
   // Create states for quantity changes
-  const [cartItems, setCartItems] = useState(serverItems);
+  const [cartItems, setCartItems] = useState(Array<JSONCartItem>);
 
   const [subtotal, setSubtotal] = useState(
     cartItems.reduce((a, b) => a + b.price * b.quantity, 0)
   );
 
+  useEffect(() => {
+    Axios.get("/cart")
+      .then((response) => {
+        // Store the cart items in state
+        setCartItems(response.data.cartItems);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   const handleQuantityChange = (cartItemId: number, newQuantity: number) => {
-    // Update quantity in cartItems
-    let newCartItems = cartItems.map((item) => {
-      if (item.cartItemId === cartItemId) {
-        item.quantity = newQuantity;
-      }
-      return item;
-    });
-    setCartItems(newCartItems);
+    Axios.put(`/cart/items/${cartItemId}`, {
+      quantity: newQuantity,
+    })
+      .then((response) => {
+        // Update quantity in cartItems
+        const itemQuantity = response.data.quantity;
+        let newCartItems = cartItems.map((item) => {
+          if (item.cartItemId === cartItemId) {
+            item.quantity = itemQuantity;
+          }
+          return item;
+        });
+        setCartItems(newCartItems);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleDeleteCartItem = (cartItemId: number) => {

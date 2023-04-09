@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { JSONCartItem } from "../../utils/props/JSONCartItem";
 import CartItem from "./CartItem";
+import Axios from "axios";
 
 interface Props {
   cartItems: Array<JSONCartItem>;
@@ -47,6 +48,16 @@ const CartItems = ({
       />
     );
   }
+
+  useEffect(() => {
+    Axios.get("/cart")
+      .then((response) => {
+        // Convert list of JSON cart items to a list of CartItem objects
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   return <>{rows}</>;
 };

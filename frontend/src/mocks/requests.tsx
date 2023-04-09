@@ -77,3 +77,62 @@ mock.onGet("/products/3").reply(200, {
     },
   ],
 });
+
+let cartItems = [
+  {
+    cartItemId: 1,
+    productId: 1,
+    name: "Product 1",
+    price: 10.99,
+    quantity: 1,
+  },
+  {
+    cartItemId: 2,
+    productId: 2,
+    name: "Product 2",
+    price: 20.99,
+    quantity: 1,
+  },
+  {
+    cartItemId: 3,
+    productId: 3,
+    name: "Product 3",
+    price: 30.99,
+    quantity: 1,
+  },
+];
+
+// Mock getting the cart items
+mock.onGet("/cart").reply(200, {
+  cartItems: cartItems,
+});
+
+// Mock updating quantity of cart item
+mock.onPut("/cart/items/1").reply(({ data }) => {
+  const { quantity } = JSON.parse(data);
+  return [200, { quantity }];
+});
+
+mock.onPut("/cart/items/").reply(({ data }) => {
+  const { quantity } = JSON.parse(data);
+  return [200, { quantity }];
+});
+
+mock.onPut("/cart/items/3").reply(({ data }) => {
+  const { quantity } = JSON.parse(data);
+  return [200, { quantity }];
+});
+
+// Mock adding a product to the cart
+mock.onPost("/cart").reply(({ data }) => {
+  const { productId, quantity } = JSON.parse(data);
+  const cartItemId = cartItems.length + 1;
+  cartItems.push({
+    cartItemId,
+    productId,
+    quantity,
+    name: `Product ${productId}`,
+    price: 10.99 * cartItemId,
+  });
+  return [200, { cartItemId }];
+});
