@@ -58,23 +58,18 @@ def basic_login(request):
 def print_products(request):
     productAll = Product.objects.all()
 
-    # for eachProduct in productAll:
-    #     print(eachProduct.name)
-
-
     data = [{
-        'id': productAll.id,
-        'name': productAll.name,
-        'description': productAll.description,
-        'price': productAll.price,
-        'seller': productAll.seller,
-        'image_id': productAll.image_id,
-        'num_sales': productAll.num_sales,
-        'inventory': productAll.inventory,
-        'approval_status': productAll.approval_status
+        'id': eachProduct.id,
+        'name': eachProduct.name,
+        'description': eachProduct.description,
+        'price': eachProduct.price,
+        'seller': eachProduct.seller,
+        'image_id': eachProduct.image_id,
+        'num_sales': eachProduct.num_sales,
+        'inventory': eachProduct.inventory,
+        'approval_status': eachProduct.approval_status
     } for eachProduct in productAll]
 
-    print(data)
     return JsonResponse(data, safe = False)
 
 
