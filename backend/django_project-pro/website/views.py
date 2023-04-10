@@ -72,4 +72,40 @@ def print_products(request):
 
     return JsonResponse(data, safe = False)
 
+def add_product(request):
+
+   if request.method == 'POST':
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        seller = request.POST.get('seller')
+        image_id = request.POST.get('image_id')
+        num_sales = request.POST.get('num_sales')
+        inventory = request.POST.get('inventory')
+        approval_status = request.POST.get('approval_status')
+
+        product = Product(name=name, description=description, price=price, seller=seller,
+                          image_id=image_id, num_sales=num_sales, inventory=inventory,
+                          approval_status=approval_status)
+        product.save()
+
+        data = {
+            'message': 'Product added successfully!'
+        }
+
+        return JsonResponse(data)
+
+def remove_product(request, product_id):
+    if request.method == 'DELETE':
+        try:
+            product = Product.objects.get(id=product_id)
+            product.delete()
+            data = {'message': 'Product deleted successfully!'}
+            return JsonResponse(data)
+        except Product.DoesNotExist:
+            return JsonResponse({'error': 'Product not found!'}, status=404)
+
+
+
+
 
