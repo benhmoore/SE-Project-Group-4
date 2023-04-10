@@ -56,9 +56,12 @@ const AccountMenu = ({
             location.pathname === "/cart" ? "active" : ""
           }`}
         >
-          <BsCart style={{ marginLeft: 5, marginBottom: 3 }} />
+          <BsCart style={{ marginLeft: 5, marginBottom: 2 }} />
           {cartItems.length > 0 && (
-            <span className="badge bg-light text-dark ms-1 rounded-pill">
+            <span
+              className="badge bg-light text-primary ms-1 rounded-pill border"
+              style={{ marginBottom: "2px" }}
+            >
               {cartItems.length}
             </span>
           )}
@@ -82,6 +85,14 @@ const AccountMenu = ({
           <li>
             <Link to={"/orders"} className="dropdown-item">
               Orders
+            </Link>
+          </li>
+          <li>
+            <hr className="dropdown-divider" />
+          </li>
+          <li>
+            <Link to={"/sell"} className="dropdown-item">
+              Sell
             </Link>
           </li>
           <li>
