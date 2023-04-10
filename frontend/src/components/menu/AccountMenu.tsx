@@ -8,12 +8,14 @@ interface Props {
   authenticated: boolean;
   setAuthenticated: (authenticated: boolean) => void;
   handleLogout: () => void;
+  user: { username: string; token: string };
 }
 
 const AccountMenu = ({
   authenticated,
   setAuthenticated,
   handleLogout,
+  user,
 }: Props) => {
   const location = useLocation();
 
@@ -71,7 +73,7 @@ const AccountMenu = ({
           aria-expanded="false"
         >
           <BsPersonCircle style={{ marginRight: 10, marginBottom: 3 }} />
-          Account
+          {user.username}
         </a>
         <ul
           className="dropdown-menu dropdown-menu-end"

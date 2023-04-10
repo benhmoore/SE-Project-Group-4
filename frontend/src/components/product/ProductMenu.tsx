@@ -1,5 +1,6 @@
 import React from "react";
 import PricePill from "./PricePill";
+import { BiGitCompare } from "react-icons/bi";
 
 interface Props {
   price: number;
@@ -26,16 +27,12 @@ const ProductMenu = ({ price, productId, name }: Props) => {
           <h1 className="mt-2">{name}</h1>
           <div className="collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="ms-3 nav-item">
+              <li className="ms-nav-item ms-3">
                 <PricePill price={price} productId={productId} />
               </li>
-              <li className="nav-item">
-                <a className="nav-link" aria-current="page" href="#">
-                  Reviews
-                </a>
-              </li>
-              <li className="nav-item">
+              <li className="nav-item ms-3">
                 <a className="nav-link" href="#">
+                  <BiGitCompare className="mb-1 me-1" />
                   Compare
                 </a>
               </li>

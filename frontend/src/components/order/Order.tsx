@@ -28,6 +28,27 @@ const Order = ({ cartId, expanded = false }: Props) => {
       >
         <div className="accordion-body">
           <OrderSummary cartId={cartId} />
+          <ul className="nav justify-content-end gap-2">
+            <li className="nav-item">
+              <a className="nav-link btn" href="#">
+                Get Support
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link btn" href="#">
+                Return Items
+              </a>
+            </li>
+            <li className="nav-item">
+              <a
+                className="nav-link btn btn-danger text-light"
+                aria-current="page"
+                href="#"
+              >
+                Cancel Order
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

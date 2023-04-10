@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Link, Form } from "react-router-dom";
-import { useOutletContext, useNavigate } from "react-router-dom";
+import { useOutletContext, useNavigate, Navigate } from "react-router-dom";
 
 import Axios from "axios";
 import { MdLocationOn, MdPayments } from "react-icons/md";
@@ -9,6 +9,8 @@ import { JSONCartItem } from "../../utils/props/JSONCartItem";
 import OrderSummary from "../../components/order/OrderSummary";
 
 const Checkout = () => {
+  if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
+
   const navigate = useNavigate();
 
   const [cartItems, setCartItems] = React.useState(Array<JSONCartItem>);

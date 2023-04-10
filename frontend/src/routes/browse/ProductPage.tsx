@@ -2,7 +2,7 @@ import React from "react";
 import PricePill from "../../components/product/PricePill";
 import ProductMenu from "../../components/product/ProductMenu";
 import Skeleton from "react-loading-skeleton";
-import { BsQuote } from "react-icons/bs";
+import { BsFillInfoCircleFill, BsInfo, BsQuote } from "react-icons/bs";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Axios from "axios";
 
@@ -25,6 +25,9 @@ const ProductPage = () => {
   React.useEffect(() => {
     Axios.get(`/products/${productId}`)
       .then((response) => {
+        if (response.data.products.length === 0) {
+          return navigate("/");
+        }
         setProduct(response.data.products[0]);
       })
       .catch((error) => {
@@ -45,16 +48,23 @@ const ProductPage = () => {
               />
               <div className="container text-center">
                 <div className="row align-items-start">
-                  <div className="col">
+                  <div className="col-md-6">
                     <div className="text-center">
                       <img
                         src={product.image}
-                        className="card-img rounded"
+                        className="card-img"
                         alt={product.name}
                       />
                     </div>
                   </div>
                   <div className="col text-start mt-3">
+                    <h5
+                      className="text-secondary"
+                      style={{ fontStyle: "italic" }}
+                    >
+                      <BsFillInfoCircleFill className="text-secondary mb-1" />{" "}
+                      <span className="ms-1">Product Description</span>
+                    </h5>
                     <p>{product.description}</p>
                   </div>
                 </div>
@@ -64,6 +74,7 @@ const ProductPage = () => {
               <div className="row">
                 <div className="col-6 mt-4">
                   <h2>Reviews</h2>
+                  <small>Reviews unimplemented.</small>
                   <p>
                     <Skeleton count={3} />
                   </p>

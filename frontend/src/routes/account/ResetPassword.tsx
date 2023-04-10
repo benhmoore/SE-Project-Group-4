@@ -1,8 +1,10 @@
 import React from "react";
-import { Link, Form } from "react-router-dom";
+import { Link, Form, Navigate } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 
 const ResetPassword = () => {
+  if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
+
   return (
     <>
       <div className="container">

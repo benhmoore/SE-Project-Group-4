@@ -10838,6 +10838,7 @@ button {
 .product-card {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0);
   max-width: 500px;
+  min-width: 300px;
   transition: 0.2s;
   bottom: 0px;
   background-color: rgba(255, 255, 255, 0.8);
@@ -10858,10 +10859,6 @@ button {
   background-color: rgb(255, 255, 255);
 }
 
-.product-card-menu {
-  width: 300px;
-}
-
 .price-pill .input-group-text {
   font-family: Georgia, "Times New Roman", Times, serif;
 }
@@ -10876,7 +10873,7 @@ button {
 }
 
 img {
-  border-radius: 1rem;
+  border-radius: 0.5rem !important;
 }
 
 /*# sourceMappingURL=custom.css.map */

@@ -13,9 +13,15 @@ interface Props {
   authenticated: boolean;
   setAuthenticated: (authenticated: boolean) => void;
   handleLogout: () => void;
+  user: { username: string; token: string };
 }
 
-const Menu = ({ authenticated, setAuthenticated, handleLogout }: Props) => {
+const Menu = ({
+  authenticated,
+  setAuthenticated,
+  handleLogout,
+  user,
+}: Props) => {
   const location = useLocation();
 
   const navigate = useNavigate();
@@ -89,38 +95,11 @@ const Menu = ({ authenticated, setAuthenticated, handleLogout }: Props) => {
               authenticated={authenticated}
               setAuthenticated={setAuthenticated}
               handleLogout={handleLogout}
+              user={user}
             />
           </div>
         </div>
       </nav>
-      {/* <div className="container-fluid">
-        <div className="row">
-          <div className="card">
-            <ul className="list-group list-group-flush">
-              <li className="list-group-item">
-                <Link
-                  className={`nav-link btn ${
-                    location.pathname === "/cart" ? "active" : ""
-                  }`}
-                  to={"/cart"}
-                >
-                  Cart
-                </Link>
-              </li>
-              <li className="list-group-item">
-                <Link
-                  className={`nav-link btn ${
-                    location.pathname === "/orders" ? "active" : ""
-                  }`}
-                  to={"/orders"}
-                >
-                  Orders
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div> */}
     </>
   );
 };

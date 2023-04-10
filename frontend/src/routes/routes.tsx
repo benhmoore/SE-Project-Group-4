@@ -8,11 +8,13 @@ import Browse from "./browse/Browse";
 import ProductPage from "./browse/ProductPage";
 import Checkout from "./order/Checkout";
 import Orders from "./order/Orders";
+import { Navigate } from "react-router-dom";
 
 export const routes = [
   {
     path: "/",
     element: <App />,
+    errorElement: <Navigate to="/" />,
     children: [
       {
         path: "",

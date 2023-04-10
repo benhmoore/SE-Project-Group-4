@@ -2,6 +2,7 @@ import React from "react";
 import { BsCartPlus } from "react-icons/bs";
 import Skeleton from "react-loading-skeleton";
 import Axios from "axios";
+import { useOutletContext, useNavigate } from "react-router-dom";
 
 interface Props {
   price: number;
@@ -9,6 +10,10 @@ interface Props {
 }
 
 const PricePill = ({ price, productId = -1 }: Props) => {
+  const { authenticated } = useOutletContext();
+
+  const navigate = useNavigate();
+
   const handleAddToCart = () => {
     Axios.post("/cart", {
       productId: productId,
@@ -37,10 +42,16 @@ const PricePill = ({ price, productId = -1 }: Props) => {
       <button
         type="button"
         className="btn btn-primary"
-        onClick={handleAddToCart}
+        onClick={() => {
+          if (authenticated) {
+            handleAddToCart();
+          } else {
+            navigate("/user/signin");
+          }
+        }}
       >
         <BsCartPlus style={{ marginBottom: 5 }} className="me-2" />
-        Add to Cart
+        {authenticated ? "Add to Cart" : "Sign in to buy"}
       </button>
     </div>
   );

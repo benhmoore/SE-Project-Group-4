@@ -31,7 +31,7 @@ const ProductCard = ({
   return (
     <div className="card product-card p-4 mt-4" onClick={handleClick}>
       <div className="text-center mb-3">
-        {<img src={image} className="card-img rounded" alt={name} /> || (
+        {<img src={image} className="card-img" alt={name} /> || (
           <Skeleton height={200} />
         )}
       </div>

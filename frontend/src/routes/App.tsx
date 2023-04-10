@@ -55,6 +55,7 @@ export default function App() {
         authenticated={authenticated}
         setAuthenticated={setAuthenticated}
         handleLogout={handleLogout}
+        user={user}
       />
       <Outlet
         context={{

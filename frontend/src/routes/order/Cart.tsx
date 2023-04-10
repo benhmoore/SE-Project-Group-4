@@ -4,8 +4,11 @@ import CartSummary from "../../components/cart/CartSummary";
 import CartItems from "../../components/cart/CartItems";
 import { JSONCartItem } from "../../utils/props/JSONCartItem";
 import Axios from "axios";
+import { Navigate, useOutletContext } from "react-router-dom";
 
 const Cart = () => {
+  if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
+
   const [show, setShow] = useState(false);
 
   // Create states for quantity changes
