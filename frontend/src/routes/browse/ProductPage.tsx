@@ -44,7 +44,7 @@ const ProductPage = () => {
               <ProductMenu
                 name={product.name}
                 price={product.price}
-                productId={product.productId}
+                productId={product.id}
               />
               <div className="container text-center">
                 <div className="row align-items-start">

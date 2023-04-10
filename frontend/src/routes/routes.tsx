@@ -21,6 +21,12 @@ export const routes = [
         element: <Browse />,
       },
 
+      // Comparison Routes
+      {
+        path: "/compare/:compareProductId",
+        element: <Browse compareProduct={true} />,
+      },
+
       // Product Routes
       {
         path: "/product/:id",

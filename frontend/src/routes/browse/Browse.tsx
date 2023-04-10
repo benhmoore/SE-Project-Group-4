@@ -3,12 +3,19 @@ import React from "react";
 import ProductCard from "../../components/product/ProductCard";
 import Spinner from "../../components/Spinner";
 import Axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 
-const Browse = () => {
-  // Get products from server
+interface Props {
+  compareProduct?: boolean; // If this is true, check url for product id
+}
 
+const Browse = ({ compareProduct = false }: Props) => {
+  const navigate = useNavigate();
   let { state } = useLocation();
+
+  // Get product id from url params
+  const { compareProductId } = useParams();
+  console.log(compareProductId, "ADAD");
 
   let searchQuery = state?.searchQuery || "";
 
@@ -37,6 +44,11 @@ const Browse = () => {
 
   return (
     <>
+      {compareProductId !== undefined && (
+        <div className="container pt-4">
+          <h1>Comparing</h1>
+        </div>
+      )}
       <div className="container">
         {products.length === 0 ? (
           <div className="row mt-4">

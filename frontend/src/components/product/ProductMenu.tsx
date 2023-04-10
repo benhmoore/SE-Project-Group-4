@@ -1,6 +1,7 @@
 import React from "react";
 import PricePill from "./PricePill";
 import { BiGitCompare } from "react-icons/bi";
+import { Link } from "react-router-dom";
 
 interface Props {
   price: number;
@@ -31,10 +32,10 @@ const ProductMenu = ({ price, productId, name }: Props) => {
                 <PricePill price={price} productId={productId} />
               </li>
               <li className="nav-item ms-3">
-                <a className="nav-link" href="#">
+                <Link to={`../compare/${productId}`} className="nav-link">
                   <BiGitCompare className="mb-1 me-1" />
                   Compare
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
