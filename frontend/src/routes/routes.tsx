@@ -7,6 +7,7 @@ import Cart from "./order/Cart";
 import Browse from "./browse/Browse";
 import ProductPage from "./browse/ProductPage";
 import Checkout from "./order/Checkout";
+import Orders from "./order/Orders";
 
 export const routes = [
   {
@@ -48,6 +49,10 @@ export const routes = [
       {
         path: "/cart/checkout",
         element: <Checkout />,
+      },
+      {
+        path: "/orders/:id?",
+        element: <Orders />,
       },
     ],
   },

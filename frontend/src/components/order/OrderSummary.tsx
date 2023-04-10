@@ -12,6 +12,7 @@ const OrderSummary = ({ cartId = -1 }: Props) => {
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
 
+  // If a cart ID is provided, use it to fetch the cart items
   if (cartId != -1) {
     Axios.get(`/cart/${cartId}`)
       .then((response) => {
@@ -23,6 +24,7 @@ const OrderSummary = ({ cartId = -1 }: Props) => {
       });
   }
 
+  // Otherwise, fetch the current cart items from the server
   if (cartId == -1) {
     useEffect(() => {
       Axios.get("/cart")

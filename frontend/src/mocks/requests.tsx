@@ -136,3 +136,9 @@ mock.onPost("/cart").reply(({ data }) => {
   });
   return [200, { cartItemId }];
 });
+
+// Mock adding a product to the cart
+mock.onPost("/order").reply(({ data }) => {
+  const cartId = 1;
+  return [200, { cartId }];
+});

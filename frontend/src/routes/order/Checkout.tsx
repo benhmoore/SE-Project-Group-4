@@ -20,25 +20,14 @@ const Checkout = () => {
     setOrderButtonDisabled(true);
     Axios.post("/order", {})
       .then((response) => {
-        navigate("/orders/confirmation", {
-          state: { order: response.data.cartId },
+        navigate(`/orders/${response.data.cartId}`, {
+          state: { message: "Order placed!" },
         });
       })
       .catch((error) => {
         alert("There was an error placing your order. Please try again.");
       });
   };
-
-  //   useEffect(() => {
-  //     Axios.get("/cart")
-  //       .then((response) => {
-  //         // Store the cart items in state
-  //         setCartItems(response.data.cartItems);
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //       });
-  //   }, []);
 
   // Use useEffect to update the cart subtotal after rendering
   useEffect(() => {
@@ -112,7 +101,7 @@ const Checkout = () => {
                   changes, please{" "}
                   <Link to={"../cart"}>return to your cart</Link>.
                 </p>
-                <OrderSummary cartId={-1} />
+                <OrderSummary />
                 <hr />
                 <div className="d-grid gap-2 mt-4">
                   <button

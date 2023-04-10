@@ -3,14 +3,15 @@ import PricePill from "../../components/product/PricePill";
 import ProductMenu from "../../components/product/ProductMenu";
 import Skeleton from "react-loading-skeleton";
 import { BsQuote } from "react-icons/bs";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Axios from "axios";
 
 const ProductPage = () => {
+  const navigate = useNavigate();
   // Get the product ID from the URL
-  const url = useLocation().pathname;
-  const parts = url.split("/");
-  const productId = parts[parts.length - 1];
+  const { id } = useParams();
+  if (id === undefined) return navigate("/");
+  const productId = parseInt(id);
 
   const [product, setProduct] = React.useState({
     name: "",
