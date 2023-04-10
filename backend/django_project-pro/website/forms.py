@@ -5,7 +5,17 @@ class SigninForm(forms.Form):
     username = forms.CharField(label='username', max_length=100)
     password = forms.CharField(label='password', max_length=100)
 
+class accountForm(forms.Form):
+    userRole = forms.IntegerField()
+    username = forms.CharField(label='username', max_length=100)
+    password = forms.CharField(label='password', max_length=100)
+    firstname = forms.CharField(label='firstname', max_length=100)
+    lastname = forms.CharField(label='lastname', max_length=100)
+    address = forms.CharField(label='address', max_length=100)
+    balance = forms.DecimalField(decimal_places=2, max_digits = 10)
+    payment_method = forms.CharField(label='payment_method', max_length=100)
 
-# class MyForm(forms.Form):
-#     usernameForm = forms.CharField(label='Username')
-#     passwordForm = forms.CharField(label='Password')
+class deleteAccountForm(forms.Form):
+    username = forms.CharField(label='username', max_length=100)
+    password = forms.CharField(label='password', max_length=100)
+
