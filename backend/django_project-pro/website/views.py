@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import User, Product
-from .forms import SigninForm
+from .forms import SigninForm, accountForm, deleteAccountForm
 from django.http import JsonResponse
 import random, secrets, string
 
@@ -55,6 +55,57 @@ def basic_login(request):
             #If can't find username,
             return JsonResponse({'message': 'Authentication Failed'}, status=401)
 
+def add_account(roleInput, usernameInput, passwordInput, firstInput, lastInput, addressInput, balanceInput, methodInput):
+
+    print("hello!")
+
+    print(roleInput, usernameInput, passwordInput, firstInput, lastInput, addressInput, balanceInput, methodInput)
+
+    newUser = User(
+        user_role =roleInput,
+        username=usernameInput,
+        password_hash=passwordInput,
+        first_name = firstInput,
+        last_name = lastInput,
+        address = addressInput,
+        balance = balanceInput,
+        payment_method = methodInput,
+        token_id = ""
+    )
+
+    newUser.save()
+
+def create_account(request):
+    if request.method == 'POST':
+        form = accountForm(request.POST)
+        if form.is_valid():
+            userRole = form.cleaned_data['userRole']
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            firstName = form.cleaned_data['firstname']
+            lastName = form.cleaned_data['lastname']
+            address = form.cleaned_data['address']
+            balance = form.cleaned_data['balance']
+            payment_method = form.cleaned_data['payment_method']
+
+            add_account(userRole, username, password,
+                        firstName, lastName, address, balance, payment_method)
+
+def delete_account(request):
+    if request.method == "POST":
+        form = deleteAccountForm(request.POST)
+        if form.is_valid():
+            enteredUserName = form.cleaned_data['username']
+            enteredPassword = form.cleaned_data['password']
+            allUsers = User.objects.all()
+
+            for oneRow in allUsers:
+                if (oneRow.username == enteredUserName):
+                    if (oneRow.password_hash == enteredPassword):
+                        deleteAccount = User.objects.get(id=oneRow.id)
+                        deleteAccount.delete()
+                        print("Account Deleted")
+
 def print_products(request):
     productAll = Product.objects.all()
 
@@ -94,6 +145,7 @@ def add_product(request):
         }
 
         return JsonResponse(data)
+
 
 def remove_product(request, product_id):
     if request.method == 'DELETE':
