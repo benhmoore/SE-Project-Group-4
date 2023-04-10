@@ -100,6 +100,13 @@ let cartItems = [
     price: 30.99,
     quantity: 1,
   },
+  {
+    cartItemId: 4,
+    productId: 4,
+    name: "Product 4",
+    price: 30.99,
+    quantity: 1,
+  },
 ];
 
 // Mock getting the cart items

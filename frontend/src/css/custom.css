@@ -10837,6 +10837,7 @@ button {
 
 .product-card {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0);
+  max-width: 500px;
   transition: 0.2s;
   bottom: 0px;
   background-color: rgba(255, 255, 255, 0.8);
