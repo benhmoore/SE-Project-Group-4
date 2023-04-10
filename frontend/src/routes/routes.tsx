@@ -6,6 +6,7 @@ import App from "./App";
 import Cart from "./order/Cart";
 import Browse from "./browse/Browse";
 import ProductPage from "./browse/ProductPage";
+import Checkout from "./order/Checkout";
 
 export const routes = [
   {
@@ -43,6 +44,10 @@ export const routes = [
       {
         path: "/cart",
         element: <Cart />,
+      },
+      {
+        path: "/cart/checkout",
+        element: <Checkout />,
       },
     ],
   },
