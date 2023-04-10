@@ -30,7 +30,7 @@ const ProductCard = ({
         state: { productId: productId },
       });
     else
-      return navigate(`/product/${productId}/${compareProductId}`, {
+      return navigate(`/product/${compareProductId}/${productId}`, {
         state: { productId: productId },
       });
   };

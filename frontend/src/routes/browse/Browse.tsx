@@ -51,8 +51,7 @@ const Browse = ({ compareProduct = false }: Props) => {
   return (
     <>
       {compareProductId !== undefined && (
-        <div className="p-5 bg-white">
-          <h1>Comparing</h1>
+        <div className="p-5 pt-1 bg-white border-bottom">
           <div className="row mt-4 ms-4">
             <div className="col-lg-3" style={{ minWidth: "300px" }}>
               <ProductCardFetcher productId={parseInt(compareProductId)} />

@@ -9,6 +9,7 @@ import ProductPage from "./browse/ProductPage";
 import Checkout from "./order/Checkout";
 import Orders from "./order/Orders";
 import { Navigate } from "react-router-dom";
+import SellerDashboard from "./sell/SellerDashboard";
 
 export const routes = [
   {
@@ -61,6 +62,12 @@ export const routes = [
       {
         path: "/orders/:id?",
         element: <Orders />,
+      },
+
+      // Seller Routes
+      {
+        path: "/sell",
+        element: <SellerDashboard />,
       },
     ],
   },
