@@ -62,7 +62,7 @@ const Browse = ({ compareProduct = false }: Props) => {
                 <h1>
                   <BiGitCompare className="mb-1 me-1" />
                 </h1>
-                <h2>Select another product below to compare.</h2>
+                <h2>Search or select another product below to compare.</h2>
               </div>
             </div>
           </div>
