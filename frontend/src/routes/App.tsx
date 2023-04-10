@@ -10,6 +10,7 @@ import Footer from "../components/Footer";
 export default function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [user, setUser] = useState({ username: "", token: "" });
+  const [compareProductId, setCompareProductId] = useState(-1);
 
   // Load token from local storage if it exists
   if (localStorage.getItem("token") && user.token === "") {
@@ -55,6 +56,9 @@ export default function App() {
         authenticated={authenticated}
         setAuthenticated={setAuthenticated}
         handleLogout={handleLogout}
+        user={user}
+        compareProductId={compareProductId}
+        setCompareProductId={setCompareProductId}
       />
       <Outlet
         context={{
@@ -62,6 +66,8 @@ export default function App() {
           setAuthenticated: setAuthenticated,
           user: user,
           handleLogin: handleLogin,
+          globalCompareProductId: compareProductId,
+          setGlobalCompareProductId: setCompareProductId,
         }}
       />
       <Footer />

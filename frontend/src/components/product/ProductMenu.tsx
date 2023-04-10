@@ -1,5 +1,7 @@
 import React from "react";
 import PricePill from "./PricePill";
+import { BiGitCompare } from "react-icons/bi";
+import { Link, useOutletContext } from "react-router-dom";
 
 interface Props {
   price: number;
@@ -8,6 +10,15 @@ interface Props {
 }
 
 const ProductMenu = ({ price, productId, name }: Props) => {
+  // Get global comparison product
+  const { globalCompareProductId, setGlobalCompareProductId } =
+    useOutletContext();
+
+  const handleCompareClick = () => {
+    setGlobalCompareProductId(productId);
+    console.log(" Set compare product id: " + productId);
+  };
+
   return (
     <>
       <nav className="navbar product-menu navbar-expand-lg navbar-light">
@@ -26,18 +37,18 @@ const ProductMenu = ({ price, productId, name }: Props) => {
           <h1 className="mt-2">{name}</h1>
           <div className="collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="ms-3 nav-item">
+              <li className="ms-nav-item ms-3">
                 <PricePill price={price} productId={productId} />
               </li>
-              <li className="nav-item">
-                <a className="nav-link" aria-current="page" href="#">
-                  Reviews
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">
+              <li className="nav-item ms-3">
+                <Link
+                  to={`../compare/${productId}`}
+                  onClick={handleCompareClick}
+                  className="nav-link"
+                >
+                  <BiGitCompare className="mb-1 me-1" />
                   Compare
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

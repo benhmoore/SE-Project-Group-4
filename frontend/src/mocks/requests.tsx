@@ -100,6 +100,13 @@ let cartItems = [
     price: 30.99,
     quantity: 1,
   },
+  {
+    cartItemId: 4,
+    productId: 4,
+    name: "Product 4",
+    price: 30.99,
+    quantity: 1,
+  },
 ];
 
 // Mock getting the cart items
@@ -135,4 +142,10 @@ mock.onPost("/cart").reply(({ data }) => {
     price: 10.99 * cartItemId,
   });
   return [200, { cartItemId }];
+});
+
+// Mock adding a product to the cart
+mock.onPost("/order").reply(({ data }) => {
+  const cartId = 1;
+  return [200, { cartId }];
 });

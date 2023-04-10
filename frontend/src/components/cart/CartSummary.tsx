@@ -1,5 +1,6 @@
 import React from "react";
 import { priceFormatter } from "../../utils/PriceFormatter";
+import { Link } from "react-router-dom";
 
 interface Props {
   subtotal: number;
@@ -41,7 +42,9 @@ const CartSummary = ({ subtotal }: Props) => {
           </tr>
         </tbody>
       </table>
-      <button className="btn btn-primary w-100 mt-4">Checkout</button>
+      <Link to={"/cart/checkout"} className="btn btn-primary w-100 mt-4">
+        Checkout
+      </Link>
     </>
   );
 };

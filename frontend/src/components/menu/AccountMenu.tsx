@@ -1,20 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { BsPersonCircle, BsFillCartFill, BsCart } from "react-icons/bs";
 import { Link, useLocation, useOutletContext } from "react-router-dom";
+import Axios from "axios";
 
 interface Props {
   authenticated: boolean;
   setAuthenticated: (authenticated: boolean) => void;
   handleLogout: () => void;
+  user: { username: string; token: string };
 }
 
 const AccountMenu = ({
   authenticated,
   setAuthenticated,
   handleLogout,
+  user,
 }: Props) => {
   const location = useLocation();
+
+  const [cartItems, setCartItems] = React.useState([]);
+
+  useEffect(() => {
+    Axios.get("/cart")
+      .then((response) => {
+        // Store the cart items in state
+        setCartItems(response.data.cartItems);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   if (!authenticated)
     return (
@@ -41,6 +57,11 @@ const AccountMenu = ({
           }`}
         >
           <BsCart style={{ marginLeft: 5, marginBottom: 3 }} />
+          {cartItems.length > 0 && (
+            <span className="badge bg-light text-dark ms-1 rounded-pill">
+              {cartItems.length}
+            </span>
+          )}
         </Link>
       </li>
       <li className="nav-item dropdown">
@@ -52,14 +73,16 @@ const AccountMenu = ({
           aria-expanded="false"
         >
           <BsPersonCircle style={{ marginRight: 10, marginBottom: 3 }} />
-          Account
+          {user.username}
         </a>
         <ul
           className="dropdown-menu dropdown-menu-end"
           aria-labelledby="navbarScrollingDropdown"
         >
           <li>
-            <a className="dropdown-item">Orders</a>
+            <Link to={"/orders"} className="dropdown-item">
+              Orders
+            </Link>
           </li>
           <li>
             <hr className="dropdown-divider" />

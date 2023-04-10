@@ -1,11 +1,13 @@
 import React from "react";
-import { Link, Form } from "react-router-dom";
+import { Link, Form, Navigate } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 
 import axios from "axios";
 
 const SignIn = () => {
   const { authenticated, setAuthenticated, handleLogin } = useOutletContext();
+
+  if (authenticated) return <Navigate to="/" />;
 
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");

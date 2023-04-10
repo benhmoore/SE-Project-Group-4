@@ -12,6 +12,7 @@ interface Props {
   description: string;
   image: string;
   productId: number;
+  compareProductId?: number;
 }
 
 const ProductCard = ({
@@ -20,18 +21,24 @@ const ProductCard = ({
   description,
   image,
   productId = -1,
+  compareProductId = -1,
 }: Props) => {
   var navigate = useNavigate();
   const handleClick = () => {
-    return navigate(`/product/${productId}`, {
-      state: { productId: productId },
-    });
+    if (compareProductId === -1)
+      return navigate(`/product/${productId}`, {
+        state: { productId: productId },
+      });
+    else
+      return navigate(`/product/${productId}/${compareProductId}`, {
+        state: { productId: productId },
+      });
   };
 
   return (
     <div className="card product-card p-4 mt-4" onClick={handleClick}>
       <div className="text-center mb-3">
-        {<img src={image} className="card-img rounded" alt={name} /> || (
+        {<img src={image} className="card-img" alt={name} /> || (
           <Skeleton height={200} />
         )}
       </div>

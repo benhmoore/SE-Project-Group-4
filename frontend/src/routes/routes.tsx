@@ -6,20 +6,30 @@ import App from "./App";
 import Cart from "./order/Cart";
 import Browse from "./browse/Browse";
 import ProductPage from "./browse/ProductPage";
+import Checkout from "./order/Checkout";
+import Orders from "./order/Orders";
+import { Navigate } from "react-router-dom";
 
 export const routes = [
   {
     path: "/",
     element: <App />,
+    // errorElement: <Navigate to="/" />,
     children: [
       {
         path: "",
         element: <Browse />,
       },
 
+      // Comparison Routes
+      {
+        path: "/compare/:compareProductId",
+        element: <Browse compareProduct={true} />,
+      },
+
       // Product Routes
       {
-        path: "/product/:id",
+        path: "/product/:id/:compareId?",
         element: <ProductPage />,
       },
 
@@ -43,6 +53,14 @@ export const routes = [
       {
         path: "/cart",
         element: <Cart />,
+      },
+      {
+        path: "/cart/checkout",
+        element: <Checkout />,
+      },
+      {
+        path: "/orders/:id?",
+        element: <Orders />,
       },
     ],
   },

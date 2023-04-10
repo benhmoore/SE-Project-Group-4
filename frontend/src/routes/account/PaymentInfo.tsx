@@ -1,12 +1,13 @@
 import React from "react";
 
-import { Link, Form } from "react-router-dom";
+import { Link, Form, useOutletContext, Navigate } from "react-router-dom";
 
 interface Props {
   signingUp?: boolean;
 }
 
 const PaymentInfo = ({ signingUp = false }: Props) => {
+  if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
   return (
     <>
       <div className="container">
