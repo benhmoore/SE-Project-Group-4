@@ -1,30 +1,44 @@
 import React, { useEffect } from "react";
 import { Link, Form } from "react-router-dom";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 
 import Axios from "axios";
 import { MdLocationOn, MdPayments } from "react-icons/md";
 import { priceFormatter } from "../../utils/PriceFormatter";
 import { JSONCartItem } from "../../utils/props/JSONCartItem";
+import OrderSummary from "../../components/order/OrderSummary";
 
 const Checkout = () => {
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const navigate = useNavigate();
 
   const [cartItems, setCartItems] = React.useState(Array<JSONCartItem>);
   const [subtotal, setSubtotal] = React.useState(0);
   const [total, setTotal] = React.useState(0);
+  const [orderButtonDisabled, setOrderButtonDisabled] = React.useState(false);
 
-  useEffect(() => {
-    Axios.get("/cart")
+  const handlePlaceOrder = () => {
+    setOrderButtonDisabled(true);
+    Axios.post("/order", {})
       .then((response) => {
-        // Store the cart items in state
-        setCartItems(response.data.cartItems);
+        navigate("/orders/confirmation", {
+          state: { order: response.data.cartId },
+        });
       })
       .catch((error) => {
-        console.log(error);
+        alert("There was an error placing your order. Please try again.");
       });
-  }, []);
+  };
+
+  //   useEffect(() => {
+  //     Axios.get("/cart")
+  //       .then((response) => {
+  //         // Store the cart items in state
+  //         setCartItems(response.data.cartItems);
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //       });
+  //   }, []);
 
   // Use useEffect to update the cart subtotal after rendering
   useEffect(() => {
@@ -98,84 +112,17 @@ const Checkout = () => {
                   changes, please{" "}
                   <Link to={"../cart"}>return to your cart</Link>.
                 </p>
-                <table className="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Item</th>
-                      <th>Quantity</th>
-                      <th>Total Price</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cartItems.map((item) => (
-                      <tr key={item.cartItemId}>
-                        <td>{item.name}</td>
-                        <td>{item.quantity}</td>
-                        <td>
-                          {priceFormatter.format(item.price * item.quantity)}
-                        </td>
-                      </tr>
-                    ))}
-                    {/* <tr>
-                      <td>Item 1</td>
-                      <td>1</td>
-                      <td>$10.00</td>
-                    </tr>
-                    <tr>
-                      <td>Item 2</td>
-                      <td>1</td>
-                      <td>$10.00</td>
-                    </tr>
-                    <tr>
-                      <td>Item 3</td>
-                      <td>1</td>
-                      <td>$10.00</td>
-                    </tr> */}
-                  </tbody>
-                </table>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>{/* Item */}</th>
-                      <th className="text-end ps-3">{/* Price */}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="text-end fw-bold">Subtotal</td>
-                      <td className="text-end ps-3">
-                        {priceFormatter.format(subtotal)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="text-end fw-bold">Shipping</td>
-                      <td className="text-end ps-3">
-                        {priceFormatter.format(15)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="text-end fw-bold">Tax</td>
-                      <td className="text-end ps-3">
-                        {priceFormatter.format(0.07 * subtotal)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="text-end fw-bold">Total</td>
-                      <td className="text-end ps-3">
-                        {priceFormatter.format(total)}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <OrderSummary cartId={-1} />
                 <hr />
                 <div className="d-grid gap-2 mt-4">
                   <button
                     className="btn btn-lg btn-primary"
                     style={{ borderRadius: "2em" }}
                     type="button"
+                    onClick={handlePlaceOrder}
+                    disabled={orderButtonDisabled}
                   >
-                    Place Order for{" "}
-                    <strong>{priceFormatter.format(total)}</strong>
+                    Place Order
                   </button>
                 </div>
               </div>
