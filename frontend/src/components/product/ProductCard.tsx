@@ -12,6 +12,7 @@ interface Props {
   description: string;
   image: string;
   productId: number;
+  compareProductId?: number;
 }
 
 const ProductCard = ({
@@ -20,12 +21,18 @@ const ProductCard = ({
   description,
   image,
   productId = -1,
+  compareProductId = -1,
 }: Props) => {
   var navigate = useNavigate();
   const handleClick = () => {
-    return navigate(`/product/${productId}`, {
-      state: { productId: productId },
-    });
+    if (compareProductId === -1)
+      return navigate(`/product/${productId}`, {
+        state: { productId: productId },
+      });
+    else
+      return navigate(`/product/${productId}/${compareProductId}`, {
+        state: { productId: productId },
+      });
   };
 
   return (

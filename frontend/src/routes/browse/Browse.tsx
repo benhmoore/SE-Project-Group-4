@@ -3,7 +3,14 @@ import React from "react";
 import ProductCard from "../../components/product/ProductCard";
 import Spinner from "../../components/Spinner";
 import Axios from "axios";
-import { useLocation, useParams, useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useParams,
+  useNavigate,
+  useOutletContext,
+} from "react-router-dom";
+import ProductCardFetcher from "../../components/product/ProductCardFetcher";
+import { BiGitCompare } from "react-icons/bi";
 
 interface Props {
   compareProduct?: boolean; // If this is true, check url for product id
@@ -15,7 +22,6 @@ const Browse = ({ compareProduct = false }: Props) => {
 
   // Get product id from url params
   const { compareProductId } = useParams();
-  console.log(compareProductId, "ADAD");
 
   let searchQuery = state?.searchQuery || "";
 
@@ -45,8 +51,21 @@ const Browse = ({ compareProduct = false }: Props) => {
   return (
     <>
       {compareProductId !== undefined && (
-        <div className="container pt-4">
+        <div className="p-5 bg-white">
           <h1>Comparing</h1>
+          <div className="row mt-4 ms-4">
+            <div className="col-lg-3" style={{ minWidth: "300px" }}>
+              <ProductCardFetcher productId={parseInt(compareProductId)} />
+            </div>
+            <div className="col-lg-6">
+              <div className="card product-view p-4 mt-4 ms-2">
+                <h1>
+                  <BiGitCompare className="mb-1 me-1" />
+                </h1>
+                <h2>Select another product below to compare.</h2>
+              </div>
+            </div>
+          </div>
         </div>
       )}
       <div className="container">
@@ -64,6 +83,7 @@ const Browse = ({ compareProduct = false }: Props) => {
                   price={product.price}
                   productId={product.id}
                   image={product.image}
+                  compareProductId={compareProductId}
                 />
               </div>
             ))}

@@ -14,7 +14,7 @@ export const routes = [
   {
     path: "/",
     element: <App />,
-    errorElement: <Navigate to="/" />,
+    // errorElement: <Navigate to="/" />,
     children: [
       {
         path: "",
@@ -29,7 +29,7 @@ export const routes = [
 
       // Product Routes
       {
-        path: "/product/:id",
+        path: "/product/:id/:compareId?",
         element: <ProductPage />,
       },
 

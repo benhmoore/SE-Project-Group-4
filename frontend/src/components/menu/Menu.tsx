@@ -5,6 +5,7 @@ import {
   useLocation,
   useNavigate,
   useOutletContext,
+  useParams,
 } from "react-router-dom";
 import AccountMenu from "./AccountMenu";
 import Axios from "axios";
@@ -14,6 +15,8 @@ interface Props {
   setAuthenticated: (authenticated: boolean) => void;
   handleLogout: () => void;
   user: { username: string; token: string };
+  compareProductId: number;
+  setCompareProductId: (compareProductId: number) => void;
 }
 
 const Menu = ({
@@ -21,10 +24,17 @@ const Menu = ({
   setAuthenticated,
   handleLogout,
   user,
+  compareProductId,
+  setCompareProductId,
 }: Props) => {
   const location = useLocation();
-
   const navigate = useNavigate();
+
+  // Check if url contains the word compare
+  const isComparing = location.pathname.includes("compare");
+
+  // Check if a comparison is occurring. If so, searches should maintain the comparison
+  // The compareProductId is stored in the outlet context
 
   const [isSearching, setIsSearching] = useState(false);
 
@@ -35,15 +45,26 @@ const Menu = ({
     setIsSearching(true);
 
     // Check if the user is on the search page
-    if (location.pathname !== "/")
-      if (searchQuery.length > 0)
+    if (location.pathname !== "/") {
+      if (compareProductId !== -1 && isComparing) {
+        console.log("Compare product id: " + compareProductId);
+        return navigate(`/compare/${compareProductId}`, {
+          state: { searchQuery },
+        });
+      } else if (searchQuery.length > 0)
         return navigate("/", { state: { searchQuery } });
       else return navigate("/");
+    }
   };
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     // Get all products from server
+    if (compareProductId !== -1 && isComparing) {
+      return navigate(`/compare/${compareProductId}`, {
+        state: { searchQuery },
+      });
+    }
     navigate("/", { state: { searchQuery } });
   };
 
