@@ -24,9 +24,11 @@ class Product(models.Model):
     inventory = models.IntegerField()
     approval_status = models.IntegerField()
 
+
 class ShoppingCart(models.Model):
     user_id = models.IntegerField()
     order_status = models.IntegerField()
+    order_placed_date = models.DateTimeField()
 
 class ShoppingCartItem(models.Model):
     shopping_cart_id = models.IntegerField()

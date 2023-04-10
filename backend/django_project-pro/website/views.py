@@ -60,6 +60,7 @@ def print_products(request):
 
     data = [{
         'id': eachProduct.id,
+        'category': eachProduct.category,
         'name': eachProduct.name,
         'description': eachProduct.description,
         'price': eachProduct.price,
@@ -73,7 +74,6 @@ def print_products(request):
     return JsonResponse(data, safe = False)
 
 def add_product(request):
-
    if request.method == 'POST':
         name = request.POST.get('name')
         description = request.POST.get('description')
