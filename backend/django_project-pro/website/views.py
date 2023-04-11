@@ -57,9 +57,10 @@ def basic_login(request):
 
 def add_account(roleInput, usernameInput, passwordInput, firstInput, lastInput, addressInput, balanceInput, methodInput):
 
-    print("hello!")
-
-    print(roleInput, usernameInput, passwordInput, firstInput, lastInput, addressInput, balanceInput, methodInput)
+    tokenSwitch = True
+    while (tokenSwitch):
+        token = generate_random_string(100)
+        tokenSwitch = check_token(token)
 
     newUser = User(
         user_role =roleInput,
@@ -70,10 +71,11 @@ def add_account(roleInput, usernameInput, passwordInput, firstInput, lastInput, 
         address = addressInput,
         balance = balanceInput,
         payment_method = methodInput,
-        token_id = ""
+        token_id = token
     )
 
     newUser.save()
+    return JsonResponse({'message': 'Success!', 'token': token}, status=200)
 
 def create_account(request):
     if request.method == 'POST':
@@ -88,8 +90,10 @@ def create_account(request):
             balance = form.cleaned_data['balance']
             payment_method = form.cleaned_data['payment_method']
 
-            add_account(userRole, username, password,
+            return add_account(userRole, username, password,
                         firstName, lastName, address, balance, payment_method)
+        return JsonResponse({'message': 'Account Creation Failed'}, status=401)
+    return JsonResponse({'message': 'Account Creation Failed'}, status=401)
 
 def delete_account(request):
     if request.method == "POST":
@@ -106,10 +110,29 @@ def delete_account(request):
                         deleteAccount.delete()
                         print("Account Deleted")
 
+def get_account_info(request):
+    token = request.GET.get('token')
+    allUsers = User.objects.all()
+    for eachUser in allUsers:
+        if (eachUser.token_id == token):
+            returnUser = {
+                'id': eachUser.id,
+                'user_role': eachUser.user_role,
+                'username': eachUser.username,
+                'first_name': eachUser.first_name,
+                'last_name': eachUser.last_name,
+                'address': eachUser.address,
+                'balance': eachUser.balance,
+                'payment_method': eachUser.payment_method,
+                'token_id': token
+            }
+
+            return JsonResponse(returnUser, safe = False)
+    return JsonResponse({})
 def print_products(request):
     productAll = Product.objects.all()
 
-    data = [{
+    products = [{
         'id': eachProduct.id,
         'category': eachProduct.category,
         'name': eachProduct.name,
@@ -122,7 +145,7 @@ def print_products(request):
         'approval_status': eachProduct.approval_status
     } for eachProduct in productAll]
 
-    return JsonResponse(data, safe = False)
+    return JsonResponse(products, safe = False)
 
 def add_product(request):
    if request.method == 'POST':
@@ -145,7 +168,6 @@ def add_product(request):
         }
 
         return JsonResponse(data)
-
 
 def remove_product(request, product_id):
     if request.method == 'DELETE':
