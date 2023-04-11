@@ -38,3 +38,10 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
+# Back End
+
+# Ignore .pyc files throughout repository
+*.pyc
+
+# Ignore __pycache__ directories throughout repository
+__pycache__/
