@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import User, Product
-from .forms import SigninForm, accountForm, deleteAccountForm
+from .forms import SigninForm, accountForm, deleteAccountForm, AddProductForm, RemoveProductForm
 from django.http import JsonResponse
 import random, secrets, string
 
@@ -125,38 +125,43 @@ def print_products(request):
     return JsonResponse(data, safe = False)
 
 def add_product(request):
-   if request.method == 'POST':
-        name = request.POST.get('name')
-        description = request.POST.get('description')
-        price = request.POST.get('price')
-        seller = request.POST.get('seller')
-        image_id = request.POST.get('image_id')
-        num_sales = request.POST.get('num_sales')
-        inventory = request.POST.get('inventory')
-        approval_status = request.POST.get('approval_status')
-
-        product = Product(name=name, description=description, price=price, seller=seller,
-                          image_id=image_id, num_sales=num_sales, inventory=inventory,
-                          approval_status=approval_status)
-        product.save()
-
-        data = {
-            'message': 'Product added successfully!'
-        }
-
-        return JsonResponse(data)
+    if request.method == 'POST':
+        form = AddProductForm(request.POST)
+        if form.is_valid():
+            product = Product(
+                name=form.cleaned_data['name'],
+                description=form.cleaned_data['description'],
+                price=form.cleaned_data['price'],
+                seller=form.cleaned_data['seller'],
+                image_id=form.cleaned_data['image_id'],
+                num_sales=form.cleaned_data['num_sales'],
+                inventory=form.cleaned_data['inventory'],
+                approval_status=form.cleaned_data.get('approval_status', False)
+            )
+            product.save()
+            data = {
+                'message': 'Product added successfully!'
+            }
+            return JsonResponse(data)
+    else:
+        form = AddProductForm()
+    return render(request, 'add_product.html', {'form': form})
 
 
 def remove_product(request, product_id):
     if request.method == 'DELETE':
-        try:
-            product = Product.objects.get(id=product_id)
-            product.delete()
-            data = {'message': 'Product deleted successfully!'}
-            return JsonResponse(data)
-        except Product.DoesNotExist:
-            return JsonResponse({'error': 'Product not found!'}, status=404)
-
+        form = RemoveProductForm(request.GET)
+        if form.is_valid():
+            product_id = form.cleaned_data['product_id']
+            try:
+                product = Product.objects.get(id=product_id)
+                product.delete()
+                data = {'message': 'Product deleted successfully!'}
+                return JsonResponse(data)
+            except Product.DoesNotExist:
+                return JsonResponse({'error': 'Product not found!'}, status=404)
+        else:
+            return JsonResponse({'error': 'Invalid parameters'}, status=400)
 
 
 
