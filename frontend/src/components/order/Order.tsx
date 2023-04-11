@@ -4,9 +4,14 @@ import OrderSummary from "./OrderSummary";
 interface Props {
   cartId: number;
   expanded?: boolean;
+  setReturningOrder: (cartId: number) => void;
 }
 
-const Order = ({ cartId, expanded = false }: Props) => {
+const Order = ({ cartId, expanded = false, setReturningOrder }: Props) => {
+  const handleReturn = () => {
+    setReturningOrder(cartId);
+  };
+
   return (
     <div className="accordion-item">
       <h2 className="accordion-header" id={`cartPanelHeader_${cartId}`}>
@@ -35,9 +40,9 @@ const Order = ({ cartId, expanded = false }: Props) => {
               </a>
             </li> */}
             <li className="nav-item">
-              <a className="nav-link btn" href="#">
+              <button className="nav-link btn" onClick={handleReturn}>
                 Return Items
-              </a>
+              </button>
             </li>
             {/* <li className="nav-item">
               <a

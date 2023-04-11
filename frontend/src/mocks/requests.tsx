@@ -149,3 +149,8 @@ mock.onPost("/order").reply(({ data }) => {
   const cartId = 1;
   return [200, { cartId }];
 });
+
+mock.onPost("/order/return/1").reply(({ data }) => {
+  const cartId = 1;
+  return [200, { cartId }];
+});
