@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Navigate,
   useLocation,
+  useNavigate,
   useOutletContext,
   useParams,
 } from "react-router-dom";
@@ -9,9 +10,13 @@ import Order from "../../components/order/Order";
 import Skeleton from "react-loading-skeleton";
 import Spinner from "../../components/Spinner";
 import { BsCartFill } from "react-icons/bs";
+import Dialog from "../../components/Dialog";
+import Axios from "axios";
 
 const Orders = () => {
   if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
+
+  const navigate = useNavigate();
 
   const { id } = useParams();
   const { state } = useLocation();
@@ -31,8 +36,44 @@ const Orders = () => {
     }, []);
   }
 
+  // Return items
+  const [returningOrder, setReturningOrder] = React.useState(-1);
+  const [show, setShow] = React.useState(false); // For dialog
+
+  const handleReturn = () => {
+    // Send return request to server
+    Axios.post(`/order/return/${returningOrder}`, {
+      cartId: returningOrder,
+    })
+      .then((res) => {
+        navigate(`/order/return/summary/${res.data.cartId}`);
+      })
+      .catch((err) => {
+        alert(
+          "There was an error returning your items. Please try again later."
+        );
+      });
+    setReturningOrder(-1);
+  };
+
+  // If returningOrder is set, show dialog
+  useEffect(() => {
+    if (returningOrder > -1) {
+      setShow(true);
+    }
+  }, [returningOrder]);
+
   return (
     <>
+      <Dialog
+        show={show}
+        setShow={setShow}
+        handleConfirm={handleReturn}
+        handleCancel={() => setReturningOrder(-1)}
+        title="Confirm Return"
+        message={`Are you sure you want to return the items in Order #${returningOrder}?`}
+        confirmText={"Return Items"}
+      />
       <div className="container">
         <div className="row mt-4">
           <h1>Orders</h1>
@@ -57,9 +98,13 @@ const Orders = () => {
                 className="accordion accordion-flush rounded"
                 id="orderAccordion"
               >
-                <Order cartId={1} expanded />
-                <Order cartId={2} />
-                <Order cartId={3} />
+                <Order
+                  cartId={1}
+                  expanded
+                  setReturningOrder={setReturningOrder}
+                />
+                <Order cartId={2} setReturningOrder={setReturningOrder} />
+                <Order cartId={3} setReturningOrder={setReturningOrder} />
               </div>
             )}
           </div>

@@ -11,6 +11,7 @@ import Orders from "./order/Orders";
 import { Navigate } from "react-router-dom";
 import SellerDashboard from "./sell/SellerDashboard";
 import Account from "./account/Account";
+import ReturnSummary from "./order/ReturnSummary";
 
 export const routes = [
   {
@@ -56,6 +57,8 @@ export const routes = [
         path: "/user/payment",
         element: <PaymentInfo />,
       },
+
+      // Order Routes
       {
         path: "/cart",
         element: <Cart />,
@@ -67,6 +70,10 @@ export const routes = [
       {
         path: "/orders/:id?",
         element: <Orders />,
+      },
+      {
+        path: "/order/return/summary/:id",
+        element: <ReturnSummary />,
       },
 
       // Seller Routes
