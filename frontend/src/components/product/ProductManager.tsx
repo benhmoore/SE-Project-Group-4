@@ -2,7 +2,7 @@ import React from "react";
 
 const ProductManager = () => {
   return (
-    <form className="col-6">
+    <form className="col-lg-6">
       <div className="form-floating mb-3">
         <input
           type="text"

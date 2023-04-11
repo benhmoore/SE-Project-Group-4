@@ -10,6 +10,7 @@ import Checkout from "./order/Checkout";
 import Orders from "./order/Orders";
 import { Navigate } from "react-router-dom";
 import SellerDashboard from "./sell/SellerDashboard";
+import Account from "./account/Account";
 
 export const routes = [
   {
@@ -46,6 +47,10 @@ export const routes = [
       {
         path: "/user/forgot",
         element: <ResetPassword />,
+      },
+      {
+        path: "/user/account",
+        element: <Account />,
       },
       {
         path: "/user/payment",

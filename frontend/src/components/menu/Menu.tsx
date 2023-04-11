@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import AccountMenu from "./AccountMenu";
 import Axios from "axios";
+import { BsShop } from "react-icons/bs";
 
 interface Props {
   authenticated: boolean;
@@ -73,6 +74,7 @@ const Menu = ({
       <nav className="navbar header-menu navbar-expand-md navbar-dark text-light bg-primary">
         <div className="container-fluid">
           <Link to={"/"} className="navbar-brand">
+            <BsShop style={{ marginBottom: 8 }} className="me-2" />
             E-Commerce
           </Link>
           <button

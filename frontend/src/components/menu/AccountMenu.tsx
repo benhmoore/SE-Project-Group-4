@@ -83,6 +83,11 @@ const AccountMenu = ({
           aria-labelledby="navbarScrollingDropdown"
         >
           <li>
+            <Link to={"/user/account"} className="dropdown-item">
+              Account
+            </Link>
+          </li>
+          <li>
             <Link to={"/orders"} className="dropdown-item">
               Orders
             </Link>
