@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import User, Product
+from .models import User, Product,ShoppingCartItem
 from .forms import SigninForm, accountForm, deleteAccountForm, AddProductForm, RemoveProductForm
 from django.http import JsonResponse
 import random, secrets, string
@@ -159,7 +159,8 @@ def add_product(request):
                 image_id=form.cleaned_data['image_id'],
                 num_sales=form.cleaned_data['num_sales'],
                 inventory=form.cleaned_data['inventory'],
-                approval_status=form.cleaned_data.get('approval_status', False)
+                approval_status=form.cleaned_data.get('approval_status', 1),
+                category=form.cleaned_data['category']
             )
             product.save()
             data = {
@@ -168,15 +169,18 @@ def add_product(request):
             return JsonResponse(data)
     else:
         form = AddProductForm()
-    return render(request, 'add_product.html', {'form': form})
+    data = {
+        'message': ''
+    }
+    return JsonResponse(data)
 
-def remove_product(request, product_id):
+def remove_product(request):
     if request.method == 'DELETE':
         form = RemoveProductForm(request.GET)
         if form.is_valid():
-            product_id = form.cleaned_data['product_id']
+            item_id = form.cleaned_data['item_id']
             try:
-                product = Product.objects.get(id=product_id)
+                product = Product.objects.get(id=item_id)
                 product.delete()
                 data = {'message': 'Product deleted successfully!'}
                 return JsonResponse(data)
@@ -185,6 +189,96 @@ def remove_product(request, product_id):
         else:
             return JsonResponse({'error': 'Invalid parameters'}, status=400)
 
+def get_shopping_cart_items(request):
+    if request.method == 'GET':
+        try:
+            token = request.GET.get('token')
+            user = User.objects.get(token_id=token)
+            cart_items = ShoppingCartItem.objects.filter(shopping_cart_id=user.id)
 
+            items = []
+            for cart_item in cart_items:
+                product = Product.objects.get(id=cart_item.item_id)
+                item_dict = {
+                    'id': product.id,
+                    'name': product.name,
+                    'description': product.description,
+                    'price': product.price,
+                    'image': product.image_id,
+                    'quantity': cart_item.quantity,
+                }
+                items.append(item_dict)
 
+            data = {
+                'cartItems': items
+            }
+            return JsonResponse(data)
+        except User.DoesNotExist:
+            data = {
+                'cartItems': []
+            }
+            return JsonResponse(data)
+    else:
+        # If a non-GET request is made, return a 400 error
+        data = {
+            'error': 'Invalid request method'
+        }
+        return JsonResponse(data, status=400)
 
+def add_cart_item(request, item_id):
+    if request.method == 'POST':
+        token = request.POST.get('token')
+        user = get_object_or_404(User, token_id=token)
+        product = get_object_or_404(Product, id=item_id)
+        cart_item = ShoppingCartItem.objects.filter(shopping_cart_id=user.id, item_id=item_id).first()
+        if cart_item:
+            cart_item.quantity += 1
+            cart_item.save()
+        else:
+            cart_item = ShoppingCartItem(shopping_cart_id=user.id, item_id=item_id, quantity=1)
+            cart_item.save()
+        cart_items = []
+        for item in user.shoppingcartitem_set.all():
+            cart_items.append({
+                'id': item.id,
+                'name': item.product.name,
+                'description': item.product.description,
+                'price': str(item.product.price),
+                'image': item.product.image_id,
+                'quantity': item.quantity
+            })
+        data = {
+            'cartItems': cart_items
+        }
+        return JsonResponse(data)
+    else:
+        data = {
+            'cartItems': []
+        }
+        return JsonResponse(data)
+
+def remove_cart_item(request, item_id):
+    if request.method == 'POST':
+        token = request.POST.get('token')
+        user = get_object_or_404(User, token_id=token)
+        cart_item = get_object_or_404(ShoppingCartItem, id=item_id, shopping_cart_id=user.id)
+        cart_item.delete()
+        cart_items = []
+        for item in user.shoppingcartitem_set.all():
+            cart_items.append({
+                'id': item.id,
+                'name': item.product.name,
+                'description': item.product.description,
+                'price': str(item.product.price),
+                'image': item.product.image_id,
+                'quantity': item.quantity
+            })
+        data = {
+            'cartItems': cart_items
+        }
+        return JsonResponse(data)
+    else:
+        data = {
+            'cartItems': []
+        }
+        return JsonResponse(data)
