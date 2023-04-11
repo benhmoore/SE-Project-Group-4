@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
-from website.views import basic_login, print_products, add_product, create_account, delete_account, get_account_info
+from website.views import get_account_info, basic_login, print_products, create_account, delete_account #add_product
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,7 +32,7 @@ urlpatterns = [
 
     path('products/list', print_products, name = 'print_products'),
 
-    path('products/add', add_product, name = 'add_product'),
+    #path('products/add', add_product, name = 'add_product'),
 
 
 ]

@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import User, Product
-from .forms import SigninForm, accountForm, deleteAccountForm, AddProductForm, RemoveProductForm
+from .forms import SigninForm, accountForm, deleteAccountForm #, AddProductForm, RemoveProductForm
 from django.http import JsonResponse
 import random, secrets, string
 
@@ -23,13 +23,6 @@ def generate_random_string(length):
     alphabet = string.ascii_letters + string.digits
     password = ''.join(secrets.choice(alphabet) for i in range(length))
     return password
-
-#Delete later
-def print_stuff(request):
-    rowAll = User.objects.all()
-    for oneRow in rowAll:
-        print(oneRow.username)
-    return render(request, 'userData.html', {'rowAll': rowAll})
 
 def basic_login(request):
     if request.method == 'POST':
@@ -147,43 +140,43 @@ def print_products(request):
 
     return JsonResponse(products, safe = False)
 
-def add_product(request):
-    if request.method == 'POST':
-        form = AddProductForm(request.POST)
-        if form.is_valid():
-            product = Product(
-                name=form.cleaned_data['name'],
-                description=form.cleaned_data['description'],
-                price=form.cleaned_data['price'],
-                seller=form.cleaned_data['seller'],
-                image_id=form.cleaned_data['image_id'],
-                num_sales=form.cleaned_data['num_sales'],
-                inventory=form.cleaned_data['inventory'],
-                approval_status=form.cleaned_data.get('approval_status', False)
-            )
-            product.save()
-            data = {
-                'message': 'Product added successfully!'
-            }
-            return JsonResponse(data)
-    else:
-        form = AddProductForm()
-    return render(request, 'add_product.html', {'form': form})
+# def add_product(request):
+#     if request.method == 'POST':
+#         form = AddProductForm(request.POST)
+#         if form.is_valid():
+#             product = Product(
+#                 name=form.cleaned_data['name'],
+#                 description=form.cleaned_data['description'],
+#                 price=form.cleaned_data['price'],
+#                 seller=form.cleaned_data['seller'],
+#                 image_id=form.cleaned_data['image_id'],
+#                 num_sales=form.cleaned_data['num_sales'],
+#                 inventory=form.cleaned_data['inventory'],
+#                 approval_status=form.cleaned_data.get('approval_status', False)
+#             )
+#             product.save()
+#             data = {
+#                 'message': 'Product added successfully!'
+#             }
+#             return JsonResponse(data)
+#     else:
+#         form = AddProductForm()
+#     return render(request, 'add_product.html', {'form': form})
 
-def remove_product(request, product_id):
-    if request.method == 'DELETE':
-        form = RemoveProductForm(request.GET)
-        if form.is_valid():
-            product_id = form.cleaned_data['product_id']
-            try:
-                product = Product.objects.get(id=product_id)
-                product.delete()
-                data = {'message': 'Product deleted successfully!'}
-                return JsonResponse(data)
-            except Product.DoesNotExist:
-                return JsonResponse({'error': 'Product not found!'}, status=404)
-        else:
-            return JsonResponse({'error': 'Invalid parameters'}, status=400)
+# def remove_product(request, product_id):
+#     if request.method == 'DELETE':
+#         form = RemoveProductForm(request.GET)
+#         if form.is_valid():
+#             product_id = form.cleaned_data['product_id']
+#             try:
+#                 product = Product.objects.get(id=product_id)
+#                 product.delete()
+#                 data = {'message': 'Product deleted successfully!'}
+#                 return JsonResponse(data)
+#             except Product.DoesNotExist:
+#                 return JsonResponse({'error': 'Product not found!'}, status=404)
+#         else:
+#             return JsonResponse({'error': 'Invalid parameters'}, status=400)
 
 
 
