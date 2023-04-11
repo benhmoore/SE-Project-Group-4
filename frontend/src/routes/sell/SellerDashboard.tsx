@@ -2,8 +2,11 @@ import React from "react";
 import ProductManager from "../../components/product/ProductManager";
 import { BsPlusCircle } from "react-icons/bs";
 import { MdDashboard, MdEdit } from "react-icons/md";
+import { Navigate, useOutletContext } from "react-router-dom";
 
 const SellerDashboard = () => {
+  if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
+
   return (
     <div className="container">
       <div className="row mt-4">
@@ -13,11 +16,11 @@ const SellerDashboard = () => {
         </div>
       </div>
       <div className="row">
-        <div className="col-12">
+        <div className="col-lg-12">
           <div className="card p-4">
             <div className="d-flex align-items-start">
               <div
-                className="nav flex-column nav-pills me-3 col-2"
+                className="nav flex-column nav-pills me-3 col-lg-2"
                 id="v-pills-tab"
                 role="tablist"
                 aria-orientation="vertical"

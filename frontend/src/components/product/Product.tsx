@@ -15,7 +15,7 @@ interface Props {
 
 const Product = ({ product }: Props) => {
   return (
-    <div className="card product-view p-4">
+    <div className="card product-view p-3">
       <div className="card-header">
         <ProductMenu
           name={product.name}

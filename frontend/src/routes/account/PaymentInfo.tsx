@@ -1,4 +1,5 @@
 import React from "react";
+import { BsFillCreditCardFill } from "react-icons/bs";
 
 import { Link, Form, useOutletContext, Navigate } from "react-router-dom";
 
@@ -7,7 +8,6 @@ interface Props {
 }
 
 const PaymentInfo = ({ signingUp = false }: Props) => {
-  if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
   return (
     <>
       <div className="container">
@@ -25,31 +25,140 @@ const PaymentInfo = ({ signingUp = false }: Props) => {
               <Form>
                 <div className="form-floating mb-3">
                   <input
-                    type="address"
+                    type="card"
                     className="form-control"
                     id="floatingAddress"
-                    placeholder="3493 10th St. NW, Washington, DC 20010"
+                    placeholder="XXXX XXXX XXXX XXXX"
+                    pattern="^\d{4}([ -]?\d{4}){3}$"
+                    maxLength="19"
                     required
                   />
-                  <label htmlFor="floatingAddress">Address</label>
-                </div>
-                <div className="form-floating">
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="floatingPaymentInfo"
-                    placeholder="Password"
-                    required
-                  />
-                  <label htmlFor="floatingPaymentInfo">
-                    Payment Identifier
+                  <label htmlFor="floatingAddress">
+                    <BsFillCreditCardFill /> Payment Identifier
                   </label>
+                  <small>
+                    A sixteen digit number, optionally separated by spaces or
+                    hyphens.
+                  </small>
+                </div>
+                <hr />
+                <div className="input-group mb-3">
+                  <span className="input-group-text" id="address-label">
+                    Address
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="address-input"
+                    aria-describedby="address-label"
+                    placeholder="1234 Main St"
+                    required
+                    pattern="\d{1,5}\s\w+\s\w+\.?"
+                    minLength={5}
+                    maxLength={50}
+                  />
+                </div>
+                <div className="input-group mb-3">
+                  <span className="input-group-text" id="city-label">
+                    City
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="city-input"
+                    aria-describedby="city-label"
+                    placeholder="Anytown"
+                    required
+                    pattern="[A-Za-z\s]+"
+                    minLength={2}
+                    maxLength={30}
+                  />
+                </div>
+                <div className="row">
+                  <div className="col">
+                    <div className="input-group mb-3">
+                      <span className="input-group-text" id="state-label">
+                        State
+                      </span>
+                      <select
+                        className="form-select"
+                        id="state-input"
+                        aria-describedby="state-label"
+                      >
+                        <option selected>Choose...</option>
+                        <option value="AL">Alabama</option>
+                        <option value="AK">Alaska</option>
+                        <option value="AZ">Arizona</option>
+                        <option value="AR">Arkansas</option>
+                        <option value="CA">California</option>
+                        <option value="CO">Colorado</option>
+                        <option value="CT">Connecticut</option>
+                        <option value="DE">Delaware</option>
+                        <option value="FL">Florida</option>
+                        <option value="GA">Georgia</option>
+                        <option value="HI">Hawaii</option>
+                        <option value="ID">Idaho</option>
+                        <option value="IL">Illinois</option>
+                        <option value="IN">Indiana</option>
+                        <option value="IA">Iowa</option>
+                        <option value="KS">Kansas</option>
+                        <option value="KY">Kentucky</option>
+                        <option value="LA">Louisiana</option>
+                        <option value="ME">Maine</option>
+                        <option value="MD">Maryland</option>
+                        <option value="MA">Massachusetts</option>
+                        <option value="MI">Michigan</option>
+                        <option value="MN">Minnesota</option>
+                        <option value="MS">Mississippi</option>
+                        <option value="MO">Missouri</option>
+                        <option value="MT">Montana</option>
+                        <option value="NE">Nebraska</option>
+                        <option value="NV">Nevada</option>
+                        <option value="NH">New Hampshire</option>
+                        <option value="NJ">New Jersey</option>
+                        <option value="NM">New Mexico</option>
+                        <option value="NY">New York</option>
+                        <option value="NC">North Carolina</option>
+                        <option value="ND">North Dakota</option>
+                        <option value="OH">Ohio</option>
+                        <option value="OK">Oklahoma</option>
+                        <option value="OR">Oregon</option>
+                        <option value="PA">Pennsylvania</option>
+                        <option value="RI">Rhode Island</option>
+                        <option value="SC">South Carolina</option>
+                        <option value="SD">South Dakota</option>
+                        <option value="TN">Tennessee</option>
+                        <option value="TX">Texas</option>
+                        <option value="UT">Utah</option>
+                        <option value="VT">Vermont</option>
+                        <option value="VA">Virginia</option>
+                        <option value="WA">Washington</option>
+                        <option value="WV">West Virginia</option>
+                        <option value="WI">Wisconsin</option>
+                        <option value="WY">Wyoming</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="col">
+                    <div className="input-group mb-3">
+                      <span className="input-group-text" id="zip-label">
+                        Zip
+                      </span>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="zip-input"
+                        aria-describedby="zip-label"
+                        placeholder="12345"
+                      />
+                    </div>
+                  </div>
                 </div>
                 <button
                   type="submit"
                   className="btn btn-primary btn-block mt-3"
                 >
-                  Submit
+                  Save
                 </button>
               </Form>
             </div>
