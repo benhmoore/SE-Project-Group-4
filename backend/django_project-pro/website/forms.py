@@ -19,3 +19,15 @@ class deleteAccountForm(forms.Form):
     username = forms.CharField(label='username', max_length=100)
     password = forms.CharField(label='password', max_length=100)
 
+class AddProductForm(forms.Form):
+    name = forms.CharField(max_length=255)
+    description = forms.CharField(widget=forms.Textarea)
+    price = forms.DecimalField()
+    seller = forms.CharField(max_length=255)
+    image_id = forms.CharField(max_length=255)
+    num_sales = forms.IntegerField()
+    inventory = forms.IntegerField()
+    approval_status = forms.BooleanField(required=False)
+
+class RemoveProductForm(forms.Form):
+    product_id = forms.IntegerField()
