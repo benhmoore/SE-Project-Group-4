@@ -1,4 +1,6 @@
 from django.db import models
+from enum import Enum
+
 
 # Create your models here.
 class User(models.Model):
@@ -24,13 +26,52 @@ class Product(models.Model):
     inventory = models.IntegerField()
     approval_status = models.IntegerField()
 
+class OrderStatus(Enum):
+    PENDING = 1
+    PROCESSING = 2
+    SHIPPED = 3
+    DELIVERED = 4
+    CANCELLED = 5
 
 class ShoppingCart(models.Model):
-    user_id = models.IntegerField()
-    order_status = models.IntegerField()
+    id = models.IntegerField(primary_key=True)
+    order_status = models.IntegerField(choices=[(status.value, status.name) for status in OrderStatus])
+    order_placed_date = models.DateTimeField()
+    items = models.ManyToManyField(Product, through='OrderItem')
+
+    def get_status(self):
+        return OrderStatus(self.order_status).name
     order_placed_date = models.DateTimeField()
 
 class ShoppingCartItem(models.Model):
-    shopping_cart_id = models.IntegerField()
-    product_id = models.IntegerField()
-    quantity = models.IntegerField()
+    id = models.AutoField(primary_key=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    shopping_cart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
+    order_date = models.DateTimeField(auto_now_add=True)
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(decimal_places=2, max_digits=10)
+
+class Seller(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    balance = models.DecimalField(decimal_places=2, max_digits=10)
+    payment_info = models.CharField(max_length=255)
+    products = models.ManyToManyField(Product)
+
+
+    def add_product(self, name, description, price, image_id, available_quantity):
+        product = Product(name=name, description=description, price=price, seller=self.user, image_id=image_id, available_quantity=available_quantity)
+        product.save()
+        self.products.add(product)
+
+    def remove_product(self, product_id):
+        product = self.products.filter(id=product_id).first()
+        if product:
+            self.products.remove(product)
+            product.delete()
