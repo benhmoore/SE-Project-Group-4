@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from .models import User, Product,ShoppingCartItem
-from .forms import SigninForm, accountForm, deleteAccountForm, AddProductForm, RemoveProductForm
+from .models import User, Product, ShoppingCart, ShoppingCartItem
+from .forms import SigninForm, accountForm, deleteAccountForm, updateAccountForm #, AddProductForm, RemoveProductForm
 from django.http import JsonResponse
 import random, secrets, string
 
@@ -24,19 +24,13 @@ def generate_random_string(length):
     password = ''.join(secrets.choice(alphabet) for i in range(length))
     return password
 
-#Delete later
-def print_stuff(request):
-    rowAll = User.objects.all()
-    for oneRow in rowAll:
-        print(oneRow.username)
-    return render(request, 'userData.html', {'rowAll': rowAll})
-
 def basic_login(request):
     if request.method == 'POST':
         form = SigninForm(request.POST)
         if form.is_valid():
             enteredUserName = form.cleaned_data['username']
             enteredPassword = form.cleaned_data['password']
+            print("ehllo")
             rowAll = User.objects.all()
             for oneRow in rowAll:
                 if (oneRow.username == enteredUserName):
@@ -108,10 +102,35 @@ def delete_account(request):
                     if (oneRow.password_hash == enteredPassword):
                         deleteAccount = User.objects.get(id=oneRow.id)
                         deleteAccount.delete()
-                        print("Account Deleted")
 
 def get_account_info(request):
     token = request.GET.get('token')
+
+    form = updateAccountForm(request.POST)
+    if form.is_valid():
+        matchingToken = form.cleaned_data['token']
+        matching_payment_info = form.cleaned_data['payment_method']
+        matching_address = form.cleaned_data['address']
+
+        foundUser = User.objects.get(token_id = matchingToken)
+        foundUser.address = matching_address
+        foundUser.payment_method = matching_payment_info
+
+        returnUser = {
+            'id': foundUser.id,
+            'user_role': foundUser.user_role,
+            'username': foundUser.username,
+            'first_name': foundUser.first_name,
+            'last_name': foundUser.last_name,
+            'address': foundUser.address,
+            'balance': foundUser.balance,
+            'payment_method': foundUser.payment_method,
+            'token_id': foundUser.token_id
+        }
+
+        foundUser.save()
+        return JsonResponse(returnUser, safe = False)
+
     allUsers = User.objects.all()
     for eachUser in allUsers:
         if (eachUser.token_id == token):
@@ -126,7 +145,6 @@ def get_account_info(request):
                 'payment_method': eachUser.payment_method,
                 'token_id': token
             }
-
             return JsonResponse(returnUser, safe = False)
     return JsonResponse({})
 def print_products(request):
@@ -147,47 +165,74 @@ def print_products(request):
 
     return JsonResponse(products, safe = False)
 
-def add_product(request):
-    if request.method == 'POST':
-        form = AddProductForm(request.POST)
-        if form.is_valid():
-            product = Product(
-                name=form.cleaned_data['name'],
-                description=form.cleaned_data['description'],
-                price=form.cleaned_data['price'],
-                seller=form.cleaned_data['seller'],
-                image_id=form.cleaned_data['image_id'],
-                num_sales=form.cleaned_data['num_sales'],
-                inventory=form.cleaned_data['inventory'],
-                approval_status=form.cleaned_data.get('approval_status', 1),
-                category=form.cleaned_data['category']
-            )
-            product.save()
-            data = {
-                'message': 'Product added successfully!'
+def get_product_info(request):
+    productID = request.GET.get('id')
+    productID = int(productID)
+    allProducts = Product.objects.all()
+    for eachProduct in allProducts:
+        if (eachProduct.id == productID):
+            returnProduct = {
+                'id': eachProduct.id,
+                'category':eachProduct.category,
+                'name':eachProduct.name,
+                'description':eachProduct.description,
+                'price': eachProduct.price,
+                'seller': eachProduct.seller,
+                'image_id': eachProduct.image_id,
+                'num_sales': eachProduct.num_sales,
+                'inventory': eachProduct.inventory,
+                'approval_status': eachProduct.approval_status
             }
-            return JsonResponse(data)
-    else:
-        form = AddProductForm()
-    data = {
-        'message': ''
-    }
-    return JsonResponse(data)
+            return JsonResponse(returnProduct, safe=False)
+    return JsonResponse({})
 
-def remove_product(request):
-    if request.method == 'DELETE':
-        form = RemoveProductForm(request.GET)
-        if form.is_valid():
-            item_id = form.cleaned_data['item_id']
-            try:
-                product = Product.objects.get(id=item_id)
-                product.delete()
-                data = {'message': 'Product deleted successfully!'}
-                return JsonResponse(data)
-            except Product.DoesNotExist:
-                return JsonResponse({'error': 'Product not found!'}, status=404)
-        else:
-            return JsonResponse({'error': 'Invalid parameters'}, status=400)
+def return_user_cart(request):
+    print("Accessing function!")
+    allCarts = ShoppingCart.objects.all()
+    for eachCart in allCarts:
+        print(eachCart.user_id)
+        # print(eachCart.id)
+
+
+
+
+# def add_product(request):
+#     if request.method == 'POST':
+#         form = AddProductForm(request.POST)
+#         if form.is_valid():
+#             product = Product(
+#                 name=form.cleaned_data['name'],
+#                 description=form.cleaned_data['description'],
+#                 price=form.cleaned_data['price'],
+#                 seller=form.cleaned_data['seller'],
+#                 image_id=form.cleaned_data['image_id'],
+#                 num_sales=form.cleaned_data['num_sales'],
+#                 inventory=form.cleaned_data['inventory'],
+#                 approval_status=form.cleaned_data.get('approval_status', False)
+#             )
+#             product.save()
+#             data = {
+#                 'message': 'Product added successfully!'
+#             }
+#             return JsonResponse(data)
+#     else:
+#         form = AddProductForm()
+#     return render(request, 'add_product.html', {'form': form})
+
+# def remove_product(request, product_id):
+#     if request.method == 'DELETE':
+#         form = RemoveProductForm(request.GET)
+#         if form.is_valid():
+#             product_id = form.cleaned_data['product_id']
+#             try:
+#                 product = Product.objects.get(id=product_id)
+#                 product.delete()
+#                 data = {'message': 'Product deleted successfully!'}
+#                 return JsonResponse(data)
+#             except Product.DoesNotExist:
+#                 return JsonResponse({'error': 'Product not found!'}, status=404)
+#         else:
+#             return JsonResponse({'error': 'Invalid parameters'}, status=400)
 
 def get_shopping_cart_items(request):
     if request.method == 'GET':

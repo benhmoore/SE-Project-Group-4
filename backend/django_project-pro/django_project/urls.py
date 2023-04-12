@@ -16,23 +16,26 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
-from website.views import basic_login, print_products, add_product, create_account, delete_account, get_account_info
+from website.views import get_account_info, basic_login, create_account, delete_account, \
+    print_products, get_product_info, \
+    return_user_cart #add_product
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),  # new,
-    # path("inputTest1", basic_login, name='basic_login'),
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
 
     path("user/signin", basic_login, name='basic_login'),
     path("user/create", create_account, name = 'create_account'),
     path("user/delete", delete_account, name = 'delete_account'),
     path("user", get_account_info, name = 'get_account_info'),
 
-
+    path("products", get_product_info, name = 'get_product_info'),
     path('products/list', print_products, name = 'print_products'),
 
-    path('products/add', add_product, name = 'add_product'),
+    path("cart", return_user_cart, name = 'return_user_cart'),
+
+    #path('products/add', add_product, name = 'add_product'),
 
 
 ]

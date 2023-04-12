@@ -19,6 +19,11 @@ class deleteAccountForm(forms.Form):
     username = forms.CharField(label='username', max_length=100)
     password = forms.CharField(label='password', max_length=100)
 
+class updateAccountForm(forms.Form):
+    token = forms.CharField(label='username', max_length=100)
+    payment_method = forms.CharField(label='payment_method', max_length=100)
+    address = forms.CharField(label='address', max_length=100)
+
 class AddProductForm(forms.Form):
     name = forms.CharField(max_length=255)
     description = forms.CharField(widget=forms.Textarea)
