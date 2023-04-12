@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from .models import User, Product
-from .forms import SigninForm, accountForm, deleteAccountForm #, AddProductForm, RemoveProductForm
+from .models import User, Product, ShoppingCart
+from .forms import SigninForm, accountForm, deleteAccountForm, updateAccountForm #, AddProductForm, RemoveProductForm
 from django.http import JsonResponse
 import random, secrets, string
 
@@ -101,10 +101,35 @@ def delete_account(request):
                     if (oneRow.password_hash == enteredPassword):
                         deleteAccount = User.objects.get(id=oneRow.id)
                         deleteAccount.delete()
-                        print("Account Deleted")
 
 def get_account_info(request):
     token = request.GET.get('token')
+
+    form = updateAccountForm(request.POST)
+    if form.is_valid():
+        matchingToken = form.cleaned_data['token']
+        matching_payment_info = form.cleaned_data['payment_method']
+        matching_address = form.cleaned_data['address']
+
+        foundUser = User.objects.get(token_id = matchingToken)
+        foundUser.address = matching_address
+        foundUser.payment_method = matching_payment_info
+
+        returnUser = {
+            'id': foundUser.id,
+            'user_role': foundUser.user_role,
+            'username': foundUser.username,
+            'first_name': foundUser.first_name,
+            'last_name': foundUser.last_name,
+            'address': foundUser.address,
+            'balance': foundUser.balance,
+            'payment_method': foundUser.payment_method,
+            'token_id': foundUser.token_id
+        }
+
+        foundUser.save()
+        return JsonResponse(returnUser, safe = False)
+
     allUsers = User.objects.all()
     for eachUser in allUsers:
         if (eachUser.token_id == token):
@@ -119,7 +144,6 @@ def get_account_info(request):
                 'payment_method': eachUser.payment_method,
                 'token_id': token
             }
-
             return JsonResponse(returnUser, safe = False)
     return JsonResponse({})
 def print_products(request):
@@ -139,6 +163,39 @@ def print_products(request):
     } for eachProduct in productAll]
 
     return JsonResponse(products, safe = False)
+
+def get_product_info(request):
+    productID = request.GET.get('id')
+    productID = int(productID)
+    allProducts = Product.objects.all()
+    for eachProduct in allProducts:
+        if (eachProduct.id == productID):
+            returnProduct = {
+                'id': eachProduct.id,
+                'category':eachProduct.category,
+                'name':eachProduct.name,
+                'description':eachProduct.description,
+                'price': eachProduct.price,
+                'seller': eachProduct.seller,
+                'image_id': eachProduct.image_id,
+                'num_sales': eachProduct.num_sales,
+                'inventory': eachProduct.inventory,
+                'approval_status': eachProduct.approval_status
+            }
+            return JsonResponse(returnProduct, safe=False)
+    return JsonResponse({})
+
+def return_user_cart(request):
+    # token = request.GET.get('token')
+    #
+    # foundUser = User.objects.get(token_id=token)
+    # userCartId = foundUser.id
+
+    foundUser = ShoppingCart.objects.get(order_status = 1)
+    print(foundUser.order_place_date)
+
+    for eachCart in allCarts:
+        print(eachCart.id)
 
 # def add_product(request):
 #     if request.method == 'POST':
