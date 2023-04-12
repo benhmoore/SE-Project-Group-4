@@ -324,10 +324,6 @@ def remove_cart_item(request, item_id):
         }
         return JsonResponse(data)
 
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
-from .models import User, Product, ShoppingCart, ShoppingCartItem, Order, OrderItem
-
 def place_order(request):
     if request.method == 'POST':
         token = request.POST.get('token')
@@ -399,8 +395,6 @@ def get_orders(request):
             'carts': [],
         }
         return JsonResponse(data)
-
-      
        
 def get_seller_products(request):
     if request.method == 'GET':
