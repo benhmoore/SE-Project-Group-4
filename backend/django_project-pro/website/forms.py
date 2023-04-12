@@ -1,5 +1,5 @@
 from django import forms
-
+from .models import Category
 
 class SigninForm(forms.Form):
     username = forms.CharField(label='username', max_length=100)
@@ -33,6 +33,16 @@ class AddProductForm(forms.Form):
     num_sales = forms.IntegerField()
     inventory = forms.IntegerField()
     approval_status = forms.BooleanField(required=False)
+    category = forms.ModelChoiceField(queryset=Category.objects.all())
 
 class RemoveProductForm(forms.Form):
     product_id = forms.IntegerField()
+
+class ShoppingCartForm(forms.Form):
+    token = forms.CharField(max_length=255)
+
+class AddToCartForm(forms.Form):
+    token = forms.CharField(max_length=255)
+
+class RemoveFromCartForm(forms.Form):
+    token = forms.CharField(max_length=255)
