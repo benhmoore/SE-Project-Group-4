@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import User, Product, ShoppingCart
+from .models import User, Product, ShoppingCart, ShoppingCartItem
 from .forms import SigninForm, accountForm, deleteAccountForm, updateAccountForm #, AddProductForm, RemoveProductForm
 from django.http import JsonResponse
 import random, secrets, string
@@ -30,6 +30,7 @@ def basic_login(request):
         if form.is_valid():
             enteredUserName = form.cleaned_data['username']
             enteredPassword = form.cleaned_data['password']
+            print("ehllo")
             rowAll = User.objects.all()
             for oneRow in rowAll:
                 if (oneRow.username == enteredUserName):
@@ -186,16 +187,14 @@ def get_product_info(request):
     return JsonResponse({})
 
 def return_user_cart(request):
-    # token = request.GET.get('token')
-    #
-    # foundUser = User.objects.get(token_id=token)
-    # userCartId = foundUser.id
-
-    foundUser = ShoppingCart.objects.get(order_status = 1)
-    print(foundUser.order_place_date)
-
+    print("Accessing function!")
+    allCarts = ShoppingCart.objects.all()
     for eachCart in allCarts:
-        print(eachCart.id)
+        print(eachCart.user_id)
+        # print(eachCart.id)
+
+
+
 
 # def add_product(request):
 #     if request.method == 'POST':
