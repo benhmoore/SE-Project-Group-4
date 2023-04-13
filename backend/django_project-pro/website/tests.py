@@ -1,6 +1,8 @@
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.http import JsonResponse
 from website.views import add_account, add_product
+import json
 
 class SignInTestCase(TestCase):
     def setUp(self):
@@ -39,8 +41,14 @@ class productTest(TestCase):
         self.client = Client()
 
     def test_add_product(self):
+        #Grab JSON response which includes token
+        tokenData = add_account(0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        data = json.loads(tokenData.content)
+        chosenToken = data['token']
+
         url = reverse("add_product")
         form_data = {
+            'token': chosenToken, #Uses token
             'category': 'Books',
             'name': 'The Great Gatsby',
             'price': 12.99,
@@ -51,7 +59,6 @@ class productTest(TestCase):
             'approval_status': 1,
             'description': 'A classic novel by F. Scott Fitzgerald',
         }
-        print(form_data)
-        response = self.client.post(url, form_data)
 
+        response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 200)
