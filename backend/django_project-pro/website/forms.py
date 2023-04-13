@@ -34,6 +34,7 @@ class AddProductForm(forms.Form):
     approval_status = forms.IntegerField()
     description = forms.CharField(max_length=255)
 
+######################################################################################
 class RemoveProductForm(forms.Form):
     product_id = forms.IntegerField()
 
@@ -41,7 +42,7 @@ class ShoppingCartForm(forms.Form):
     token = forms.CharField(max_length=255)
 
 class AddToCartForm(forms.Form):
-    token = forms.CharField(max_length=255)
+    item_id = forms.IntegerField()
 
 class RemoveFromCartForm(forms.Form):
-    token = forms.CharField(max_length=255)
+    item_id = forms.IntegerField()
