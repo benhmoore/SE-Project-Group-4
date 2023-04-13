@@ -8,7 +8,7 @@ interface Props {
     name: string;
     price: number;
     description: string;
-    image: string;
+    image_id: string;
     id: number;
   };
 }
@@ -27,7 +27,7 @@ const Product = ({ product }: Props) => {
             <div className="col-md-6">
               <div className="text-center">
                 <img
-                  src={product.image}
+                  src={product.image_id}
                   className="card-img"
                   alt={product.name}
                 />

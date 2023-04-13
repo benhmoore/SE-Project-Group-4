@@ -18,7 +18,8 @@ from django.urls import path, include
 from django.views.generic.base import TemplateView
 from website.views import get_account_info, basic_login, create_account, delete_account, \
     print_products, get_product_info, \
-    return_user_cart, add_product, remove_product
+    return_user_cart, add_product, remove_product, \
+    add_cart_item, remove_cart_item
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,6 +38,9 @@ urlpatterns = [
 
     path('products/add', add_product, name = 'add_product'),
     path('products/remove', remove_product, name = 'remove_product'),
+    path('cart/add', add_cart_item, name = 'add_cart_item'),
+    path('cart/remove', remove_cart_item, name = 'remove_cart_item'),
+
 
 
 

@@ -31,7 +31,7 @@ const Browse = ({ compareProduct = false }: Props) => {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    Axios.get("/products")
+    Axios.get("/products/list")
       .then((response) => {
         response.data.products = response.data.products.filter(
           (product: any) => {
@@ -81,7 +81,7 @@ const Browse = ({ compareProduct = false }: Props) => {
                   description={product.description}
                   price={product.price}
                   productId={product.id}
-                  image={product.image}
+                  image={product.image_id}
                   compareProductId={compareProductId}
                 />
               </div>

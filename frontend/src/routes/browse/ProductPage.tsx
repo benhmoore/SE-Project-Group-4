@@ -27,7 +27,7 @@ const ProductPage = () => {
     name: "",
     price: 0,
     description: "",
-    image: "",
+    image_id: "",
     id: -1,
   };
 
@@ -36,7 +36,7 @@ const ProductPage = () => {
 
   if (compareProductId !== -1) {
     React.useEffect(() => {
-      Axios.get(`/products/${compareProductId}`)
+      Axios.get(`/products?id=${compareProductId}`)
         .then((response) => {
           if (response.data.products.length === 0) {
             return navigate("/");
@@ -45,13 +45,14 @@ const ProductPage = () => {
         })
         .catch((error) => {
           console.log(error);
+          return navigate("/");
         });
     }, []);
   }
 
   // Get products from server
   React.useEffect(() => {
-    Axios.get(`/products/${productId}`)
+    Axios.get(`/products?id=${productId}`)
       .then((response) => {
         if (response.data.products.length === 0) {
           return navigate("/");
@@ -60,6 +61,7 @@ const ProductPage = () => {
       })
       .catch((error) => {
         console.log(error);
+        return navigate("/");
       });
   }, []);
 
