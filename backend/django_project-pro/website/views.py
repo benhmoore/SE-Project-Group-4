@@ -58,7 +58,6 @@ def basic_login(request):
         if form.is_valid():
             enteredUserName = form.cleaned_data['username']
             enteredPassword = form.cleaned_data['password']
-            print("ehllo")
             rowAll = User.objects.all()
             for oneRow in rowAll:
                 if (oneRow.username == enteredUserName):

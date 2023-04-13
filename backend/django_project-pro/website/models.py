@@ -18,9 +18,9 @@ class User(models.Model):
 class Product(models.Model):
     category = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.CharField(max_length=255)
     price = models.DecimalField(decimal_places=2, max_digits = 10)
-    seller = models.CharField(max_length=255)
+    seller = models.IntegerField()
     image_id = models.CharField(max_length=255)
     num_sales = models.IntegerField()
     inventory = models.IntegerField()
