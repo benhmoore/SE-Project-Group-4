@@ -16,6 +16,9 @@ import Axios from "axios";
 const Orders = () => {
   if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
 
+  // Get user token from useOutletContext
+  const token = useOutletContext().user.token;
+
   const navigate = useNavigate();
 
   const { id } = useParams();
@@ -42,9 +45,17 @@ const Orders = () => {
 
   const handleReturn = () => {
     // Send return request to server
-    Axios.post(`/order/return/${returningOrder}`, {
-      cartId: returningOrder,
-    })
+    Axios.post(
+      `/order/return/${returningOrder}`,
+      {
+        cartId: returningOrder,
+      },
+      {
+        params: {
+          token,
+        },
+      }
+    )
       .then((res) => {
         navigate(`/order/return/summary/${res.data.cartId}`);
       })

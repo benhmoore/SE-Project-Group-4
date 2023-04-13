@@ -11,6 +11,9 @@ import OrderSummary from "../../components/order/OrderSummary";
 const Checkout = () => {
   if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
 
+  // Get user token from useOutletContext
+  const token = useOutletContext().user.token;
+
   const navigate = useNavigate();
 
   const [cartItems, setCartItems] = React.useState(Array<JSONCartItem>);
@@ -20,7 +23,7 @@ const Checkout = () => {
 
   const handlePlaceOrder = () => {
     setOrderButtonDisabled(true);
-    Axios.post("/order", {})
+    Axios.post("/order", {}, { params: { token } })
       .then((response) => {
         navigate(`/orders/${response.data.cartId}`, {
           state: { message: "Order placed!" },
