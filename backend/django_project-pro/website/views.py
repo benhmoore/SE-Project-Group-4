@@ -58,7 +58,6 @@ def basic_login(request):
         if form.is_valid():
             enteredUserName = form.cleaned_data['username']
             enteredPassword = form.cleaned_data['password']
-            print("ehllo")
             rowAll = User.objects.all()
             for oneRow in rowAll:
                 if (oneRow.username == enteredUserName):
@@ -225,6 +224,7 @@ def add_product(request):
      if request.method == 'POST':
          form = AddProductForm(request.POST)
          if form.is_valid():
+             print("Valid")
              product = Product(
                  category = form.cleaned_data['category'],
                  name=form.cleaned_data['name'],
@@ -241,7 +241,9 @@ def add_product(request):
              data = {
                  'message': 'Product added successfully!'
              }
-             return JsonResponse(data)
+             return JsonResponse(data, status = 200)
+         return JsonResponse({}, status = 401)
+
 
 def remove_product(request):
      if request.method == 'POST':

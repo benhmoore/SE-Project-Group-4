@@ -37,4 +37,21 @@ class productTest(TestCase):
 
     def setup(self):
         self.client = Client()
-        add_product()
+
+    def test_add_product(self):
+        url = reverse("add_product")
+        form_data = {
+            'category': 'Books',
+            'name': 'The Great Gatsby',
+            'price': 12.99,
+            'seller': 1,
+            'image_id': "ImageHere",
+            'num_sales': 10,
+            'inventory': 50,
+            'approval_status': 1,
+            'description': 'A classic novel by F. Scott Fitzgerald',
+        }
+        print(form_data)
+        response = self.client.post(url, form_data)
+
+        self.assertEqual(response.status_code, 200)
