@@ -19,10 +19,17 @@ const AccountMenu = ({
 }: Props) => {
   const location = useLocation();
 
+  // Get user token from useOutletContext
+  const token = user.token;
+
   const [cartItems, setCartItems] = React.useState([]);
 
   useEffect(() => {
-    Axios.get("/cart")
+    Axios.get("/cart", {
+      params: {
+        token,
+      },
+    })
       .then((response) => {
         // Store the cart items in state
         setCartItems(response.data.cartItems);

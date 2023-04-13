@@ -7,6 +7,9 @@ import { Navigate, useOutletContext } from "react-router-dom";
 const SellerDashboard = () => {
   if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
 
+  // Keep track of active tab with states
+  const [activeTab, setActiveTab] = React.useState("dashboard");
+
   return (
     <div className="container">
       <div className="row mt-4">
@@ -26,7 +29,9 @@ const SellerDashboard = () => {
                 aria-orientation="vertical"
               >
                 <button
-                  className="nav-link text-start active"
+                  className={`nav-link text-start ${
+                    activeTab === "dashboard" ? "active" : ""
+                  }`}
                   id="v-pills-home-tab"
                   data-bs-toggle="pill"
                   data-bs-target="#v-pills-home"
@@ -34,12 +39,15 @@ const SellerDashboard = () => {
                   role="tab"
                   aria-controls="v-pills-home"
                   aria-selected="true"
+                  onClick={() => setActiveTab("dashboard")}
                 >
                   <MdDashboard className="me-2 mb-1" />
                   Dashboard
                 </button>
                 <button
-                  className="nav-link text-start"
+                  className={`nav-link text-start ${
+                    activeTab === "add_product" ? "active" : ""
+                  }`}
                   id="v-pills-profile-tab"
                   data-bs-toggle="pill"
                   data-bs-target="#v-pills-profile"
@@ -47,12 +55,15 @@ const SellerDashboard = () => {
                   role="tab"
                   aria-controls="v-pills-profile"
                   aria-selected="false"
+                  onClick={() => setActiveTab("add_product")}
                 >
                   <BsPlusCircle className="me-2 mb-1" />
                   Add Product
                 </button>
                 <button
-                  className="nav-link text-start"
+                  className={`nav-link text-start ${
+                    activeTab === "manage_products" ? "active" : ""
+                  }`}
                   id="v-pills-messages-tab"
                   data-bs-toggle="pill"
                   data-bs-target="#v-pills-messages"
@@ -60,6 +71,7 @@ const SellerDashboard = () => {
                   role="tab"
                   aria-controls="v-pills-messages"
                   aria-selected="false"
+                  onClick={() => setActiveTab("manage_products")}
                 >
                   <MdEdit className="me-2 mb-1" />
                   Manage Products
@@ -70,7 +82,9 @@ const SellerDashboard = () => {
                 id="v-pills-tabContent"
               >
                 <div
-                  className="tab-pane show active"
+                  className={`tab-pane ${
+                    activeTab === "dashboard" ? "show active" : ""
+                  }`}
                   id="v-pills-home"
                   role="tabpanel"
                   aria-labelledby="v-pills-home-tab"
@@ -99,17 +113,21 @@ const SellerDashboard = () => {
                   </table>
                 </div>
                 <div
-                  className="tab-pane"
+                  className={`tab-pane ${
+                    activeTab === "add_product" ? "show active" : ""
+                  }`}
                   id="v-pills-profile"
                   role="tabpanel"
                   aria-labelledby="v-pills-profile-tab"
                 >
                   <h2>Add Product</h2>
                   <p>Add a new product to the storefront.</p>
-                  <ProductManager />
+                  <ProductManager setActiveTab={setActiveTab} />
                 </div>
                 <div
-                  className="tab-pane"
+                  className={`tab-pane ${
+                    activeTab === "manage_products" ? "show active" : ""
+                  }`}
                   id="v-pills-messages"
                   role="tabpanel"
                   aria-labelledby="v-pills-messages-tab"

@@ -2,19 +2,27 @@ import { useEffect, useState } from "react";
 import { JSONCartItem } from "../../utils/props/JSONCartItem";
 import { priceFormatter } from "../../utils/PriceFormatter";
 import Axios from "axios";
+import { useOutletContext } from "react-router-dom";
 
 interface Props {
   cartId?: number;
 }
 
 const OrderSummary = ({ cartId = -1 }: Props) => {
+  // Get user token from useOutletContext
+  const token = useOutletContext().user.token;
+
   const [cartItems, setCartItems] = useState(Array<JSONCartItem>);
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
 
   // If a cart ID is provided, use it to fetch the cart items
   if (cartId != -1) {
-    Axios.get(`/cart/${cartId}`)
+    Axios.get(`/cart/${cartId}`, {
+      params: {
+        token,
+      },
+    })
       .then((response) => {
         // Store the cart items in state
         setCartItems(response.data.cartItems);
@@ -27,7 +35,11 @@ const OrderSummary = ({ cartId = -1 }: Props) => {
   // Otherwise, fetch the current cart items from the server
   if (cartId == -1) {
     useEffect(() => {
-      Axios.get("/cart")
+      Axios.get("/cart", {
+        params: {
+          token,
+        },
+      })
         .then((response) => {
           // Store the cart items in state
           setCartItems(response.data.cartItems);

@@ -9,6 +9,9 @@ import { Navigate, useOutletContext } from "react-router-dom";
 const Cart = () => {
   if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
 
+  // Get user token from useOutletContext
+  const token = useOutletContext().user.token;
+
   const [show, setShow] = useState(false);
 
   // Create states for quantity changes
@@ -19,7 +22,11 @@ const Cart = () => {
   );
 
   useEffect(() => {
-    Axios.get("/cart")
+    Axios.get("/cart", {
+      params: {
+        token,
+      },
+    })
       .then((response) => {
         // Store the cart items in state
         setCartItems(response.data.cartItems);
