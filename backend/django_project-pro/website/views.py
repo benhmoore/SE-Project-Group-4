@@ -10,7 +10,8 @@ def authenticate_request(request):
     Returns:
         integer: -1 if authentication fails, otherwise the user id
     """
-    token = request.GET.get('token')
+    token = request.POST.get('token')
+    print(token)
     if token is None:
         return -1
     try: 
@@ -223,7 +224,8 @@ def return_user_cart(request):
 def add_product(request):
     user_id = authenticate_request(request)
     if user_id == -1:
-        return JsonResponse({'error': 'Authentication failed'})
+        print("Failed Authentication")
+        return JsonResponse({'error': 'Authentication failed'}, status = 401)
 
     if request.method == 'POST':
         form = AddProductForm(request.POST)
@@ -243,7 +245,7 @@ def add_product(request):
             data = {
                 'message': 'Product added successfully!'
             }
-            return JsonResponse(data)
+            return JsonResponse(data, status = 200)
 
 def remove_product(request):
      if request.method == 'POST':
@@ -254,7 +256,7 @@ def remove_product(request):
                  product = Product.objects.get(id=product_id)
                  product.delete()
                  data = {'message': 'Product deleted successfully!'}
-                 return JsonResponse(data)
+                 return JsonResponse(data, status = 200)
              except Product.DoesNotExist:
                  return JsonResponse({'error': 'Product not found!'}, status=404)
          else:
@@ -263,7 +265,7 @@ def remove_product(request):
 def add_cart_item(request):
     user_id = authenticate_request(request)
     if user_id == -1:
-        return JsonResponse({'error': 'Authentication failed'})
+        return JsonResponse({'error': 'Authentication failed'}, status = 401)
 
     if request.method == 'POST':
         item_id = request.POST.get('item_id')
