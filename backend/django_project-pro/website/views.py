@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from .models import User, Product, ShoppingCart, ShoppingCartItem#, Order, OrderItem, Seller, OrderStatus
-from .forms import SigninForm, accountForm, deleteAccountForm, updateAccountForm , AddProductForm, RemoveProductForm
+from .models import User, Product, ShoppingCart, ShoppingCartItem, Order, OrderItem, OrderStatus
+from .forms import SigninForm, accountForm, deleteAccountForm, updateAccountForm , AddProductForm, RemoveProductForm, AddToCartForm, RemoveFromCartForm
 from django.http import JsonResponse
 import random, secrets, string
 
@@ -174,6 +174,7 @@ def get_account_info(request):
             }
             return JsonResponse(returnUser, safe = False)
     return JsonResponse({})
+
 def print_products(request):
     productAll = Product.objects.all()
 
@@ -260,13 +261,15 @@ def remove_product(request):
          else:
              return JsonResponse({'error': 'Invalid parameters'}, status=400)
 
+######################################################################################################################################
 def add_cart_item(request):
     user_id = authenticate_request(request)
     if user_id == -1:
         return JsonResponse({'error': 'Authentication failed'}, status = 401)
 
-    if request.method == 'POST':
-        item_id = request.POST.get('item_id')
+    form = AddToCartForm(request.POST)
+    if form.is_valid():
+        item_id = form.cleaned_data['item_id']
         product = get_object_or_404(Product, id=item_id)
         cart_item = ShoppingCartItem.objects.filter(shopping_cart_id=user_id, product_id=product.id).first()
         if cart_item:
@@ -289,53 +292,51 @@ def add_cart_item(request):
         data = {
             'cartItems': cart_items
         }
-        return JsonResponse(data)
+        return JsonResponse(data, status = 200)
     else:
         data = {
             'cartItems': []
         }
-        return JsonResponse(data)
+        return JsonResponse(data, status = 400)
 
 def remove_cart_item(request):
     user_id = authenticate_request(request)
     if user_id == -1:
-        return JsonResponse({'error': 'Authentication failed'})
+        return JsonResponse({'error': 'Authentication failed'}, status = 401)
 
-    if request.method == 'POST':
-        item_id = request.POST.get('item_id')
-        cart_item = get_object_or_404(ShoppingCartItem, id=item_id, shopping_cart_id=user_id)
-        cart_item.delete()
-        cart_items = []
-        for item in ShoppingCartItem.objects.filter(shopping_cart_id=user_id):
-            product = get_object_or_404(Product, id=item.product_id)
-            cart_items.append({
-                'id': item.id,
-                'name': product.name,
-                'description': product.description,
-                'price': str(product.price),
-                'image': product.image_id,
-                'quantity': item.quantity
-            })
-        data = {
-            'cartItems': cart_items
-        }
-        return JsonResponse(data)
-    else:
-        data = {
-            'cartItems': []
-        }
-        return JsonResponse(data)
+    form = RemoveFromCartForm(request.POST)
+    if not form.is_valid():
+        return JsonResponse({'error': 'Invalid input'}, status = 400)
 
-"""def get_shopping_cart_items(request):
+    item_id = form.cleaned_data['item_id']
+    cart_item = get_object_or_404(ShoppingCartItem, id=item_id, shopping_cart_id=user_id)
+    cart_item.delete()
+    cart_items = []
+    for item in ShoppingCartItem.objects.filter(shopping_cart_id=user_id):
+        product = get_object_or_404(Product, id=item.product_id)
+        cart_items.append({
+            'id': item.id,
+            'name': product.name,
+            'description': product.description,
+            'price': str(product.price),
+            'image': product.image_id,
+            'quantity': item.quantity
+        })
+    data = {
+        'cartItems': cart_items
+    }
+    return JsonResponse(data, status = 200)
+
+def get_shopping_cart_items(request):
     if request.method == 'GET':
         try:
             token = request.GET.get('token')
-            user = User.objects.get(token_id=token)
+            user = User.objects.get(auth_token=token)
             cart_items = ShoppingCartItem.objects.filter(shopping_cart_id=user.id)
 
             items = []
             for cart_item in cart_items:
-                product = Product.objects.get(id=cart_item.item_id)
+                product = get_object_or_404(Product, id=cart_item.product_id)
                 item_dict = {
                     'id': product.id,
                     'name': product.name,
@@ -349,24 +350,26 @@ def remove_cart_item(request):
             data = {
                 'cartItems': items
             }
-            return JsonResponse(data)
+            return JsonResponse(data, status = 200)
         except User.DoesNotExist:
             data = {
                 'cartItems': []
             }
-            return JsonResponse(data)
+            return JsonResponse(data, status = 404)
     else:
         data = {
             'error': 'Invalid request method'
         }
         return JsonResponse(data, status=400)
 
-
-
 def place_order(request):
     if request.method == 'POST':
         token = request.POST.get('token')
-        user = get_object_or_404(User, token_id=token)
+        user_id = authenticate_request(request)
+        if user_id == -1:
+            return JsonResponse({'error': 'Authentication failed'}, status=401)
+        
+        user = get_object_or_404(User, id=user_id, auth_token=token)
         cart = get_object_or_404(ShoppingCart, user=user)
 
         order = Order.objects.create(user=user, order_status=OrderStatus.PENDING)
@@ -380,14 +383,14 @@ def place_order(request):
         data = {
             'cart_ID': order.id
         }
-        return JsonResponse(data)
+        return JsonResponse(data, status = 200)
     else:
         data = {
             'cart_ID': -1
         }
         return JsonResponse(data, status=400)
 
-
+"""
 def get_orders(request):
     if request.method == 'GET':
         try:

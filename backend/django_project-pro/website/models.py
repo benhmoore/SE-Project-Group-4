@@ -26,13 +26,6 @@ class Product(models.Model):
     inventory = models.IntegerField()
     approval_status = models.IntegerField()
 
-class OrderStatus(Enum):
-    PENDING = 1
-    PROCESSING = 2
-    SHIPPED = 3
-    DELIVERED = 4
-    CANCELLED = 5
-
 class ShoppingCart(models.Model):
     user_id = models.IntegerField()
     order_status = models.IntegerField()
@@ -43,7 +36,16 @@ class ShoppingCartItem(models.Model):
     product_id = models.IntegerField()
     quantity = models.IntegerField()
 
-"""class Order(models.Model):
+############################################################################
+
+class OrderStatus(Enum):
+    PENDING = 1
+    PROCESSING = 2
+    SHIPPED = 3
+    DELIVERED = 4
+    CANCELLED = 5
+
+class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     shopping_cart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
@@ -53,7 +55,7 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(decimal_places=2, max_digits=10)
-
+"""
 class Seller(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     balance = models.DecimalField(decimal_places=2, max_digits=10)
