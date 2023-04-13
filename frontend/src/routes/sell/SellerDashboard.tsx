@@ -3,6 +3,7 @@ import ProductManager from "../../components/product/ProductManager";
 import { BsPlusCircle } from "react-icons/bs";
 import { MdDashboard, MdEdit } from "react-icons/md";
 import { Navigate, useOutletContext } from "react-router-dom";
+import ProductManagerItem from "../../components/product/ProductManagerItem";
 
 const SellerDashboard = () => {
   if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
@@ -144,28 +145,8 @@ const SellerDashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>Product 1</td>
-                        <td>$10</td>
-                        <td>10</td>
-                        <td>
-                          <button className="btn btn-primary">Edit</button>
-                          <button className="btn btn-danger ms-2">
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Product 1</td>
-                        <td>$10</td>
-                        <td>10</td>
-                        <td>
-                          <button className="btn btn-primary">Edit</button>
-                          <button className="btn btn-danger ms-2">
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
+                      <ProductManagerItem productId={2} />
+                      <ProductManagerItem />
                     </tbody>
                   </table>
                 </div>

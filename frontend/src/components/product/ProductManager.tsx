@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
 interface Props {
-  setActiveTab: (tab: string) => void;
+  setActiveTab?: (tab: string) => void;
+  productId?: number;
 }
 
-const ProductManager = ({ setActiveTab }: Props) => {
+const ProductManager = ({ setActiveTab = () => {}, productId = -1 }: Props) => {
   const navigate = useNavigate();
 
   // Get user token from useOutletContext
@@ -15,9 +16,34 @@ const ProductManager = ({ setActiveTab }: Props) => {
 
   const [productName, setProductName] = React.useState("");
   const [productDescription, setProductDescription] = React.useState("");
-  const [productPrice, setProductPrice] = React.useState(1);
+  const [productPrice, setProductPrice] = React.useState("1.00");
   const [productImageUrl, setProductImageUrl] = React.useState("");
   const [productQuantity, setProductQuantity] = React.useState(1);
+
+  // If productId is not -1, fetch product data from API
+  if (productId !== -1) {
+    // Fetch product data from API
+    React.useEffect(() => {
+      Axios.get("/products/get", {
+        params: {
+          token,
+          product_id: productId,
+        },
+      })
+        .then((res) => {
+          setProductName(res.data.name);
+          setProductDescription(res.data.description);
+          setProductPrice(res.data.price);
+          setProductImageUrl(res.data.image_id);
+          setProductQuantity(res.data.inventory);
+        })
+        .catch((err) => {
+          alert(
+            "There was an error fetching your product. Please try again later."
+          );
+        });
+    }, []);
+  }
 
   const handleAddProduct = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,7 +66,7 @@ const ProductManager = ({ setActiveTab }: Props) => {
       .then((res) => {
         setProductName("");
         setProductDescription("");
-        setProductPrice(0);
+        setProductPrice("");
         setProductImageUrl("");
         setProductQuantity(0);
         setActiveTab("manage_products"); // Switch to manage products tab
@@ -93,11 +119,13 @@ const ProductManager = ({ setActiveTab }: Props) => {
       <div className="form-floating mb-3">
         <input
           type="number"
+          min="0.01"
+          step="any"
           className="form-control"
           id="floatingInput"
           placeholder="Product Price"
           required
-          onChange={(e) => setProductPrice(parseInt(e.target.value))}
+          onChange={(e) => setProductPrice(e.target.value)}
           value={productPrice}
         />
         <label htmlFor="floatingInput">Product Price ($)</label>
@@ -109,6 +137,7 @@ const ProductManager = ({ setActiveTab }: Props) => {
           id="floatingInput"
           placeholder="Product Image"
           required
+          pattern="https?://.+"
           onChange={(e) => setProductImageUrl(e.target.value)}
           value={productImageUrl}
         />

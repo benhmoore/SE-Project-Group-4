@@ -1,13 +1,67 @@
 import React from "react";
 import { BsFillCreditCardFill } from "react-icons/bs";
+import { MdLocationPin } from "react-icons/md";
 
-import { Link, Form, useOutletContext, Navigate } from "react-router-dom";
+import Axios from "axios";
 
-interface Props {
-  signingUp?: boolean;
-}
+import {
+  Link,
+  Form,
+  useOutletContext,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 
-const PaymentInfo = ({ signingUp = false }: Props) => {
+const PaymentInfo = () => {
+  const navigate = useNavigate();
+
+  const token = useOutletContext().user.token;
+
+  // Check if url contains "payment". If so, user is signing up
+  const signingUp = window.location.href.includes("payment");
+
+  // Get payment and address info from API
+  const [paymentMethod, setPaymentMethod] = React.useState("");
+  const [address, setAddress] = React.useState("");
+
+  React.useEffect(() => {
+    Axios.get("/user", {
+      params: {
+        token,
+      },
+    })
+      .then((res) => {
+        setPaymentMethod(res.data.payment_method);
+        setAddress(res.data.address);
+      })
+      .catch((err) => {
+        alert(
+          "There was an error fetching your payment and shipping information. Please try again later."
+        );
+      });
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    Axios.post("/user", {
+      token,
+      payment_method: paymentMethod,
+      address,
+    })
+      .then((res) => {
+        if (signingUp) {
+          navigate("/");
+        } else {
+          alert("Payment and shipping information updated successfully!");
+        }
+      })
+      .catch((err) => {
+        alert(
+          "There was an error updating your payment and shipping information. Please try again later."
+        );
+      });
+  };
+
   return (
     <>
       <div className="container">
@@ -18,22 +72,24 @@ const PaymentInfo = ({ signingUp = false }: Props) => {
                 "Payment and Shipping"}
             </h1>
             <p>
-              In order to make purchases or receive payment, you must provide a
+              In order to make purchases or receive payments, you must provide a
               valid U.S. address and payment identifier.
             </p>
             <div className="card p-3">
-              <Form>
+              <Form onSubmit={handleSubmit}>
                 <div className="form-floating mb-3">
                   <input
-                    type="card"
+                    type="text"
                     className="form-control"
-                    id="floatingAddress"
+                    id="floatingCard"
                     placeholder="XXXX XXXX XXXX XXXX"
                     pattern="^\d{4}([ -]?\d{4}){3}$"
-                    maxLength="19"
+                    maxLength={19}
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
                     required
                   />
-                  <label htmlFor="floatingAddress">
+                  <label htmlFor="floatingCard">
                     <BsFillCreditCardFill /> Payment Identifier
                   </label>
                   <small>
@@ -42,7 +98,24 @@ const PaymentInfo = ({ signingUp = false }: Props) => {
                   </small>
                 </div>
                 <hr />
-                <div className="input-group mb-3">
+                <div className="form-floating mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="floatingAddress"
+                    placeholder="XXXX XXXX XXXX XXXX"
+                    pattern="^\d{4}([ -]?\d{4}){3}$"
+                    maxLength={19}
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    required
+                  />
+                  <label htmlFor="floatingAddress">
+                    <MdLocationPin /> Shipping Address
+                  </label>
+                  <small>A valid U.S. address.</small>
+                </div>
+                {/* <div className="input-group mb-3">
                   <span className="input-group-text" id="address-label">
                     Address
                   </span>
@@ -84,8 +157,9 @@ const PaymentInfo = ({ signingUp = false }: Props) => {
                         className="form-select"
                         id="state-input"
                         aria-describedby="state-label"
+                        defaultValue={"Choose..."}
                       >
-                        <option selected>Choose...</option>
+                        <option>Choose...</option>
                         <option value="AL">Alabama</option>
                         <option value="AK">Alaska</option>
                         <option value="AZ">Arizona</option>
@@ -153,7 +227,7 @@ const PaymentInfo = ({ signingUp = false }: Props) => {
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
                 <button
                   type="submit"
                   className="btn btn-primary btn-block mt-3"

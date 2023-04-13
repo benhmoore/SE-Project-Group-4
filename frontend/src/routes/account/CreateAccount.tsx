@@ -1,7 +1,48 @@
 import React from "react";
-import { Link, Form } from "react-router-dom";
+import { Link, Form, useNavigate, useOutletContext } from "react-router-dom";
+
+import Axios from "axios";
 
 const CreateAccount = () => {
+  const navigate = useNavigate();
+
+  const { handleLogin } = useOutletContext();
+
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    alert("Account created!");
+
+    // Create account
+    Axios.post("/user/create", {
+      userRole: 2,
+      username: username,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+      address: "",
+      balance: 0,
+      payment_method: "",
+    })
+      .then((res) => {
+        console.log(res);
+
+        // Login to user
+        handleLogin(username, password);
+
+        // Navigate to payment setup
+        navigate("/user/payment");
+      })
+      .catch((err) => {
+        alert(err.response.data.message);
+      });
+  };
+
   return (
     <>
       <div className="container">
@@ -19,7 +60,7 @@ const CreateAccount = () => {
               </Link>
             </p>
             <div className="card p-3">
-              <Form>
+              <Form onSubmit={handleSubmit}>
                 <legend>Personal Details</legend>
                 <fieldset>
                   <div className="form-floating mb-3">
@@ -28,6 +69,8 @@ const CreateAccount = () => {
                       className="form-control"
                       id="floatingNameFirst"
                       placeholder="name@example.com"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
                       required
                     />
                     <label htmlFor="floatingNameFirst">First Name</label>
@@ -38,6 +81,8 @@ const CreateAccount = () => {
                       className="form-control"
                       id="floatingNameLast"
                       placeholder="Password"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
                       required
                     />
                     <label htmlFor="floatingNameLast">Last Name</label>
@@ -52,6 +97,8 @@ const CreateAccount = () => {
                       className="form-control"
                       id="floatingInput"
                       placeholder="name@example.com"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
                       required
                     />
                     <label htmlFor="floatingInput">Username</label>
@@ -62,6 +109,8 @@ const CreateAccount = () => {
                       className="form-control"
                       id="floatingPassword"
                       placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       required
                     />
                     <label htmlFor="floatingPassword">Password</label>
@@ -72,6 +121,8 @@ const CreateAccount = () => {
                       className="form-control"
                       id="floatingPassword"
                       placeholder="Password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                       required
                     />
                     <label htmlFor="floatingPassword">Confirm Password</label>
@@ -83,9 +134,7 @@ const CreateAccount = () => {
                 >
                   Continue
                 </button> */}
-                <Link to={"../user/payment"} className={"btn btn-primary mt-3"}>
-                  Continue
-                </Link>
+                <button className={"btn btn-primary mt-3"}>Continue</button>
               </Form>
             </div>
           </div>

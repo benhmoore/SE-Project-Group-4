@@ -39,7 +39,7 @@ export default function App() {
         setAuthenticated(true);
       })
       .catch(function (error) {
-        console.log(error);
+        alert("Login failed. Please check your username and password.");
       });
   };
 
