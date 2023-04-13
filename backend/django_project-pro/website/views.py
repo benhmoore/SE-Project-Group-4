@@ -11,7 +11,6 @@ def authenticate_request(request):
         integer: -1 if authentication fails, otherwise the user id
     """
     token = request.POST.get('token')
-    print(token)
     if token is None:
         return -1
     try: 
@@ -224,7 +223,6 @@ def return_user_cart(request):
 def add_product(request):
     user_id = authenticate_request(request)
     if user_id == -1:
-        print("Failed Authentication")
         return JsonResponse({'error': 'Authentication failed'}, status = 401)
 
     if request.method == 'POST':
