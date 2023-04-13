@@ -4,6 +4,34 @@ from .forms import SigninForm, accountForm, deleteAccountForm, updateAccountForm
 from django.http import JsonResponse
 import random, secrets, string
 
+def authenticate_request(request):
+    """Authenticates requests that require a user to be logged in.
+
+    Returns:
+        integer: -1 if authentication fails, otherwise the user id
+    """
+    token = request.GET.get('token')
+    if token is None:
+        return -1
+    try: 
+        user = User.objects.get(token_id=token)
+        return user.id
+    except User.DoesNotExist:
+        return -1
+    
+def example_authenticated_route(request):
+    """ Example of an authenticated route using the authenticate_request function. """
+    
+    user_id = authenticate_request(request)
+    if user_id == -1:
+        return JsonResponse({'message': 'Authentication Failed'}, status=401)
+    
+    # If the code reaches this point, the user is authenticated!
+    # You can use the user_id to look up the user in the database
+    # and use, return, or modify their data
+
+    return JsonResponse({'message': 'Bla bla response info'}, status=200)
+
 def edit_token(record_id, token):
     record = get_object_or_404(User, id=record_id)
     # Update record with new token
