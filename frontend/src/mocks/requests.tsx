@@ -46,18 +46,24 @@ mock.onGet("/products/list").reply(200, {
   ],
 });
 
-mock.onGet("/products?id=1").reply(200, {
-  products: [
-    {
-      id: 1,
-      name: "Product 1",
-      description:
-        "This is a longer product description that demonstrates omission of text when a description reaches a certain length determined by a magic variable.",
-      price: 10.99,
-      image_id: "https://picsum.photos/600/600",
-    },
-  ],
-});
+mock
+  .onGet(
+    /^\/products(\?([a-zA-Z0-9_-]+=[a-zA-Z0-9_-]+&)*id=1(&[a-zA-Z0-9_-]+=[a-zA-Z0-9_-]+)*)?$/
+  )
+  .reply(200, {
+    products: [
+      {
+        id: 1,
+        name: "Product 1",
+        description:
+          "This is a longer product description that demonstrates omission of text when a description reaches a certain length determined by a magic variable.",
+        price: 10.99,
+        image_id: "https://picsum.photos/600/600",
+        inventory: 10,
+        num_sales: 5,
+      },
+    ],
+  });
 
 mock.onGet("/products?id=2").reply(200, {
   products: [
@@ -67,6 +73,8 @@ mock.onGet("/products?id=2").reply(200, {
       description: "Product 2 description",
       price: 20.99,
       image_id: "https://picsum.photos/600/600",
+      inventory: 23,
+      num_sales: 100,
     },
   ],
 });
@@ -79,6 +87,8 @@ mock.onGet("/products?id=3").reply(200, {
       description: "Product 3 description",
       price: 30.99,
       image_id: "https://picsum.photos/600/600",
+      inventory: 5,
+      num_sales: 2,
     },
   ],
 });

@@ -4,6 +4,7 @@ import { BsPlusCircle } from "react-icons/bs";
 import { MdDashboard, MdEdit } from "react-icons/md";
 import { Navigate, useOutletContext } from "react-router-dom";
 import ProductManagerItem from "../../components/product/ProductManagerItem";
+import BarChart from "../../components/dashboard/BarChart";
 
 const SellerDashboard = () => {
   if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
@@ -61,22 +62,6 @@ const SellerDashboard = () => {
                   <BsPlusCircle className="me-2 mb-1" />
                   Add Product
                 </button>
-                <button
-                  className={`nav-link text-start ${
-                    activeTab === "manage_products" ? "active" : ""
-                  }`}
-                  id="v-pills-messages-tab"
-                  data-bs-toggle="pill"
-                  data-bs-target="#v-pills-messages"
-                  type="button"
-                  role="tab"
-                  aria-controls="v-pills-messages"
-                  aria-selected="false"
-                  onClick={() => setActiveTab("manage_products")}
-                >
-                  <MdEdit className="me-2 mb-1" />
-                  Manage Products
-                </button>
               </div>
               <div
                 className="tab-content container-fluid p-3"
@@ -91,25 +76,22 @@ const SellerDashboard = () => {
                   aria-labelledby="v-pills-home-tab"
                 >
                   <h2>Sales Overview</h2>
+                  <div style={{ height: 500 }}>
+                    <BarChart />
+                  </div>
                   <table className="table table-striped">
                     <thead>
                       <tr>
                         <th>Product</th>
-                        <th>Sales</th>
+                        <th>Price</th>
+                        <th>Stock</th>
                         <th>Revenue</th>
+                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>Product 1</td>
-                        <td>10</td>
-                        <td>$100</td>
-                      </tr>
-                      <tr>
-                        <td>Product 2</td>
-                        <td>5</td>
-                        <td>$50</td>
-                      </tr>
+                      <ProductManagerItem productId={1} />
+                      <ProductManagerItem />
                     </tbody>
                   </table>
                 </div>
@@ -124,31 +106,6 @@ const SellerDashboard = () => {
                   <h2>Add Product</h2>
                   <p>Add a new product to the storefront.</p>
                   <ProductManager setActiveTab={setActiveTab} />
-                </div>
-                <div
-                  className={`tab-pane ${
-                    activeTab === "manage_products" ? "show active" : ""
-                  }`}
-                  id="v-pills-messages"
-                  role="tabpanel"
-                  aria-labelledby="v-pills-messages-tab"
-                >
-                  <h2>Manage Products</h2>
-                  <p>Manage your products.</p>
-                  <table className="table table-striped">
-                    <thead>
-                      <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <ProductManagerItem productId={2} />
-                      <ProductManagerItem />
-                    </tbody>
-                  </table>
                 </div>
               </div>
             </div>
