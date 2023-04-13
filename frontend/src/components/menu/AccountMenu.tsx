@@ -20,7 +20,12 @@ const AccountMenu = ({
   const location = useLocation();
 
   // Get user token from useOutletContext
-  const token = user.token;
+  let token = "";
+  try {
+    const token = user.token;
+  } catch (error) {
+    console.log(error);
+  }
 
   const [cartItems, setCartItems] = React.useState([]);
 
