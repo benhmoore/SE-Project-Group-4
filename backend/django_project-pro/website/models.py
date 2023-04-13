@@ -34,20 +34,16 @@ class OrderStatus(Enum):
     CANCELLED = 5
 
 class ShoppingCart(models.Model):
-    id = models.IntegerField(primary_key=True)
-    order_status = models.IntegerField(choices=[(status.value, status.name) for status in OrderStatus])
-    order_placed_date = models.DateTimeField()
-    items = models.ManyToManyField(Product, through='OrderItem')
-
-    def get_status(self):
-        return OrderStatus(self.order_status).name
+    user_id = models.IntegerField()
+    order_status = models.IntegerField()
     order_placed_date = models.DateTimeField()
 
 class ShoppingCartItem(models.Model):
-    id = models.AutoField(primary_key=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    shopping_cart_id = models.IntegerField()
+    product_id = models.IntegerField()
+    quantity = models.IntegerField()
 
-class Order(models.Model):
+"""class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     shopping_cart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
@@ -74,4 +70,4 @@ class Seller(models.Model):
         product = self.products.filter(id=product_id).first()
         if product:
             self.products.remove(product)
-            product.delete()
+            product.delete()"""

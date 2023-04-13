@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from .models import User, Product, ShoppingCart, ShoppingCartItem, Order, OrderItem, Seller, OrderStatus
-from .forms import SigninForm, accountForm, deleteAccountForm, updateAccountForm #, AddProductForm, RemoveProductForm
+from .models import User, Product, ShoppingCart #ShoppingCartItem, Order, OrderItem, Seller, OrderStatus
+from .forms import SigninForm, accountForm, deleteAccountForm, updateAccountForm , AddProductForm, RemoveProductForm
 from django.http import JsonResponse
 import random, secrets, string
 
@@ -193,45 +193,44 @@ def return_user_cart(request):
         print(eachCart.user_id)
         # print(eachCart.id)
 
-# def add_product(request):
-#     if request.method == 'POST':
-#         form = AddProductForm(request.POST)
-#         if form.is_valid():
-#             product = Product(
-#                 name=form.cleaned_data['name'],
-#                 description=form.cleaned_data['description'],
-#                 price=form.cleaned_data['price'],
-#                 seller=form.cleaned_data['seller'],
-#                 image_id=form.cleaned_data['image_id'],
-#                 num_sales=form.cleaned_data['num_sales'],
-#                 inventory=form.cleaned_data['inventory'],
-#                 approval_status=form.cleaned_data.get('approval_status', False)
-#             )
-#             product.save()
-#             data = {
-#                 'message': 'Product added successfully!'
-#             }
-#             return JsonResponse(data)
-#     else:
-#         form = AddProductForm()
-#     return render(request, 'add_product.html', {'form': form})
+def add_product(request):
+     if request.method == 'POST':
+         form = AddProductForm(request.POST)
+         if form.is_valid():
+             product = Product(
+                 category = form.cleaned_data['category'],
+                 name=form.cleaned_data['name'],
+                 price=form.cleaned_data['price'],
+                 seller=form.cleaned_data['seller'],
+                 image_id=form.cleaned_data['image_id'],
+                 num_sales=form.cleaned_data['num_sales'],
+                 inventory=form.cleaned_data['inventory'],
+                 approval_status=form.cleaned_data['approval_status'],
+                 description=form.cleaned_data['description'],
 
-# def remove_product(request, product_id):
-#     if request.method == 'DELETE':
-#         form = RemoveProductForm(request.GET)
-#         if form.is_valid():
-#             product_id = form.cleaned_data['product_id']
-#             try:
-#                 product = Product.objects.get(id=product_id)
-#                 product.delete()
-#                 data = {'message': 'Product deleted successfully!'}
-#                 return JsonResponse(data)
-#             except Product.DoesNotExist:
-#                 return JsonResponse({'error': 'Product not found!'}, status=404)
-#         else:
-#             return JsonResponse({'error': 'Invalid parameters'}, status=400)
+             )
+             product.save()
+             data = {
+                 'message': 'Product added successfully!'
+             }
+             return JsonResponse(data)
 
-def get_shopping_cart_items(request):
+def remove_product(request):
+     if request.method == 'POST':
+         form = RemoveProductForm(request.POST)
+         if form.is_valid():
+             product_id = form.cleaned_data['product_id']
+             try:
+                 product = Product.objects.get(id=product_id)
+                 product.delete()
+                 data = {'message': 'Product deleted successfully!'}
+                 return JsonResponse(data)
+             except Product.DoesNotExist:
+                 return JsonResponse({'error': 'Product not found!'}, status=404)
+         else:
+             return JsonResponse({'error': 'Invalid parameters'}, status=400)
+
+"""def get_shopping_cart_items(request):
     if request.method == 'GET':
         try:
             token = request.GET.get('token')
@@ -483,5 +482,5 @@ def delete_seller_product(request, product_id):
         data = {
             'products': []
         }
-        return JsonResponse(data)
+        return JsonResponse(data)"""
 
