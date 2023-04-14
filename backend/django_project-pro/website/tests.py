@@ -153,5 +153,33 @@ class findProduct(TestCase):
         responseWrong = self.client.get(newUrl, {'id':999})
         self.assertEqual(responseWrong.status_code, 401)
 
+class place_orderTestCases(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_place_order_correct_token(self):
+        url = reverse("place_order")
+
+        #Grab JSON response which includes token
+        tokenData = add_account(0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        data = json.loads(tokenData.content)
+        chosenToken = data['token']
+
+        place_order_response = self.client.post(url, {'token':chosenToken})
+        self.assertEqual(place_order_response.status_code, 200)
+
+    def test_place_order_no_token(self):
+        url = reverse("place_order")
+
+        place_order_response = self.client.post(url, {'token': ""})
+        self.assertEqual(place_order_response.status_code, 401)
+
+    def test_place_order_incorrect_token(self):
+        url = reverse("place_order")
+
+        place_order_response = self.client.post(url, {'token': "WRONG"})
+        self.assertEqual(place_order_response.status_code, 401)
+
 
 
