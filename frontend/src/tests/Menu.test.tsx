@@ -22,3 +22,14 @@ it("should render the login button", () => {
   render(<Menu />, { wrapper: BrowserRouter });
   expect(screen.getByText("Sign In")).toBeVisible();
 });
+
+
+it("should render the browse button", () => {
+  render(<Menu />, { wrapper: BrowserRouter });
+  expect(screen.getByText("Browse")).toBeVisible();
+});
+
+it("should render the home button", () => {
+  render(<Menu />, { wrapper: BrowserRouter });
+  expect(screen.getByText("E-Commerce")).toBeVisible();
+});
