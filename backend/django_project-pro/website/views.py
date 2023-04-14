@@ -304,23 +304,23 @@ def add_product(request):
 
     if request.method == 'POST':
         form = AddProductForm(request.POST)
+        print(form)
         if form.is_valid():
             product = Product(
-                category=form.cleaned_data['category'],
+                category="",
                 name=form.cleaned_data['name'],
                 price=form.cleaned_data['price'],
                 seller=user_id,
                 image_id=form.cleaned_data['image_id'],
-                num_sales=form.cleaned_data['num_sales'],
+                num_sales=0,
                 inventory=form.cleaned_data['inventory'],
-                approval_status=form.cleaned_data['approval_status'],
+                approval_status=1,
                 description=form.cleaned_data['description'],
             )
             product.save()
-            data = {
-                'message': 'Product added successfully!'
-            }
-            return JsonResponse(data, status=200)
+            return JsonResponse({'message': 'Product added successfully!'}, status=200)
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 def remove_product(request):
@@ -526,10 +526,7 @@ def get_orders(request):
 
         user = authenticate_request(request)
         if user == -1:
-            data = {
-                'carts': []
-            }
-            return JsonResponse(data, status=401)
+            return JsonResponse({'error': 'Authentication failed'}, status=401)
 
         print("Looking up orders for user: " +
               str(user) + " order_status: 1 or 2")
@@ -542,9 +539,15 @@ def get_orders(request):
             order_items = ShoppingCartItem.objects.filter(
                 shopping_cart_id=order.id)
 
+            print("Found order items: " + str(order_items))
+
             items = []
             for item in order_items:
-                product = get_object_or_404(Product, id=item.product_id)
+                try:
+                    product = get_object_or_404(Product, id=item.product_id)
+                except Exception as e:
+                    # If product doesn't exist, skip it
+                    continue
                 item_dict = {
                     'id': item.id,
                     'name': product.name,
