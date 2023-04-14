@@ -1,9 +1,20 @@
+import datetime
 from django.shortcuts import render, get_object_or_404
 from .models import User, Product, ShoppingCart, ShoppingCartItem, Order, OrderItem, OrderStatus, Seller
-from .forms import SigninForm, accountForm, updateQuantity, deleteAccountForm, updateAccountForm , AddProductForm, RemoveProductForm, AddToCartForm, RemoveFromCartForm
+from .forms import SigninForm, accountForm, updateQuantity, deleteAccountForm, updateAccountForm , AddProductForm, RemoveProductForm, AddToCartForm, RemoveFromCartForm, ReturnOrderForm
 from django.http import JsonResponse
 from django.utils import timezone
 import random, secrets, string
+
+
+def get_user_shopping_cart(user_id):
+    shopping_cart = get_object_or_404(ShoppingCart, user_id=user_id, order_status=0)
+    return shopping_cart
+
+def get_user_from_shopping_cart(shopping_cart_id):
+    shopping_cart = get_object_or_404(ShoppingCart, id=shopping_cart_id)
+    user = get_object_or_404(User, id=shopping_cart.user_id)
+    return user
 
 def authenticate_request(request):
     """Authenticates requests that require a user to be logged in.
@@ -225,8 +236,31 @@ def return_user_cart(request):
     user_id = authenticate_request(request)
     if user_id == -1:
         return JsonResponse({'error': 'Authentication failed'}, status = 401)
-
+    
     cart_items = []
+
+    # Get a shopping cart by id
+    cart_id = request.GET.get('cart_id')
+    if cart_id is not None:
+        shopping_cart = get_object_or_404(ShoppingCart, id=cart_id, user_id=user_id)
+        for cart_item in ShoppingCartItem.objects.filter(shopping_cart_id = shopping_cart.id):
+            product = get_object_or_404(Product, id=cart_item.product_id)
+            cart_items.append({
+                'id': cart_item.id,
+                'product_id': cart_item.product_id,
+                'name': product.name,
+                'description': product.description,
+                'price': str(product.price),
+                'image': product.image_id,
+                'quantity': cart_item.quantity
+            })
+        return JsonResponse({
+            'cartItems': cart_items,
+            'order_status': shopping_cart.order_status,
+            'order_placed_date': shopping_cart.order_placed_date,
+        }, status=200)
+    
+    # Or, find active shopping cart
     for shopping_cart in ShoppingCart.objects.filter(user_id = user_id):
         if shopping_cart.order_status == 0:
             for cart_item in ShoppingCartItem.objects.filter(shopping_cart_id = shopping_cart.id):
@@ -241,11 +275,9 @@ def return_user_cart(request):
                     'quantity': cart_item.quantity
                 })
 
-    data = {
+    return JsonResponse({
         'cartItems': cart_items
-    }
-
-    return JsonResponse(data, status=200)
+    }, status=200)
 
 def add_product(request):
     user_id = authenticate_request(request)
@@ -297,13 +329,15 @@ def add_cart_item(request):
     if form.is_valid():
         item_id = form.cleaned_data['item_id']
         product = get_object_or_404(Product, id=item_id)
-        #Change userId to shoppingCartId
-        cart_item = ShoppingCartItem.objects.filter(shopping_cart_id=user_id, product_id=product.id).first()
+        print("Looking for shopping cart for user: " + str(user_id))
+        shopping_cart = get_user_shopping_cart(user_id)
+        print("Found shopping cart: " + str(shopping_cart.id))
+        cart_item = ShoppingCartItem.objects.filter(shopping_cart_id=shopping_cart.id, product_id=product.id).first()
         if cart_item:
             cart_item.quantity += 1
             cart_item.save()
         else:
-            cart_item = ShoppingCartItem(shopping_cart_id=user_id, product_id=product.id, quantity=1)
+            cart_item = ShoppingCartItem(shopping_cart_id=shopping_cart.id, product_id=product.id, quantity=1)
             cart_item.save()
         cart_items = []
 
@@ -341,7 +375,8 @@ def remove_cart_item(request):
         return JsonResponse({'error': 'Invalid input'}, status = 400)
 
     item_id = form.cleaned_data['item_id']
-    cart_item = get_object_or_404(ShoppingCartItem, id=item_id, shopping_cart_id=user_id)
+    shopping_cart = get_user_shopping_cart(user_id)
+    cart_item = get_object_or_404(ShoppingCartItem, id=item_id, shopping_cart_id=shopping_cart.id)
     cart_item.delete()
     cart_items = []
 
@@ -373,7 +408,7 @@ def get_shopping_cart_items(request):
                 }
                 return JsonResponse(data, status=401)
 
-            cart_items = ShoppingCartItem.objects.filter(shopping_cart_id=user)
+            cart_items = ShoppingCartItem.objects.filter(user_id=user)
 
             items = []
             for cart_item in cart_items:
@@ -409,13 +444,28 @@ def place_order(request):
         if user_id == -1:
             return JsonResponse({'error': 'Authentication failed'}, status=401)
 
-        newOrder = ShoppingCart(
-            user_id = user_id,
-            order_status = 1,
-            order_placed_date = timezone.now().date()
-        )
+        # Update previous cart to order status
+        # Get previous cart by order_status = 0
 
-        newOrder.save()
+        print("User id: " + str(user_id), "Order status: 0")
+        existingCart = ShoppingCart.objects.filter(user_id=user_id, order_status=0).first()
+        print("Existing cart: " + str(existingCart.id))
+        if existingCart:
+            print("Got existing cart")
+            existingCart.order_status = 1
+            print("Updated order status", existingCart.order_status)
+            existingCart.order_placed_date = timezone.datetime.now()
+            print("Updated order date", existingCart.order_placed_date)
+            try:
+                existingCart.save()
+            except Exception as e:
+                print("Error saving existing cart: " + str(e))
+            print("Saved existing cart")
+
+        # Create a new shopping cart for the user
+        newCart = ShoppingCart(user_id=user_id, order_status=0, order_placed_date=timezone.datetime.now())
+        newCart.save()
+
         return JsonResponse({'message': "Order Place Successfully"}, status = 200)
     return JsonResponse({'error': "Invalid Input"}, status = 401)
 
@@ -431,8 +481,9 @@ def update_quantity_cartItem(request):
     item_id = form.cleaned_data['id']
     quantity = form.cleaned_data['quantity']
 
+    shopping_cart = get_user_shopping_cart(user_id)
     cart_item = get_object_or_404(ShoppingCartItem,
-                                  id=item_id, shopping_cart_id=user_id)
+                                  id=item_id, shopping_cart_id=shopping_cart.id)
 
     cart_item.quantity = quantity
     cart_item.save()
@@ -448,17 +499,18 @@ def get_orders(request):
             }
             return JsonResponse(data, status=401)
 
-        orders = ShoppingCart.objects.filter(user=user, order_status=1).order_by('-order_placed_date')
-
+        print("Looking up orders for user: " + str(user) + " order_status: 1 or 2")
+        orders = ShoppingCart.objects.filter(user_id=user, order_status__in=[1, 2]).order_by('-order_placed_date')
         carts = []
         for order in orders:
-            order_items = ShoppingCartItem.objects.filter(shopping_cart=order)
+            print("Found order: " + str(order.id) + " " + str(order.order_placed_date))
+            order_items = ShoppingCartItem.objects.filter(shopping_cart_id=order.id)
 
             items = []
             for item in order_items:
-                product = item.product
+                product = get_object_or_404(Product, id=item.product_id)
                 item_dict = {
-                    'id': product.id,
+                    'id': item.id,
                     'name': product.name,
                     'description': product.description,
                     'price': str(product.price),
@@ -467,18 +519,20 @@ def get_orders(request):
                 }
                 items.append(item_dict)
 
+            print("Made it to cart_dict")
             cart_dict = {
                 'id': order.id,
+                'order_status': order.order_status,
                 'order_placed_date': order.order_placed_date,
-                'total_price': str(order.total_price),
                 'items': items,
             }
             carts.append(cart_dict)
-
         data = {
             'carts': carts,
         }
-        return JsonResponse(data)
+
+        print("Returning orders for user: " + str(user), data)
+        return JsonResponse(data, status=200)
     else:
         data = {
             'error': 'Invalid request method'
@@ -486,6 +540,24 @@ def get_orders(request):
         return JsonResponse(data, status=400)
 
      
+def return_order(request):
+    if request.method == 'POST':
+        user_id = authenticate_request(request)
+        if user_id == -1:
+            return JsonResponse({'error': 'Authentication failed'}, status=401)
+
+        form = ReturnOrderForm(request.POST)
+        if not form.is_valid():
+            return JsonResponse({'error': 'Invalid input'}, status=400)
+
+        cart_id = form.cleaned_data['order_id']
+
+        shopping_cart = get_object_or_404(ShoppingCart, id=cart_id)
+        shopping_cart.order_status = 2
+        shopping_cart.save()
+        return JsonResponse({'message': "Order Returned Successfully"}, status = 200)
+    return JsonResponse({'error': "Invalid Input"}, status = 400)
+
 def get_seller_products(request):
     if request.method == 'GET':
         user = authenticate_request(request)
