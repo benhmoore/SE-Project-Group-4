@@ -12,7 +12,7 @@ const Cart = () => {
   const { setShouldUpdateCartBadge } = useOutletContext();
 
   // Get user token from useOutletContext
-  const token = useOutletContext().user.token;
+  const token = useOutletContext().token;
 
   const [show, setShow] = useState(false);
 
