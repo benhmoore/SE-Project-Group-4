@@ -19,7 +19,7 @@ from django.views.generic.base import TemplateView
 from website.views import get_account_info, basic_login, create_account, delete_account, \
     print_products, get_product_info, \
     return_user_cart, add_product, remove_product, \
-    add_cart_item, remove_cart_item, update_quantity_cartItem, place_order, return_order, get_orders, update_account_info
+    add_cart_item, remove_cart_item, update_quantity_cartItem, place_order, return_order, get_orders, update_account_info, get_seller_products, edit_seller_product, delete_seller_product
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,23 +27,30 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
 
     path("user/signin", basic_login, name='basic_login'),
-    path("user/create", create_account, name = 'create_account'),
-    path("user/delete", delete_account, name = 'delete_account'),
-    path("user", get_account_info, name = 'get_account_info'),
-    path("user/update", update_account_info, name = 'update_account_info'),
+    path("user/create", create_account, name='create_account'),
+    path("user/delete", delete_account, name='delete_account'),
+    path("user", get_account_info, name='get_account_info'),
+    path("user/update", update_account_info, name='update_account_info'),
 
-    path("products", get_product_info, name = 'get_product_info'),
-    path('products/list', print_products, name = 'print_products'),
+    path("products", get_product_info, name='get_product_info'),
+    path('products/list', print_products, name='print_products'),
     path('products/add', add_product, name='add_product'),
     path('products/remove', remove_product, name='remove_product'),
 
-    path("cart", return_user_cart, name = 'return_user_cart'),
-    path('cart/add', add_cart_item, name = 'add_cart_item'),
-    path('cart/remove', remove_cart_item, name = 'remove_cart_item'),
-    path('cart/items/quantity', update_quantity_cartItem, name = 'update_quantity_cartItem'),
-    path('cart/order', place_order, name = 'place_order'),
+    path("cart", return_user_cart, name='return_user_cart'),
+    path('cart/add', add_cart_item, name='add_cart_item'),
+    path('cart/remove', remove_cart_item, name='remove_cart_item'),
+    path('cart/items/quantity', update_quantity_cartItem,
+         name='update_quantity_cartItem'),
+    path('cart/order', place_order, name='place_order'),
 
-    path('orders', get_orders, name = 'get_orders'),
-    path('orders/return', return_order, name = 'return_order'),
+    path('orders', get_orders, name='get_orders'),
+    path('orders/return', return_order, name='return_order'),
+
+    path('seller/products', get_seller_products, name='get_seller_products'),
+    path('seller/products/edit', edit_seller_product,
+         name='edit_seller_product'),
+    path('seller/products/delete', delete_seller_product,
+         name='delete_seller_product'),
 
 ]
