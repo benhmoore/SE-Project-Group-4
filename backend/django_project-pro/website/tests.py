@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from website.views import add_account, add_product
 import json
 
+
 class SignInTestCase(TestCase):
     def setUp(self):
         self.client = Client()
@@ -180,6 +181,40 @@ class place_orderTestCases(TestCase):
 
         place_order_response = self.client.post(url, {'token': "WRONG"})
         self.assertEqual(place_order_response.status_code, 401)
+
+class return_orderTestCases(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_return_order(self):
+        tokenData = add_account(0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        data = json.loads(tokenData.content)
+        chosenToken = data['token']
+
+        url = reverse("place_order")
+        place_order_response = self.client.post(url, {'token':chosenToken})
+        self.assertEqual(place_order_response.status_code, 200)
+
+        returnUrl = reverse('return_order')
+        return_orderResponse = self.client.post(returnUrl, {'token':chosenToken, 'order_id':1})
+        self.assertEqual(return_orderResponse.status_code, 200)
+
+    def test_return_no_token(self):
+        url = reverse("return_order")
+        place_order_response = self.client.post(url)
+        self.assertEqual(place_order_response.status_code, 401)
+
+    def test_return_no_formInput(self):
+        tokenData = add_account(0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        data = json.loads(tokenData.content)
+        chosenToken = data['token']
+
+        url = reverse("return_order")
+        place_order_response = self.client.post(url, {'token':chosenToken})
+        self.assertEqual(place_order_response.status_code, 400)
+
+
+
 
 
 
