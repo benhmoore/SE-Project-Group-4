@@ -12,7 +12,9 @@ def authenticate_request(request):
     """
     token = request.POST.get('token')
     if token is None:
-        return -1
+        token = request.GET.get('token')
+        if token is None:
+            return -1
     try: 
         user = User.objects.get(token_id=token)
         return user.id
@@ -158,6 +160,10 @@ def get_account_info(request):
         foundUser.save()
         return JsonResponse(returnUser, safe = False)
 
+    user_id = authenticate_request(request)
+    if user_id == -1:
+        return JsonResponse({'error': 'Authentication failed'}, status = 401)
+
     allUsers = User.objects.all()
     for eachUser in allUsers:
         if (eachUser.token_id == token):
@@ -172,8 +178,8 @@ def get_account_info(request):
                 'payment_method': eachUser.payment_method,
                 'token_id': token
             }
-            return JsonResponse(returnUser, safe = False)
-    return JsonResponse({})
+            return JsonResponse(returnUser, safe = False, status= 200)
+    return JsonResponse({}, status = 401)
 
 def print_products(request):
     productAll = Product.objects.all()
