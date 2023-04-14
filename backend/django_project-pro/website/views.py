@@ -235,8 +235,28 @@ def return_user_cart(request):
     user_id = authenticate_request(request)
     if user_id == -1:
         return JsonResponse({'error': 'Authentication failed'}, status = 401)
-
+    
     cart_items = []
+
+    cart_id = request.GET.get('cart_id')
+    if cart_id != -1:
+        shopping_cart = get_object_or_404(ShoppingCart, id=cart_id, user_id=user_id)
+        for cart_item in ShoppingCartItem.objects.filter(shopping_cart_id = shopping_cart.id):
+            product = get_object_or_404(Product, id=cart_item.product_id)
+            cart_items.append({
+                'id': cart_item.id,
+                'product_id': cart_item.product_id,
+                'name': product.name,
+                'description': product.description,
+                'price': str(product.price),
+                'image': product.image_id,
+                'quantity': cart_item.quantity
+            })
+        return JsonResponse({
+            'cartItems': cart_items,
+            'order_placed_date': shopping_cart.order_placed_date,
+        }, status=200)
+    
     for shopping_cart in ShoppingCart.objects.filter(user_id = user_id):
         if shopping_cart.order_status == 0:
             for cart_item in ShoppingCartItem.objects.filter(shopping_cart_id = shopping_cart.id):
@@ -251,11 +271,9 @@ def return_user_cart(request):
                     'quantity': cart_item.quantity
                 })
 
-    data = {
+    return JsonResponse({
         'cartItems': cart_items
-    }
-
-    return JsonResponse(data, status=200)
+    }, status=200)
 
 def add_product(request):
     user_id = authenticate_request(request)
@@ -477,17 +495,18 @@ def get_orders(request):
             }
             return JsonResponse(data, status=401)
 
-        orders = ShoppingCart.objects.filter(user=user, order_status=1).order_by('-order_placed_date')
-
+        print("Looking up orders for user: " + str(user) + " order_status: 1")
+        orders = ShoppingCart.objects.filter(user_id=user, order_status=1).order_by('-order_placed_date')
         carts = []
         for order in orders:
-            order_items = ShoppingCartItem.objects.filter(shopping_cart=order)
+            print("Found order: " + str(order.id) + " " + str(order.order_placed_date))
+            order_items = ShoppingCartItem.objects.filter(shopping_cart_id=order.id)
 
             items = []
             for item in order_items:
-                product = item.product
+                product = get_object_or_404(Product, id=item.product_id)
                 item_dict = {
-                    'id': product.id,
+                    'id': item.id,
                     'name': product.name,
                     'description': product.description,
                     'price': str(product.price),
@@ -496,18 +515,19 @@ def get_orders(request):
                 }
                 items.append(item_dict)
 
+            print("Made it to cart_dict")
             cart_dict = {
                 'id': order.id,
                 'order_placed_date': order.order_placed_date,
-                'total_price': str(order.total_price),
                 'items': items,
             }
             carts.append(cart_dict)
-
         data = {
             'carts': carts,
         }
-        return JsonResponse(data)
+
+        print("Returning orders for user: " + str(user), data)
+        return JsonResponse(data, status=200)
     else:
         data = {
             'error': 'Invalid request method'
