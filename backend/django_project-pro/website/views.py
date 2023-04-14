@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import User, Product, ShoppingCart, ShoppingCartItem, Order, OrderItem, OrderStatus
 from .forms import SigninForm, accountForm, updateQuantity, deleteAccountForm, updateAccountForm , AddProductForm, RemoveProductForm, AddToCartForm, RemoveFromCartForm
 from django.http import JsonResponse
+from django.utils import timezone
 import random, secrets, string
 
 def authenticate_request(request):
@@ -226,20 +227,24 @@ def return_user_cart(request):
         return JsonResponse({'error': 'Authentication failed'}, status = 401)
 
     cart_items = []
-    for item in ShoppingCartItem.objects.filter(shopping_cart_id=user_id):
-        product = get_object_or_404(Product, id=item.product_id)
-        cart_items.append({
-            'id': item.id,
-            'product_id': item.product_id,
-            'name': product.name,
-            'description': product.description,
-            'price': str(product.price),
-            'image': product.image_id,
-            'quantity': item.quantity
-        })
+    for shopping_cart in ShoppingCart.objects.filter(user_id = user_id):
+        if shopping_cart.order_status == 0:
+            for cart_item in ShoppingCartItem.objects.filter(shopping_cart_id = shopping_cart.id):
+                product = get_object_or_404(Product, id=item.product_id)
+                cart_items.append({
+                    'id': item.id,
+                    'product_id': item.product_id,
+                    'name': product.name,
+                    'description': product.description,
+                    'price': str(product.price),
+                    'image': product.image_id,
+                    'quantity': item.quantity
+                })
+
     data = {
         'cartItems': cart_items
     }
+
     return JsonResponse(data, status=200)
 
 def add_product(request):
@@ -292,6 +297,7 @@ def add_cart_item(request):
     if form.is_valid():
         item_id = form.cleaned_data['item_id']
         product = get_object_or_404(Product, id=item_id)
+        #Change userId to shoppingCartId
         cart_item = ShoppingCartItem.objects.filter(shopping_cart_id=user_id, product_id=product.id).first()
         if cart_item:
             cart_item.quantity += 1
@@ -300,6 +306,7 @@ def add_cart_item(request):
             cart_item = ShoppingCartItem(shopping_cart_id=user_id, product_id=product.id, quantity=1)
             cart_item.save()
         cart_items = []
+        # Change userId to shoppingCartId
         for item in ShoppingCartItem.objects.filter(shopping_cart_id=user_id):
             product = get_object_or_404(Product, id=item.product_id)
             cart_items.append({
@@ -384,34 +391,28 @@ def get_shopping_cart_items(request):
             'error': 'Invalid request method'
         }
         return JsonResponse(data, status=400)
-
+    
 def place_order(request):
     if request.method == 'POST':
-        token = request.POST.get('token')
         user_id = authenticate_request(request)
         if user_id == -1:
             return JsonResponse({'error': 'Authentication failed'}, status=401)
-        
-        user = get_object_or_404(User, id=user_id, auth_token=token)
-        cart = get_object_or_404(ShoppingCart, user=user)
 
-        order = Order.objects.create(user=user, order_status=OrderStatus.PENDING)
-        order_items = []
-        for item in cart.items.all():
-            order_item = OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity)
-            order_items.append(order_item)
 
-        cart.items.all().delete()
 
-        data = {
-            'cart_ID': order.id
-        }
-        return JsonResponse(data, status = 200)
-    else:
-        data = {
-            'cart_ID': -1
-        }
-        return JsonResponse(data, status=400)
+        newOrder = ShoppingCart(
+            user_id = user_id,
+            order_status = 1,
+            order_placed_date = timezone.now().date()
+        )
+
+        newOrder.save()
+        return JsonResponse({'message': "Order Place Successfully"}, status = 200)
+    return JsonResponse({'error': "Invalid Input"}, status = 401)
+
+
+
+
 
 def update_quantity_cartItem(request):
     user_id = authenticate_request(request)
