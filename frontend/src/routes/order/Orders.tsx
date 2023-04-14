@@ -39,6 +39,23 @@ const Orders = () => {
     }, []);
   }
 
+  // Get orders
+  const [orders, setOrders] = React.useState([]);
+  React.useEffect(() => {
+    Axios.get("http://127.0.0.1:8000/orders", {
+      params: {
+        token,
+      },
+    })
+      .then((res) => {
+        console.log("ALL da orders: ", res.data.carts);
+        setOrders(res.data.carts);
+      })
+      .catch((err) => {
+        alert("There was an error fetching your orders. Please try again.");
+      });
+  }, []);
+
   // Return items
   const [returningOrder, setReturningOrder] = React.useState(-1);
   const [show, setShow] = React.useState(false); // For dialog
@@ -109,13 +126,13 @@ const Orders = () => {
                 className="accordion accordion-flush rounded"
                 id="orderAccordion"
               >
-                <Order
-                  cartId={1}
-                  expanded
-                  setReturningOrder={setReturningOrder}
-                />
-                <Order cartId={2} setReturningOrder={setReturningOrder} />
-                <Order cartId={3} setReturningOrder={setReturningOrder} />
+                {orders.map((order) => (
+                  <Order
+                    key={order.id}
+                    cartId={order.id}
+                    setReturningOrder={setReturningOrder}
+                  />
+                ), [])}
               </div>
             )}
           </div>

@@ -12,24 +12,30 @@ const OrderSummary = ({ cartId = -1 }: Props) => {
   // Get user token from useOutletContext
   const token = useOutletContext().user.token;
 
+  const [orderPlacedDate, setOrderPlacedDate] = useState("");
+
   const [cartItems, setCartItems] = useState(Array<JSONCartItem>);
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
 
   // If a cart ID is provided, use it to fetch the cart items
   if (cartId != -1) {
-    Axios.get(`/cart/${cartId}`, {
-      params: {
-        token,
-      },
-    })
-      .then((response) => {
-        // Store the cart items in state
-        setCartItems(response.data.cartItems);
+    useEffect(() => {
+      Axios.get(`http://127.0.0.1:8000/cart`, {
+        params: {
+          token,
+          cart_id: cartId,
+        },
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then((response) => {
+          // Store the cart items in state
+          setCartItems(response.data.cartItems);
+          setOrderPlacedDate(response.data.order_placed_date);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }, []);
   }
 
   // Otherwise, fetch the current cart items from the server
@@ -38,6 +44,7 @@ const OrderSummary = ({ cartId = -1 }: Props) => {
       Axios.get("http://127.0.0.1:8000/cart", {
         params: {
           token,
+          cart_id: -1,
         },
       })
         .then((response) => {
@@ -66,6 +73,8 @@ const OrderSummary = ({ cartId = -1 }: Props) => {
 
   return (
     <div>
+      <h3 className="text-center">Order Summary</h3>
+      <p>Order placed on {orderPlacedDate}</p>
       <table className="table table-striped">
         <thead>
           <tr>
