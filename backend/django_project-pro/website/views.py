@@ -108,14 +108,24 @@ def add_account(roleInput, usernameInput, passwordInput, firstInput, lastInput, 
         payment_method = methodInput,
         token_id = token
     )
-
     newUser.save()
+
+    # Create an empty cart for the user
+    newCart = ShoppingCart(
+        user_id = newUser.id,
+        order_status = 0,
+        order_placed_date = timezone.now(),
+    )
+    newCart.save()
+    
     return JsonResponse({'message': 'Success!', 'token': token}, status=200)
 
 def create_account(request):
     if request.method == 'POST':
         form = accountForm(request.POST)
+        print("Is post request", form)
         if form.is_valid():
+            print("Form is valid")
             userRole = form.cleaned_data['userRole']
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']

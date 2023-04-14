@@ -11,7 +11,7 @@ class accountForm(forms.Form):
     firstname = forms.CharField(label='firstname', max_length=100)
     lastname = forms.CharField(label='lastname', max_length=100)
     address = forms.CharField(label='address', max_length=100)
-    balance = forms.DecimalField(decimal_places=2, max_digits = 10)
+    balance = forms.CharField(label='balance', max_length=10)
     payment_method = forms.CharField(label='payment_method', max_length=100)
 
 class deleteAccountForm(forms.Form):
