@@ -11,6 +11,8 @@ import OrderSummary from "../../components/order/OrderSummary";
 const Checkout = () => {
   if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
 
+  const { setShouldUpdateCartBadge } = useOutletContext();
+
   // Get user token from useOutletContext
   const token = useOutletContext().user.token;
 
@@ -29,6 +31,7 @@ const Checkout = () => {
       { params: { token } }
     )
       .then((response) => {
+        setShouldUpdateCartBadge(true);
         navigate(`/orders/${response.data.cartId}`, {
           state: { message: "Order placed!" },
         });

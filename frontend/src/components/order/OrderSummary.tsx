@@ -13,6 +13,7 @@ const OrderSummary = ({ cartId = -1 }: Props) => {
   const token = useOutletContext().user.token;
 
   const [orderPlacedDate, setOrderPlacedDate] = useState("");
+  const [orderStatus, setOrderStatus] = useState("");
 
   const [cartItems, setCartItems] = useState(Array<JSONCartItem>);
   const [subtotal, setSubtotal] = useState(0);
@@ -30,7 +31,12 @@ const OrderSummary = ({ cartId = -1 }: Props) => {
         .then((response) => {
           // Store the cart items in state
           setCartItems(response.data.cartItems);
-          setOrderPlacedDate(response.data.order_placed_date);
+          const date = new Date(response.data.order_placed_date);
+          const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+          const formattedDate = date.toLocaleDateString('en-US', options);
+
+          setOrderPlacedDate(formattedDate);
+          setOrderStatus(response.data.order_status);
         })
         .catch((error) => {
           console.log(error);
@@ -43,8 +49,7 @@ const OrderSummary = ({ cartId = -1 }: Props) => {
     useEffect(() => {
       Axios.get("http://127.0.0.1:8000/cart", {
         params: {
-          token,
-          cart_id: -1,
+          token
         },
       })
         .then((response) => {
@@ -88,7 +93,7 @@ const OrderSummary = ({ cartId = -1 }: Props) => {
             <tr key={item.cartItemId}>
               <td>{item.name}</td>
               <td>{item.quantity}</td>
-              <td>{priceFormatter.format(item.price * item.quantity)}</td>
+              <td className={orderStatus == "2" ? "text-decoration-line-through" : ""} >{priceFormatter.format(item.price * item.quantity)}</td>
             </tr>
           ))}
         </tbody>
@@ -118,7 +123,9 @@ const OrderSummary = ({ cartId = -1 }: Props) => {
           <tr>
             <td className="text-end fw-bold">Total</td>
             <td className="text-end ps-3 fw-bold">
-              {priceFormatter.format(total)}
+              { orderStatus == "2" ?
+                <del className="text-muted">{priceFormatter.format(total)}</del>
+                :priceFormatter.format(total)}
             </td>
           </tr>
         </tbody>

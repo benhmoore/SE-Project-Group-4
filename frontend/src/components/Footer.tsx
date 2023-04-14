@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -6,24 +7,24 @@ const Footer = () => {
       <footer className="py-3 my-4">
         <ul className="nav justify-content-center border-bottom pb-3 mb-3">
           <li className="nav-item">
-            <a href="#" className="nav-link px-2 text-muted">
+            <Link to="/" className="nav-link px-2 text-muted">
               Home
-            </a>
+            </Link>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-link px-2 text-muted">
+            <Link to="/cart" className="nav-link px-2 text-muted">
               Cart
-            </a>
+            </Link>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-link px-2 text-muted">
+            <Link to="/orders" className="nav-link px-2 text-muted">
               Orders
-            </a>
+            </Link>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-link px-2 text-muted">
-              About
-            </a>
+            <Link to="/user/account" className="nav-link px-2 text-muted">
+              Account
+            </Link>
           </li>
         </ul>
         <p className="text-center text-muted">
