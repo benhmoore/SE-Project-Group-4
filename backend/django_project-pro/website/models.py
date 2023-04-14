@@ -55,21 +55,8 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(decimal_places=2, max_digits=10)
-"""
+
 class Seller(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     balance = models.DecimalField(decimal_places=2, max_digits=10)
     payment_info = models.CharField(max_length=255)
-    products = models.ManyToManyField(Product)
-
-
-    def add_product(self, name, description, price, image_id, available_quantity):
-        product = Product(name=name, description=description, price=price, seller=self.user, image_id=image_id, available_quantity=available_quantity)
-        product.save()
-        self.products.add(product)
-
-    def remove_product(self, product_id):
-        product = self.products.filter(id=product_id).first()
-        if product:
-            self.products.remove(product)
-            product.delete()"""
