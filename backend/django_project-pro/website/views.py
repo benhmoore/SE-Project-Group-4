@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import User, Product, ShoppingCart, ShoppingCartItem, Order, OrderItem, OrderStatus
+from .models import User, Product, ShoppingCart, ShoppingCartItem, Order, OrderItem, OrderStatus, Seller
 from .forms import SigninForm, accountForm, updateQuantity, deleteAccountForm, updateAccountForm , AddProductForm, RemoveProductForm, AddToCartForm, RemoveFromCartForm
 from django.http import JsonResponse
 from django.utils import timezone
@@ -366,9 +366,14 @@ def remove_cart_item(request):
 def get_shopping_cart_items(request):
     if request.method == 'GET':
         try:
-            token = request.GET.get('token')
-            user = User.objects.get(auth_token=token)
-            cart_items = ShoppingCartItem.objects.filter(shopping_cart_id=user.id)
+            user = authenticate_request(request)
+            if user == -1:
+                data = {
+                    'cartItems': []
+                }
+                return JsonResponse(data, status=401)
+
+            cart_items = ShoppingCartItem.objects.filter(shopping_cart_id=user)
 
             items = []
             for cart_item in cart_items:
@@ -386,12 +391,12 @@ def get_shopping_cart_items(request):
             data = {
                 'cartItems': items
             }
-            return JsonResponse(data, status = 200)
-        except User.DoesNotExist:
+            return JsonResponse(data, status=200)
+        except Exception as e:
             data = {
-                'cartItems': []
+                'error': str(e)
             }
-            return JsonResponse(data, status = 404)
+            return JsonResponse(data, status=500)
     else:
         data = {
             'error': 'Invalid request method'
@@ -433,85 +438,88 @@ def update_quantity_cartItem(request):
     cart_item.save()
     return JsonResponse({'quantity': quantity}, status = 200)
 
-
-
-"""
 def get_orders(request):
     if request.method == 'GET':
-        try:
-            token = request.GET.get('token')
-            user = User.objects.get(token_id=token, is_seller=False)
-            orders = ShoppingCart.objects.filter(user=user, order_status=1).order_by('-order_placed_date')
+        
+        user = authenticate_request(request)
+        if user == -1:
+            data = {
+                'carts': []
+            }
+            return JsonResponse(data, status=401)
 
-            carts = []
-            for order in orders:
-                order_items = ShoppingCartItem.objects.filter(shopping_cart=order)
+        orders = ShoppingCart.objects.filter(user=user, order_status=1).order_by('-order_placed_date')
 
-                items = []
-                for item in order_items:
-                    product = item.product
-                    item_dict = {
-                        'id': product.id,
-                        'name': product.name,
-                        'description': product.description,
-                        'price': str(product.price),
-                        'image': product.image_id,
-                        'quantity': item.quantity,
-                    }
-                    items.append(item_dict)
+        carts = []
+        for order in orders:
+            order_items = ShoppingCartItem.objects.filter(shopping_cart=order)
 
-                cart_dict = {
-                    'id': order.id,
-                    'order_placed_date': order.order_placed_date,
-                    'total_price': str(order.total_price),
-                    'items': items,
+            items = []
+            for item in order_items:
+                product = item.product
+                item_dict = {
+                    'id': product.id,
+                    'name': product.name,
+                    'description': product.description,
+                    'price': str(product.price),
+                    'image': product.image_id,
+                    'quantity': item.quantity,
                 }
-                carts.append(cart_dict)
+                items.append(item_dict)
 
-            data = {
-                'carts': carts,
+            cart_dict = {
+                'id': order.id,
+                'order_placed_date': order.order_placed_date,
+                'total_price': str(order.total_price),
+                'items': items,
             }
-            return JsonResponse(data)
-        except User.DoesNotExist:
-            data = {
-                'carts': [],
-            }
-            return JsonResponse(data)
-    else:
+            carts.append(cart_dict)
+
         data = {
-            'carts': [],
+            'carts': carts,
         }
         return JsonResponse(data)
-       
-def get_seller_products(request):
-    if request.method == 'GET':
-        try:
-            token = request.GET.get('token')
-            user = User.objects.get(token_id=token)
-
-            products = Product.objects.filter(seller=user.username)
-
-            data = {
-                'products': list(products.values())
-            }
-            return JsonResponse(data)
-        except (User.DoesNotExist, ValueError):
-            data = {
-                'products': []
-            }
-            return JsonResponse(data)
     else:
         data = {
             'error': 'Invalid request method'
         }
         return JsonResponse(data, status=400)
 
-def edit_seller_product(request, product_id):
+     
+def get_seller_products(request):
+    if request.method == 'GET':
+        user = authenticate_request(request)
+        if user == -1 or not user.is_seller:
+            data = {
+                'products': []
+            }
+            return JsonResponse(data, status=401)
+
+        products = Product.objects.filter(seller=user)
+
+        data = {
+            'products': list(products.values())
+        }
+        return JsonResponse(data)
+    else:
+        data = {
+            'error': 'Invalid request method'
+        }
+        return JsonResponse(data, status=400)
+  
+def edit_seller_product(request):
     if request.method == 'UPDATE':
         token = request.POST.get('token')
-        seller = get_object_or_404(Seller, token_id=token)
+        seller_id = authenticate_request(request)
+        if seller_id == -1:
+            return JsonResponse({'error': 'Authentication failed.'}, status=401)
+        
+        seller = get_object_or_404(Seller, id=seller_id, token_id=token)
+        product_id = request.POST.get('product_id')
         product = get_object_or_404(Product, id=product_id, seller=seller)
         
+        if 'category' in request.POST:
+            product.category = request.POST.get('category')
         if 'name' in request.POST:
             product.name = request.POST.get('name')
         if 'description' in request.POST:
@@ -520,6 +528,8 @@ def edit_seller_product(request, product_id):
             product.price = request.POST.get('price')
         if 'image_id' in request.POST:
             product.image_id = request.POST.get('image_id')
+        if 'num_sales' in request.POST:
+            product.num_sales = request.POST.get('num_sales')
         if 'inventory' in request.POST:
             product.inventory = request.POST.get('inventory')
         if 'approval_status' in request.POST:
@@ -528,6 +538,7 @@ def edit_seller_product(request, product_id):
         
         data = {
             'id': product.id,
+            'category': product.category,
             'name': product.name,
             'description': product.description,
             'price': str(product.price),
@@ -546,8 +557,11 @@ def edit_seller_product(request, product_id):
 
 def delete_seller_product(request, product_id):
     if request.method == 'DELETE':
-        token = request.GET.get('token')
-        user = get_object_or_404(User, token_id=token, is_seller=True)
+        user_id = authenticate_request(request)
+        if user_id == -1:
+            return JsonResponse({'error': 'Authentication failed'})
+        
+        user = get_object_or_404(User, id=user_id, is_seller=True)
         product = get_object_or_404(Product, id=product_id, seller=user)
         product.delete()
         product_list = []
@@ -570,5 +584,4 @@ def delete_seller_product(request, product_id):
         data = {
             'products': []
         }
-        return JsonResponse(data)"""
-
+        return JsonResponse(data)
