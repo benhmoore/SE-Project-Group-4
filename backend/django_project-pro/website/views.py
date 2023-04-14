@@ -260,7 +260,7 @@ def add_product(request):
                 name=form.cleaned_data['name'],
                 price=form.cleaned_data['price'],
                 seller=user_id,  
-                image_id=form.cleaned_data['image_id'],
+                image_id='https://picsum.photos/600/600', #form.cleaned_data['image_id'],
                 num_sales=form.cleaned_data['num_sales'],
                 inventory=form.cleaned_data['inventory'],
                 approval_status=form.cleaned_data['approval_status'],
@@ -391,14 +391,12 @@ def get_shopping_cart_items(request):
             'error': 'Invalid request method'
         }
         return JsonResponse(data, status=400)
-    
+
 def place_order(request):
     if request.method == 'POST':
         user_id = authenticate_request(request)
         if user_id == -1:
             return JsonResponse({'error': 'Authentication failed'}, status=401)
-
-
 
         newOrder = ShoppingCart(
             user_id = user_id,
@@ -409,10 +407,6 @@ def place_order(request):
         newOrder.save()
         return JsonResponse({'message': "Order Place Successfully"}, status = 200)
     return JsonResponse({'error': "Invalid Input"}, status = 401)
-
-
-
-
 
 def update_quantity_cartItem(request):
     user_id = authenticate_request(request)
