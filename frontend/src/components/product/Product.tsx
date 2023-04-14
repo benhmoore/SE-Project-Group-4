@@ -2,18 +2,30 @@ import React from "react";
 import ProductMenu from "./ProductMenu";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import Skeleton from "react-loading-skeleton";
+import { Spinner } from "react-bootstrap";
 
 interface Props {
   product: {
+    approval_status: number;
+    category: string;
     name: string;
     price: number;
     description: string;
     image_id: string;
     id: number;
+    num_sales: number;
+    seller: number;
   };
 }
 
 const Product = ({ product }: Props) => {
+  if (product === undefined)
+    return (
+      <div className="justify-content-center text-center">
+        <Spinner />
+      </div>
+    );
+
   return (
     <div className="card product-view p-3">
       <div className="card-header">

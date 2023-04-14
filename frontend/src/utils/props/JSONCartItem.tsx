@@ -1,6 +1,6 @@
 export interface JSONCartItem {
-  productId: number;
-  cartItemId: number;
+  product_id: number;
+  id: number;
   price: number;
   name: string;
   quantity: number;

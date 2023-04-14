@@ -15,7 +15,7 @@ const PricePill = ({ price, productId = -1 }: Props) => {
   const navigate = useNavigate();
 
   const handleAddToCart = () => {
-    Axios.post("/cart", {
+    Axios.post("http://127.0.0.1:8000/cart/add", {
       productId: productId,
       quantity: 1,
     })

@@ -22,7 +22,7 @@ const Cart = () => {
   );
 
   useEffect(() => {
-    Axios.get("/cart", {
+    Axios.get("http://127.0.0.1:8000/cart", {
       params: {
         token,
       },
@@ -37,7 +37,7 @@ const Cart = () => {
   }, []);
 
   const handleQuantityChange = (cartItemId: number, newQuantity: number) => {
-    Axios.put(`/cart/items/${cartItemId}`, {
+    Axios.put(`http://127.0.0.1:8000/cart/items/${cartItemId}`, {
       quantity: newQuantity,
     })
       .then((response) => {
@@ -57,16 +57,30 @@ const Cart = () => {
   };
 
   const handleDeleteCartItem = (cartItemId: number) => {
-    // Remove item from cartItems
-    let newCartItems = cartItems.filter(
-      (item) => item.cartItemId !== cartItemId
-    );
-    setCartItems(newCartItems);
+    // // Remove item from cartItems
+    // let newCartItems = cartItems.filter(
+    //   (item) => item.cartItemId !== cartItemId
+    // );
+    // setCartItems(newCartItems);
+
+    let formData = new FormData();
+    formData.append("token", token);
+    console.log("CARTTT", cartItemId);
+    formData.append("item_id", String(cartItemId));
+    Axios.post(`http://127.0.0.1:8000/cart/remove`, formData)
+      .then((response) => {
+        console.log("DWEDWEDWEFWEF", response.data);
+        // Update cartItems
+        setCartItems(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     // Recalculate subtotal
     let running_subtotal = 0;
-    for (let i = 0; i < newCartItems.length; i++) {
-      running_subtotal += newCartItems[i].price * newCartItems[i].quantity;
+    for (let i = 0; i < cartItems.length; i++) {
+      running_subtotal += cartItems[i].price * cartItems[i].quantity;
     }
     setSubtotal(running_subtotal);
   };
