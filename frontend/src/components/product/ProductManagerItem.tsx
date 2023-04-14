@@ -3,7 +3,12 @@ import React from "react";
 import { useOutletContext } from "react-router";
 import { useNavigate } from "react-router-dom";
 
+import { loadProduct } from "../../utils/ProductLoader";
+
 import Axios from "axios";
+import { priceFormatter } from "../../utils/PriceFormatter";
+import Dialog from "../Dialog";
+import EditProductDialog from "./EditProductDialog";
 
 interface Props {
   productId: number;
@@ -16,37 +21,48 @@ const ProductManagerItem = ({ productId }: Props) => {
   const [productName, setProductName] = React.useState("");
   const [productPrice, setProductPrice] = React.useState("");
   const [productQuantity, setProductQuantity] = React.useState(0);
+  const [productRevenue, setProductRevenue] = React.useState(0);
+
+  const [showDialog, setShowDialog] = React.useState(false);
 
   // Load product data from API
   React.useEffect(() => {
-    Axios.get("/products", {
-      params: {
-        token,
-        id: productId,
-      },
-    })
+    loadProduct(productId, token)
       .then((res) => {
-        setProductName(res.data.name);
-        setProductPrice(res.data.price);
-        setProductQuantity(res.data.inventory);
+        console.log("RES: ", res);
+        setProductName(res.name);
+        setProductPrice(res.price);
+        setProductQuantity(res.inventory);
+        setProductRevenue(res.num_sales * res.price);
       })
       .catch((err) => {
-        alert(
-          "There was an error fetching your product. Please try again later."
-        );
+        console.log(err);
       });
   }, []);
 
   return (
-    <tr>
-      <td>Product 1</td>
-      <td>$10</td>
-      <td>10</td>
-      <td>
-        <button className="btn btn-primary">Edit</button>
-        <button className="btn btn-danger ms-2">Archive</button>
-      </td>
-    </tr>
+    <>
+      <EditProductDialog
+        productId={productId}
+        show={showDialog}
+        setShow={setShowDialog}
+      />
+      <tr>
+        <td>{productName}</td>
+        <td>{priceFormatter.format(parseInt(productPrice))}</td>
+        <td>{productQuantity}</td>
+        <td>{priceFormatter.format(productRevenue)}</td>
+        <td>
+          <button
+            className="btn btn-primary"
+            onClick={() => setShowDialog(true)}
+          >
+            Edit
+          </button>
+          <button className="btn btn-danger ms-2">Archive</button>
+        </td>
+      </tr>
+    </>
   );
 };
 

@@ -2,6 +2,7 @@ import React from "react";
 import { useOutletContext } from "react-router";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
+import { loadProduct } from "../../utils/ProductLoader";
 
 interface Props {
   setActiveTab?: (tab: string) => void;
@@ -24,18 +25,13 @@ const ProductManager = ({ setActiveTab = () => {}, productId = -1 }: Props) => {
   if (productId !== -1) {
     // Fetch product data from API
     React.useEffect(() => {
-      Axios.get("/products/get", {
-        params: {
-          token,
-          product_id: productId,
-        },
-      })
+      loadProduct(productId, token)
         .then((res) => {
-          setProductName(res.data.name);
-          setProductDescription(res.data.description);
-          setProductPrice(res.data.price);
-          setProductImageUrl(res.data.image_id);
-          setProductQuantity(res.data.inventory);
+          setProductName(res.name);
+          setProductDescription(res.description);
+          setProductPrice(res.price);
+          setProductImageUrl(res.image_id);
+          setProductQuantity(res.inventory);
         })
         .catch((err) => {
           alert(
@@ -105,7 +101,7 @@ const ProductManager = ({ setActiveTab = () => {}, productId = -1 }: Props) => {
           placeholder="Provide a meaningful description of your product."
           id="floatingTextarea2"
           maxLength={200}
-          style={{ height: "200px" }}
+          style={{ height: "160px" }}
           required
           onChange={(e) => setProductDescription(e.target.value)}
           value={productDescription}
