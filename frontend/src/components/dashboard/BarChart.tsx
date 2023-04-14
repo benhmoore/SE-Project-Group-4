@@ -8,18 +8,28 @@ interface Data {
 }
 
 // Define an array of data objects
-const data: Data[] = [
-  { product: "A", sales: 100, color: "#f19a47" },
-  { product: "B", sales: 200, color: "#f19a47" },
-  { product: "C", sales: 300, color: "#f19a47" },
-];
+let data: Data[] = [];
+
+interface Props {
+  products: Array<Object>;
+}
 
 // Define a functional component that renders the bar chart
-const BarChart = () => {
+const BarChart = ({ products }: Props) => {
+  // create bars for each product
+  data = [];
+  for (let i = 0; i < products.length; i++) {
+    data.push({
+      product: products[i].name,
+      Sales: products[i].num_sales,
+      color: "#f19a47",
+    });
+  }
+
   return (
     <ResponsiveBar
       data={data}
-      keys={["sales"]}
+      keys={["Sales"]}
       indexBy="product"
       margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
       padding={0.3}

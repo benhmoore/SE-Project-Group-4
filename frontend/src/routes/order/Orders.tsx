@@ -65,9 +65,7 @@ const Orders = () => {
     let form = new FormData();
     form.append("order_id", returningOrder.toString());
     form.append("token", token);
-    Axios.post(
-      `http://127.0.0.1:8000/orders/return`, form
-    )
+    Axios.post(`http://127.0.0.1:8000/orders/return`, form)
       .then((res) => {
         navigate(`/order/return/summary/${res.data.cartId}`);
       })
@@ -127,19 +125,22 @@ const Orders = () => {
                       <h5 className="card-title">No orders found.</h5>
                       <p className="card-text">
                         You haven't placed any orders yet.
-                        </p>
-                        </div>
-                        </div>
-                        )}
-                {orders.map((order, index) => (
-                  <Order
-                    key={order.id}
-                    cartId={order.id}
-                    setReturningOrder={setReturningOrder}
-                    expanded={index === 0}
-                    order={order}
-                  />
-                ), [])}
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {orders.map(
+                  (order, index) => (
+                    <Order
+                      key={order.id}
+                      cartId={order.id}
+                      setReturningOrder={setReturningOrder}
+                      expanded={index === 0}
+                      order={order}
+                    />
+                  ),
+                  []
+                )}
               </div>
             )}
           </div>

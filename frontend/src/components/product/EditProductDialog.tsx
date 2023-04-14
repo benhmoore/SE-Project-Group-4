@@ -9,9 +9,15 @@ interface Props {
   productId: number;
   show: boolean;
   setShow: (show: boolean) => void;
+  setShouldRefreshProducts: (shouldRefresh: boolean) => void;
 }
 
-const EditProductDialog = ({ productId, show, setShow }: Props) => {
+const EditProductDialog = ({
+  productId,
+  show,
+  setShow,
+  setShouldRefreshProducts,
+}: Props) => {
   // Get user token from useOutletContext
   const token = useOutletContext().user.token;
 
@@ -59,7 +65,12 @@ const EditProductDialog = ({ productId, show, setShow }: Props) => {
         <Modal.Title>Edit Product "{productName}"</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <ProductManager productId={productId} />
+        <ProductManager
+          productId={productId}
+          isEditing={true}
+          setShow={setShow}
+          setShouldRefreshProducts={setShouldRefreshProducts}
+        />
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>

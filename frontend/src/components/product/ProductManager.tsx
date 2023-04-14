@@ -2,14 +2,23 @@ import React from "react";
 import { useOutletContext } from "react-router";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
-import { loadProduct } from "../../utils/ProductLoader";
+import { loadProduct, loadSellerProduct } from "../../utils/ProductLoader";
 
 interface Props {
   setActiveTab?: (tab: string) => void;
   productId?: number;
+  isEditing?: boolean;
+  setShouldRefreshProducts: (shouldRefresh: boolean) => void;
+  setShow?: (show: boolean) => void;
 }
 
-const ProductManager = ({ setActiveTab = () => {}, productId = -1 }: Props) => {
+const ProductManager = ({
+  setActiveTab = () => {},
+  productId = -1,
+  isEditing = false,
+  setShouldRefreshProducts,
+  setShow = () => {},
+}: Props) => {
   const navigate = useNavigate();
 
   // Get user token from useOutletContext
@@ -25,12 +34,12 @@ const ProductManager = ({ setActiveTab = () => {}, productId = -1 }: Props) => {
   if (productId !== -1) {
     // Fetch product data from API
     React.useEffect(() => {
-      loadProduct(productId, token)
+      loadSellerProduct(productId, token)
         .then((res) => {
           setProductName(res.name);
           setProductDescription(res.description);
           setProductPrice(res.price);
-          setProductImageUrl(res.image_id);
+          setProductImageUrl(res.image);
           setProductQuantity(res.inventory);
         })
         .catch((err) => {
@@ -43,34 +52,45 @@ const ProductManager = ({ setActiveTab = () => {}, productId = -1 }: Props) => {
 
   const handleAddProduct = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    Axios.post(
-      "/products/add",
-      {
-        name: productName,
-        price: productPrice,
-        category: "test",
-        description: productDescription,
-        image_id: productImageUrl,
-        inventory: productQuantity,
-      },
-      {
-        params: {
-          token,
-        },
-      }
-    )
+
+    if (isEditing) {
+      return handleEditProduct(e);
+    }
+
+    let form = new FormData();
+    form.append("token", token);
+    form.append("name", productName);
+    form.append("price", productPrice);
+    form.append("description", productDescription);
+    form.append("image_id", productImageUrl);
+    form.append("inventory", productQuantity.toString());
+    Axios.post("http://127.0.0.1:8000/products/add", form)
       .then((res) => {
-        setProductName("");
-        setProductDescription("");
-        setProductPrice("");
-        setProductImageUrl("");
-        setProductQuantity(0);
-        setActiveTab("manage_products"); // Switch to manage products tab
+        setShouldRefreshProducts(true);
+        setActiveTab("dashboard");
       })
       .catch((err) => {
-        alert(
-          "There was an error adding your product. Please try again later."
-        );
+        console.log(err);
+      });
+  };
+
+  const handleEditProduct = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    let form = new FormData();
+    form.append("token", token);
+    form.append("product_id", productId.toString());
+    form.append("name", productName);
+    form.append("price", productPrice);
+    form.append("description", productDescription);
+    form.append("image_id", productImageUrl);
+    form.append("inventory", productQuantity.toString());
+    Axios.post("http://127.0.0.1:8000/seller/products/edit", form)
+      .then((res) => {
+        setShow(false);
+        setShouldRefreshProducts(true);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -159,9 +179,15 @@ const ProductManager = ({ setActiveTab = () => {}, productId = -1 }: Props) => {
           zero.
         </small>
       </div>
-      <button type="submit" className="btn btn-primary btn-block">
-        Submit for Review
-      </button>
+      {isEditing ? (
+        <button type="submit" className="btn btn-primary btn-block">
+          Update Product
+        </button>
+      ) : (
+        <button type="submit" className="btn btn-primary btn-block">
+          Submit for Review
+        </button>
+      )}
     </form>
   );
 };
