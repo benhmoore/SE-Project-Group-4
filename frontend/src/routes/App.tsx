@@ -74,6 +74,7 @@ export default function App() {
           authenticated: authenticated,
           setAuthenticated: setAuthenticated,
           user: user,
+          token: token,
           handleLogin: handleLogin,
           globalCompareProductId: compareProductId,
           setGlobalCompareProductId: setCompareProductId,

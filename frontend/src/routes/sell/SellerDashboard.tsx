@@ -5,12 +5,27 @@ import { MdDashboard, MdEdit } from "react-icons/md";
 import { Navigate, useOutletContext } from "react-router-dom";
 import ProductManagerItem from "../../components/product/ProductManagerItem";
 import BarChart from "../../components/dashboard/BarChart";
+import { loadSellerProducts } from "../../utils/ProductLoader";
 
 const SellerDashboard = () => {
   if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
 
+  // Token
+  const token = useOutletContext().user.token;
+
   // Keep track of active tab with states
   const [activeTab, setActiveTab] = React.useState("dashboard");
+
+  const [products, setProducts] = React.useState([]);
+  const [shouldRefreshProducts, setShouldRefreshProducts] =
+    React.useState(false);
+
+  React.useEffect(() => {
+    loadSellerProducts(token).then((res) => {
+      setProducts(res);
+      setShouldRefreshProducts(false);
+    });
+  }, [shouldRefreshProducts]);
 
   return (
     <div className="container">
@@ -76,24 +91,41 @@ const SellerDashboard = () => {
                   aria-labelledby="v-pills-home-tab"
                 >
                   <h2>Sales Overview</h2>
-                  <div style={{ height: 500 }}>
-                    <BarChart />
-                  </div>
-                  <table className="table table-striped">
-                    <thead>
-                      <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th>Revenue</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <ProductManagerItem productId={1} />
-                      <ProductManagerItem />
-                    </tbody>
-                  </table>
+                  {products.length === 0 ? (
+                    <p>
+                      You have no products. Add a product to view sales data.
+                    </p>
+                  ) : (
+                    <>
+                      <div style={{ height: 500 }}>
+                        <BarChart products={products} />
+                      </div>
+                      <table className="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Sales</th>
+                            <th>Revenue</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {products.map((product: any) => (
+                            <ProductManagerItem
+                              key={product.id}
+                              productId={product.id}
+                              shouldRefreshProducts={shouldRefreshProducts}
+                              setShouldRefreshProducts={
+                                setShouldRefreshProducts
+                              }
+                            />
+                          ))}
+                        </tbody>
+                      </table>
+                    </>
+                  )}
                 </div>
                 <div
                   className={`tab-pane ${
@@ -105,7 +137,10 @@ const SellerDashboard = () => {
                 >
                   <h2>Add Product</h2>
                   <p>Add a new product to the storefront.</p>
-                  <ProductManager setActiveTab={setActiveTab} />
+                  <ProductManager
+                    setActiveTab={setActiveTab}
+                    setShouldRefreshProducts={setShouldRefreshProducts}
+                  />
                 </div>
               </div>
             </div>

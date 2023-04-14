@@ -15,7 +15,7 @@ import {
 const PaymentInfo = () => {
   const navigate = useNavigate();
 
-  const token = useOutletContext().user.token;
+  const token = useOutletContext().token;
 
   // Check if url contains "payment". If so, user is signing up
   const signingUp = window.location.href.includes("payment");
@@ -35,19 +35,17 @@ const PaymentInfo = () => {
         setAddress(res.data.address);
       })
       .catch((err) => {
-        alert(
-          "There was an error fetching your payment and shipping information. Please try again later."
-        );
+        console.log(err);
       });
-  }, []);
+  }, [token]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    Axios.post("http://127.0.0.1:8000/user", {
-      token,
-      payment_method: paymentMethod,
-      address,
-    })
+    let form = new FormData();
+    form.append("token", token);
+    form.append("payment_method", paymentMethod);
+    form.append("address", address);
+    Axios.post("http://127.0.0.1:8000/user/update", form)
       .then((res) => {
         console.log(res.data);
         if (signingUp) {

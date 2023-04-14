@@ -16,7 +16,6 @@ const CreateAccount = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert("Account created!");
 
     // Create account
     let form = new FormData();
@@ -30,7 +29,6 @@ const CreateAccount = () => {
     form.append("payment_method", "_");
     Axios.post("http://127.0.0.1:8000/user/create", form)
       .then((res) => {
-        console.log(res);
 
         // Login to user
         handleLogin(username, password);
