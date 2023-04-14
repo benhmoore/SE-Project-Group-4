@@ -11,16 +11,18 @@ const ProductCardFetcher = ({ productId }: Props) => {
   const [product, setProduct] = useState(Object);
 
   useEffect(() => {
-    Axios.get(`/products/${productId}`)
+    Axios.get(`http://127.0.0.1:8000/products?id=${productId}`)
       .then((response) => {
-        setProduct(response.data.products[0]);
+        setProduct(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
   }, [productId]);
 
-  return <>{product.name && <ProductCard {...product} />}</>;
+  return (
+    <>{product.name && <ProductCard image={product.image_id} {...product} />}</>
+  );
 };
 
 export default ProductCardFetcher;

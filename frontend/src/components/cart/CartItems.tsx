@@ -59,7 +59,17 @@ const CartItems = ({
       });
   }, []);
 
-  return <>{rows}</>;
+  return (
+    <>
+      {cartItems.length > 0 ? (
+        rows
+      ) : (
+        <td colSpan={4} className="text-center">
+          <p>Your cart is empty.</p>
+        </td>
+      )}
+    </>
+  );
 };
 
 export default CartItems;

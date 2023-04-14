@@ -9,6 +9,9 @@ interface Props {
   setAuthenticated: (authenticated: boolean) => void;
   handleLogout: () => void;
   user: { username: string; token: string };
+  token: string;
+  shouldUpdateCartBadge: boolean;
+  setShouldUpdateCartBadge: (shouldUpdateCartBadge: boolean) => void;
 }
 
 const AccountMenu = ({
@@ -16,16 +19,11 @@ const AccountMenu = ({
   setAuthenticated,
   handleLogout,
   user,
+  token,
+  shouldUpdateCartBadge,
+  setShouldUpdateCartBadge,
 }: Props) => {
   const location = useLocation();
-
-  // Get user token from useOutletContext
-  let token = "";
-  try {
-    const token = user.token;
-  } catch (error) {
-    console.log(error);
-  }
 
   const [cartItems, setCartItems] = React.useState([]);
 
@@ -37,12 +35,14 @@ const AccountMenu = ({
     })
       .then((response) => {
         // Store the cart items in state
+        console.log("THEE CART", response.data.cartItems);
         setCartItems(response.data.cartItems);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+    setShouldUpdateCartBadge(false);
+  }, [shouldUpdateCartBadge]);
 
   if (!authenticated)
     return (

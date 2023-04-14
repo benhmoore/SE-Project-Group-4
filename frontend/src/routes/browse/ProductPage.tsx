@@ -41,7 +41,7 @@ const ProductPage = () => {
           if (response.data.length === 0) {
             return navigate("/");
           }
-          setCompareProduct(response.data[0]);
+          setCompareProduct(response.data);
         })
         .catch((error) => {
           console.log(error);

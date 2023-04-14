@@ -46,7 +46,7 @@ const ProductMenu = ({ price, productId, name }: Props) => {
                   onClick={handleCompareClick}
                   className="nav-link"
                 >
-                  <BiGitCompare className="mb-1 me-1" />
+                  {/* <BiGitCompare className="mb-1 me-1" /> */}
                   Compare
                 </Link>
               </li>
