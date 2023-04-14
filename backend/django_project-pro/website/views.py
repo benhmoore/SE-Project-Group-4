@@ -117,7 +117,7 @@ def add_account(roleInput, usernameInput, passwordInput, firstInput, lastInput, 
         order_placed_date = timezone.now(),
     )
     newCart.save()
-    
+
     return JsonResponse({'message': 'Success!', 'token': token}, status=200)
 
 def create_account(request):
@@ -154,54 +154,44 @@ def delete_account(request):
                         deleteAccount = User.objects.get(id=oneRow.id)
                         deleteAccount.delete()
 
+def update_account_info(request):
+    user_id = authenticate_request(request)
+    if user_id == -1:
+        return JsonResponse({'error': 'Authentication failed'}, status = 401)
+    
+    if request.method == "POST":
+
+        form = updateAccountForm(request.POST)
+        print(form)
+        if form.is_valid():
+            matching_payment_info = form.cleaned_data['payment_method']
+            matching_address = form.cleaned_data['address']
+            foundUser = User.objects.get(id=user_id)
+            foundUser.address = matching_address
+            foundUser.payment_method = matching_payment_info
+            foundUser.save()
+            return JsonResponse({'message': 'Success!'}, status=200)
+    return JsonResponse({'message': 'Account Update Failed'}, status=401)
+
+
 def get_account_info(request):
-    token = request.GET.get('token')
-
-    form = updateAccountForm(request.POST)
-    if form.is_valid():
-        matchingToken = form.cleaned_data['token']
-        matching_payment_info = form.cleaned_data['payment_method']
-        matching_address = form.cleaned_data['address']
-
-        foundUser = User.objects.get(token_id = matchingToken)
-        foundUser.address = matching_address
-        foundUser.payment_method = matching_payment_info
-
-        returnUser = {
-            'id': foundUser.id,
-            'user_role': foundUser.user_role,
-            'username': foundUser.username,
-            'first_name': foundUser.first_name,
-            'last_name': foundUser.last_name,
-            'address': foundUser.address,
-            'balance': foundUser.balance,
-            'payment_method': foundUser.payment_method,
-            'token_id': foundUser.token_id
-        }
-
-        foundUser.save()
-        return JsonResponse(returnUser, safe = False)
-
     user_id = authenticate_request(request)
     if user_id == -1:
         return JsonResponse({'error': 'Authentication failed'}, status = 401)
 
-    allUsers = User.objects.all()
-    for eachUser in allUsers:
-        if (eachUser.token_id == token):
-            returnUser = {
-                'id': eachUser.id,
-                'user_role': eachUser.user_role,
-                'username': eachUser.username,
-                'first_name': eachUser.first_name,
-                'last_name': eachUser.last_name,
-                'address': eachUser.address,
-                'balance': eachUser.balance,
-                'payment_method': eachUser.payment_method,
-                'token_id': token
-            }
-            return JsonResponse(returnUser, safe = False, status= 200)
-    return JsonResponse({}, status = 401)
+    user = User.objects.get(id = user_id)
+    returnUser = {
+        'id': user.id,
+        'user_role': user.user_role,
+        'username': user.username,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'address': user.address,
+        'balance': user.balance,
+        'payment_method': user.payment_method,
+        'token_id': user.token_id
+    }
+    return JsonResponse(returnUser, safe = False, status= 200)
 
 def print_products(request):
     productAll = Product.objects.all()
