@@ -38,6 +38,10 @@ class updateQuantity(forms.Form):
     id = forms.CharField(max_length=255)
     quantity = forms.IntegerField()
 
+class ReturnOrderForm(forms.Form):
+    token = forms.CharField(max_length=255)
+    order_id = forms.IntegerField()
+
 ######################################################################################
 class RemoveProductForm(forms.Form):
     product_id = forms.IntegerField()

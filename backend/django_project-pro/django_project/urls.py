@@ -19,7 +19,7 @@ from django.views.generic.base import TemplateView
 from website.views import get_account_info, basic_login, create_account, delete_account, \
     print_products, get_product_info, \
     return_user_cart, add_product, remove_product, \
-    add_cart_item, remove_cart_item, update_quantity_cartItem, place_order, get_orders
+    add_cart_item, remove_cart_item, update_quantity_cartItem, place_order, return_order, get_orders
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,8 +43,6 @@ urlpatterns = [
     path('cart/order', place_order, name = 'place_order'),
 
     path('orders', get_orders, name = 'get_orders'),
-
-
-
+    path('orders/return', return_order, name = 'return_order'),
 
 ]
