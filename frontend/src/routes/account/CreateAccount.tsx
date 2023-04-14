@@ -19,16 +19,16 @@ const CreateAccount = () => {
     alert("Account created!");
 
     // Create account
-    Axios.post("/user/create", {
-      userRole: 2,
-      username: username,
-      password: password,
-      firstName: firstName,
-      lastName: lastName,
-      address: "",
-      balance: 0,
-      payment_method: "",
-    })
+    let form = new FormData();
+    form.append("userRole", "2");
+    form.append("username", username);
+    form.append("password", password);
+    form.append("firstname", firstName);
+    form.append("lastname", lastName);
+    form.append("address", "_"); 
+    form.append("balance", "0");
+    form.append("payment_method", "_");
+    Axios.post("http://127.0.0.1:8000/user/create", form)
       .then((res) => {
         console.log(res);
 

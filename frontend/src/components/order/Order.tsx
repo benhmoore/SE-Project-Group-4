@@ -5,9 +5,10 @@ interface Props {
   cartId: number;
   expanded?: boolean;
   setReturningOrder: (cartId: number) => void;
+  order: Object;
 }
 
-const Order = ({ cartId, expanded = false, setReturningOrder }: Props) => {
+const Order = ({ cartId, expanded = false, setReturningOrder, order }: Props) => {
   const handleReturn = () => {
     setReturningOrder(cartId);
   };
@@ -23,7 +24,14 @@ const Order = ({ cartId, expanded = false, setReturningOrder }: Props) => {
           aria-expanded={expanded}
           aria-controls={`cartPanel_${cartId}`}
         >
-          Order #{cartId}
+          {/* If order has an order_status == 2, strikethrough the text */}
+          {order.order_status === 2 ? (
+            <del>
+              <span className="text-muted">Order #{cartId}</span>
+            </del>
+          ) : (
+            <span>Order #{cartId}</span>
+          )}
         </button>
       </h2>
       <div
@@ -32,6 +40,9 @@ const Order = ({ cartId, expanded = false, setReturningOrder }: Props) => {
         aria-labelledby={`cartPanelHeader_${cartId}`}
       >
         <div className="accordion-body">
+          {order.order_status === 2 && (
+            <span className="badge bg-danger text-light">Returned</span>
+          )}
           <OrderSummary cartId={cartId} />
           <ul className="nav justify-content-end gap-2">
             {/* <li className="nav-item">
@@ -40,9 +51,14 @@ const Order = ({ cartId, expanded = false, setReturningOrder }: Props) => {
               </a>
             </li> */}
             <li className="nav-item">
-              <button className="nav-link btn" onClick={handleReturn}>
-                Return Items
-              </button>
+              
+              {
+                order.order_status === 2 ? <></> : (
+                  <button className="nav-link btn" onClick={handleReturn}>
+                    Return Items
+                  </button>
+                )
+              }
             </li>
             {/* <li className="nav-item">
               <a
