@@ -36,12 +36,12 @@ const ProductPage = () => {
 
   if (compareProductId !== -1) {
     React.useEffect(() => {
-      Axios.get(`/products?id=${compareProductId}`)
+      Axios.get(`http://127.0.0.1:8000/products?id=${compareProductId}`)
         .then((response) => {
-          if (response.data.products.length === 0) {
+          if (response.data.length === 0) {
             return navigate("/");
           }
-          setCompareProduct(response.data.products[0]);
+          setCompareProduct(response.data);
         })
         .catch((error) => {
           console.log(error);
@@ -52,12 +52,15 @@ const ProductPage = () => {
 
   // Get products from server
   React.useEffect(() => {
-    Axios.get(`/products?id=${productId}`)
+    console.log("Trying to load ", productId);
+    Axios.get(`http://127.0.0.1:8000/products?id=${productId}`)
       .then((response) => {
-        if (response.data.products.length === 0) {
+        console.log(response.data);
+        if (response.data.length === 0) {
           return navigate("/");
         }
-        setProduct(response.data.products[0]);
+        setProduct(response.data);
+        console.log("The current product is!", product.name, product);
       })
       .catch((error) => {
         console.log(error);

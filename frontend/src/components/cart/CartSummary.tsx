@@ -1,12 +1,14 @@
 import React from "react";
 import { priceFormatter } from "../../utils/PriceFormatter";
 import { Link } from "react-router-dom";
+import { JSONCartItem } from "../../utils/props/JSONCartItem";
 
 interface Props {
   subtotal: number;
+  cartItems: Array<JSONCartItem>;
 }
 
-const CartSummary = ({ subtotal }: Props) => {
+const CartSummary = ({ subtotal, cartItems }: Props) => {
   const [shipping, setShipping] = React.useState(15);
 
   return (
@@ -42,9 +44,11 @@ const CartSummary = ({ subtotal }: Props) => {
           </tr>
         </tbody>
       </table>
-      <Link to={"/cart/checkout"} className="btn btn-primary w-100 mt-4">
-        Checkout
-      </Link>
+      {cartItems.length > 0 ? (
+        <Link to={"/cart/checkout"} className="btn btn-primary w-100 mt-4">
+          Checkout
+        </Link>
+      ) : null}
     </>
   );
 };

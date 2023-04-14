@@ -25,7 +25,7 @@ const PaymentInfo = () => {
   const [address, setAddress] = React.useState("");
 
   React.useEffect(() => {
-    Axios.get("/user", {
+    Axios.get("http://127.0.0.1:8000/user", {
       params: {
         token,
       },
@@ -43,12 +43,13 @@ const PaymentInfo = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    Axios.post("/user", {
+    Axios.post("http://127.0.0.1:8000/user", {
       token,
       payment_method: paymentMethod,
       address,
     })
       .then((res) => {
+        console.log(res.data);
         if (signingUp) {
           navigate("/");
         } else {
@@ -103,8 +104,7 @@ const PaymentInfo = () => {
                     type="text"
                     className="form-control"
                     id="floatingAddress"
-                    placeholder="XXXX XXXX XXXX XXXX"
-                    pattern="^\d{4}([ -]?\d{4}){3}$"
+                    placeholder="1234 Main St"
                     maxLength={19}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}

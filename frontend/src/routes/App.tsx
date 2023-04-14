@@ -10,16 +10,20 @@ import Footer from "../components/Footer";
 export default function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [user, setUser] = useState({ username: "", token: "" });
+  const [token, setToken] = useState(""); // Used for Cart items badge
   const [compareProductId, setCompareProductId] = useState(-1);
+
+  const [shouldUpdateCartBadge, setShouldUpdateCartBadge] = useState(false);
 
   // Load token from local storage if it exists
   if (localStorage.getItem("token") && user.token === "") {
-    const token = localStorage.getItem("token") || "";
+    const loc_token = localStorage.getItem("token") || "";
     const username = localStorage.getItem("username") || "";
     setUser({
       username: username,
-      token: token,
+      token: loc_token,
     });
+    setToken(loc_token);
     setAuthenticated(true);
   }
 
@@ -27,7 +31,7 @@ export default function App() {
     let formData = new FormData();
     formData.append("username", username);
     formData.append("password", password);
-    Axios.post("/user/signin", formData)
+    Axios.post("http://127.0.0.1:8000/user/signin", formData)
       .then(function (response) {
         console.log(response);
         localStorage.setItem("token", response.data.token);
@@ -36,6 +40,7 @@ export default function App() {
           username: username,
           token: response.data.token,
         });
+        setToken(response.data.token);
         setAuthenticated(true);
       })
       .catch(function (error) {
@@ -47,6 +52,7 @@ export default function App() {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
     setUser({ username: "", token: "" });
+    setToken("");
     setAuthenticated(false);
   };
 
@@ -57,8 +63,11 @@ export default function App() {
         setAuthenticated={setAuthenticated}
         handleLogout={handleLogout}
         user={user}
+        token={token}
         compareProductId={compareProductId}
         setCompareProductId={setCompareProductId}
+        shouldUpdateCartBadge={shouldUpdateCartBadge}
+        setShouldUpdateCartBadge={setShouldUpdateCartBadge}
       />
       <Outlet
         context={{
@@ -68,6 +77,7 @@ export default function App() {
           handleLogin: handleLogin,
           globalCompareProductId: compareProductId,
           setGlobalCompareProductId: setCompareProductId,
+          setShouldUpdateCartBadge: setShouldUpdateCartBadge,
         }}
       />
       <Footer />

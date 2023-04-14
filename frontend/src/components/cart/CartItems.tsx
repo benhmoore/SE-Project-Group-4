@@ -37,9 +37,9 @@ const CartItems = ({
     running_subtotal += cartItems[i].price * cartItems[i].quantity;
     rows.push(
       <CartItem
-        key={cartItems[i].cartItemId}
+        key={cartItems[i].id}
         productId={cartItems[i].productId}
-        cartItemId={cartItems[i].cartItemId}
+        cartItemId={cartItems[i].id}
         price={cartItems[i].price}
         name={cartItems[i].name}
         quantity={cartItems[i].quantity}
@@ -59,7 +59,17 @@ const CartItems = ({
       });
   }, []);
 
-  return <>{rows}</>;
+  return (
+    <>
+      {cartItems.length > 0 ? (
+        rows
+      ) : (
+        <td colSpan={4} className="text-center">
+          <p>Your cart is empty.</p>
+        </td>
+      )}
+    </>
+  );
 };
 
 export default CartItems;

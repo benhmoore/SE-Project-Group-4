@@ -23,7 +23,11 @@ const Checkout = () => {
 
   const handlePlaceOrder = () => {
     setOrderButtonDisabled(true);
-    Axios.post("/order", {}, { params: { token } })
+    Axios.post(
+      "http://127.0.0.1:8000/cart/place_order",
+      {},
+      { params: { token } }
+    )
       .then((response) => {
         navigate(`/orders/${response.data.cartId}`, {
           state: { message: "Order placed!" },

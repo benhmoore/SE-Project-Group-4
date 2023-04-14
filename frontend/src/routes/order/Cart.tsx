@@ -9,6 +9,8 @@ import { Navigate, useOutletContext } from "react-router-dom";
 const Cart = () => {
   if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
 
+  const { setShouldUpdateCartBadge } = useOutletContext();
+
   // Get user token from useOutletContext
   const token = useOutletContext().user.token;
 
@@ -22,7 +24,7 @@ const Cart = () => {
   );
 
   useEffect(() => {
-    Axios.get("/cart", {
+    Axios.get("http://127.0.0.1:8000/cart", {
       params: {
         token,
       },
@@ -37,14 +39,17 @@ const Cart = () => {
   }, []);
 
   const handleQuantityChange = (cartItemId: number, newQuantity: number) => {
-    Axios.put(`/cart/items/${cartItemId}`, {
-      quantity: newQuantity,
-    })
+    let formData = new FormData();
+    formData.append("token", token);
+    formData.append("id", String(cartItemId));
+    formData.append("quantity", String(newQuantity));
+    Axios.post(`http://127.0.0.1:8000/cart/items/quantity`, formData)
       .then((response) => {
         // Update quantity in cartItems
         const itemQuantity = response.data.quantity;
+        console.log("NEW Q:", itemQuantity);
         let newCartItems = cartItems.map((item) => {
-          if (item.cartItemId === cartItemId) {
+          if (item.id === cartItemId) {
             item.quantity = itemQuantity;
           }
           return item;
@@ -57,16 +62,29 @@ const Cart = () => {
   };
 
   const handleDeleteCartItem = (cartItemId: number) => {
-    // Remove item from cartItems
-    let newCartItems = cartItems.filter(
-      (item) => item.cartItemId !== cartItemId
-    );
-    setCartItems(newCartItems);
+    // // Remove item from cartItems
+    // let newCartItems = cartItems.filter(
+    //   (item) => item.cartItemId !== cartItemId
+    // );
+    // setCartItems(newCartItems);
+
+    let formData = new FormData();
+    formData.append("token", token);
+    formData.append("item_id", String(cartItemId));
+    Axios.post(`http://127.0.0.1:8000/cart/remove`, formData)
+      .then((response) => {
+        // Update cartItems
+        setCartItems(response.data.cartItems);
+        setShouldUpdateCartBadge(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     // Recalculate subtotal
     let running_subtotal = 0;
-    for (let i = 0; i < newCartItems.length; i++) {
-      running_subtotal += newCartItems[i].price * newCartItems[i].quantity;
+    for (let i = 0; i < cartItems.length; i++) {
+      running_subtotal += cartItems[i].price * cartItems[i].quantity;
     }
     setSubtotal(running_subtotal);
   };
@@ -109,7 +127,7 @@ const Cart = () => {
             </table>
           </div>
           <div className="col-md-4 mt-4 border-start border-bottom p-4 bg-white">
-            <CartSummary subtotal={subtotal} />
+            <CartSummary subtotal={subtotal} cartItems={cartItems} />
           </div>
         </div>
       </div>

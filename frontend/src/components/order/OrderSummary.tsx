@@ -35,7 +35,7 @@ const OrderSummary = ({ cartId = -1 }: Props) => {
   // Otherwise, fetch the current cart items from the server
   if (cartId == -1) {
     useEffect(() => {
-      Axios.get("/cart", {
+      Axios.get("http://127.0.0.1:8000/cart", {
         params: {
           token,
         },

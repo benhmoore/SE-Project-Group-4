@@ -10,17 +10,21 @@ interface Props {
 }
 
 const PricePill = ({ price, productId = -1 }: Props) => {
-  const { authenticated } = useOutletContext();
+  const { authenticated, setShouldUpdateCartBadge } = useOutletContext();
+
+  // Get user token from useOutletContext
+  const token = useOutletContext().user.token;
 
   const navigate = useNavigate();
 
   const handleAddToCart = () => {
-    Axios.post("/cart", {
-      productId: productId,
-      quantity: 1,
-    })
+    let formData = new FormData();
+    formData.append("token", token);
+    formData.append("item_id", productId);
+    Axios.post("http://127.0.0.1:8000/cart/add", formData)
       .then((response) => {
         console.log(response);
+        setShouldUpdateCartBadge(true);
       })
       .catch((error) => {
         console.log(error);
@@ -50,7 +54,7 @@ const PricePill = ({ price, productId = -1 }: Props) => {
           }
         }}
       >
-        <BsCartPlus style={{ marginBottom: 5 }} className="me-2" />
+        {/* <BsCartPlus style={{ marginBottom: 5 }} className="me-2" /> */}
         {authenticated ? "Add to Cart" : "Sign in to buy"}
       </button>
     </div>

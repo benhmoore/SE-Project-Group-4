@@ -36,13 +36,19 @@ const ProductCard = ({
   };
 
   return (
-    <div className="card product-card p-4 mt-4" onClick={handleClick}>
-      <div className="text-center mb-3">
+    <div className="card product-card p-4 mt-4">
+      <div
+        className="text-center mb-3"
+        onClick={handleClick}
+        style={{ cursor: "pointer" }}
+      >
         {<img src={image} className="card-img" alt={name} /> || (
           <Skeleton height={200} />
         )}
       </div>
-      <h2>{name || <Skeleton />}</h2>
+      <h2 onClick={handleClick} style={{ cursor: "pointer" }}>
+        {name || <Skeleton />}
+      </h2>
       <p>{description.substring(0, 100) + "..." || <Skeleton count={2} />}</p>
       <div className="card-footer">
         <div className="d-grid gap-2 d-md-flex justify-content-md-end price-pill">

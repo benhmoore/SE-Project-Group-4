@@ -31,15 +31,11 @@ const Browse = ({ compareProduct = false }: Props) => {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    Axios.get("/products/list")
+    Axios.get("http://127.0.0.1:8000/products/list")
       .then((response) => {
-        response.data.products = response.data.products.filter(
-          (product: any) => {
-            return product.name
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase());
-          }
-        );
+        response.data.products = response.data.filter((product: any) => {
+          return product.name.toLowerCase().includes(searchQuery.toLowerCase());
+        });
         setProducts(response.data.products);
         setLoading(false);
       })

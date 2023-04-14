@@ -16,8 +16,11 @@ interface Props {
   setAuthenticated: (authenticated: boolean) => void;
   handleLogout: () => void;
   user: { username: string; token: string };
+  token: string;
   compareProductId: number;
   setCompareProductId: (compareProductId: number) => void;
+  shouldUpdateCartBadge: boolean;
+  setShouldUpdateCartBadge: (shouldUpdateCartBadge: boolean) => void;
 }
 
 const Menu = ({
@@ -25,8 +28,11 @@ const Menu = ({
   setAuthenticated,
   handleLogout,
   user,
+  token,
   compareProductId,
   setCompareProductId,
+  shouldUpdateCartBadge,
+  setShouldUpdateCartBadge,
 }: Props) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -119,6 +125,9 @@ const Menu = ({
               setAuthenticated={setAuthenticated}
               handleLogout={handleLogout}
               user={user}
+              token={token}
+              shouldUpdateCartBadge={shouldUpdateCartBadge}
+              setShouldUpdateCartBadge={setShouldUpdateCartBadge}
             />
           </div>
         </div>
