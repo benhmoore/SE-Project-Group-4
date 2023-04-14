@@ -230,15 +230,15 @@ def return_user_cart(request):
     for shopping_cart in ShoppingCart.objects.filter(user_id = user_id):
         if shopping_cart.order_status == 0:
             for cart_item in ShoppingCartItem.objects.filter(shopping_cart_id = shopping_cart.id):
-                product = get_object_or_404(Product, id=item.product_id)
+                product = get_object_or_404(Product, id=cart_item.product_id)
                 cart_items.append({
-                    'id': item.id,
-                    'product_id': item.product_id,
+                    'id': cart_item.id,
+                    'product_id': cart_item.product_id,
                     'name': product.name,
                     'description': product.description,
                     'price': str(product.price),
                     'image': product.image_id,
-                    'quantity': item.quantity
+                    'quantity': cart_item.quantity
                 })
 
     data = {
@@ -306,18 +306,21 @@ def add_cart_item(request):
             cart_item = ShoppingCartItem(shopping_cart_id=user_id, product_id=product.id, quantity=1)
             cart_item.save()
         cart_items = []
-        # Change userId to shoppingCartId
-        for item in ShoppingCartItem.objects.filter(shopping_cart_id=user_id):
-            product = get_object_or_404(Product, id=item.product_id)
-            cart_items.append({
-                'id': item.id,
-                'product_id': item.product_id,
-                'name': product.name,
-                'description': product.description,
-                'price': str(product.price),
-                'image': product.image_id,
-                'quantity': item.quantity
-            })
+
+        for shopping_cart in ShoppingCart.objects.filter(user_id=user_id):
+            if shopping_cart.order_status == 0:
+                for cart_item in ShoppingCartItem.objects.filter(shopping_cart_id=shopping_cart.id):
+                    product = get_object_or_404(Product, id=cart_item.product_id)
+                    cart_items.append({
+                        'id': cart_item.id,
+                        'product_id': cart_item.product_id,
+                        'name': product.name,
+                        'description': product.description,
+                        'price': str(product.price),
+                        'image': product.image_id,
+                        'quantity': cart_item.quantity
+                    })
+
         data = {
             'cartItems': cart_items
         }
@@ -326,7 +329,7 @@ def add_cart_item(request):
         data = {
             'cartItems': []
         }
-        return JsonResponse(data, status = 400)
+        return JsonResponse(data, status = 401)
 
 def remove_cart_item(request):
     user_id = authenticate_request(request)
@@ -341,17 +344,20 @@ def remove_cart_item(request):
     cart_item = get_object_or_404(ShoppingCartItem, id=item_id, shopping_cart_id=user_id)
     cart_item.delete()
     cart_items = []
-    for item in ShoppingCartItem.objects.filter(shopping_cart_id=user_id):
-        product = get_object_or_404(Product, id=item.product_id)
-        cart_items.append({
-            'id': item.id,
-            'product_id': item.product_id,
-            'name': product.name,
-            'description': product.description,
-            'price': str(product.price),
-            'image': product.image_id,
-            'quantity': item.quantity
-        })
+
+    for shopping_cart in ShoppingCart.objects.filter(user_id=user_id):
+        if shopping_cart.order_status == 0:
+            for cart_item in ShoppingCartItem.objects.filter(shopping_cart_id=shopping_cart.id):
+                product = get_object_or_404(Product, id=cart_item.product_id)
+                cart_items.append({
+                    'id': cart_item.id,
+                    'product_id': cart_item.product_id,
+                    'name': product.name,
+                    'description': product.description,
+                    'price': str(product.price),
+                    'image': product.image_id,
+                    'quantity': cart_item.quantity
+                })
     data = {
         'cartItems': cart_items
     }
