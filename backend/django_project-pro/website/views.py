@@ -215,11 +215,25 @@ def get_product_info(request):
     return JsonResponse({})
 
 def return_user_cart(request):
-    print("Accessing function!")
-    allCarts = ShoppingCart.objects.all()
-    for eachCart in allCarts:
-        print(eachCart.user_id)
-        # print(eachCart.id)
+    user_id = authenticate_request(request)
+    if user_id == -1:
+        return JsonResponse({'error': 'Authentication failed'}, status = 401)
+
+    cart_items = []
+    for item in ShoppingCartItem.objects.filter(shopping_cart_id=user_id):
+        product = get_object_or_404(Product, id=item.product_id)
+        cart_items.append({
+            'id': item.id,
+            'name': product.name,
+            'description': product.description,
+            'price': str(product.price),
+            'image': product.image_id,
+            'quantity': item.quantity
+        })
+    data = {
+        'cartItems': cart_items
+    }
+    return JsonResponse(data, status=200)
 
 def add_product(request):
     user_id = authenticate_request(request)
