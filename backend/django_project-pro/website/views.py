@@ -65,8 +65,6 @@ def check_token(token):
     for eachRow in rowAll:
         if (eachRow.token_id == token):
             return True
-
-    # print("Token doesn't exist")
     return False
 
 
@@ -85,9 +83,7 @@ def basic_login(request):
             rowAll = User.objects.all()
             for oneRow in rowAll:
                 if (oneRow.username == enteredUserName):
-                    # print("Username Found")
                     if (oneRow.password_hash == enteredPassword):
-                        # print("Correct Password - Login Successful")
 
                         tokenSwitch = True
                         while (tokenSwitch):
@@ -134,9 +130,7 @@ def add_account(roleInput, usernameInput, passwordInput, firstInput, lastInput, 
 def create_account(request):
     if request.method == 'POST':
         form = accountForm(request.POST)
-        print("Is post request", form)
         if form.is_valid():
-            print("Form is valid")
             userRole = form.cleaned_data['userRole']
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
@@ -175,7 +169,6 @@ def update_account_info(request):
     if request.method == "POST":
 
         form = updateAccountForm(request.POST)
-        print(form)
         if form.is_valid():
             matching_payment_info = form.cleaned_data['payment_method']
             matching_address = form.cleaned_data['address']
@@ -304,7 +297,6 @@ def add_product(request):
 
     if request.method == 'POST':
         form = AddProductForm(request.POST)
-        print(form)
         if form.is_valid():
             product = Product(
                 category="",
@@ -350,9 +342,7 @@ def add_cart_item(request):
     if form.is_valid():
         item_id = form.cleaned_data['item_id']
         product = get_object_or_404(Product, id=item_id)
-        print("Looking for shopping cart for user: " + str(user_id))
         shopping_cart = get_user_shopping_cart(user_id)
-        print("Found shopping cart: " + str(shopping_cart.id))
         cart_item = ShoppingCartItem.objects.filter(
             shopping_cart_id=shopping_cart.id, product_id=product.id).first()
         if cart_item:
@@ -475,21 +465,15 @@ def place_order(request):
         # Update previous cart to order status
         # Get previous cart by order_status = 0
 
-        print("User id: " + str(user_id), "Order status: 0")
         existingCart = ShoppingCart.objects.filter(
             user_id=user_id, order_status=0).first()
-        print("Existing cart: " + str(existingCart.id))
         if existingCart:
-            print("Got existing cart")
             existingCart.order_status = 1
-            print("Updated order status", existingCart.order_status)
             existingCart.order_placed_date = timezone.datetime.now()
-            print("Updated order date", existingCart.order_placed_date)
             try:
                 existingCart.save()
             except Exception as e:
                 print("Error saving existing cart: " + str(e))
-            print("Saved existing cart")
 
         # Create a new shopping cart for the user
         newCart = ShoppingCart(
@@ -528,18 +512,13 @@ def get_orders(request):
         if user == -1:
             return JsonResponse({'error': 'Authentication failed'}, status=401)
 
-        print("Looking up orders for user: " +
-              str(user) + " order_status: 1 or 2")
         orders = ShoppingCart.objects.filter(user_id=user, order_status__in=[
                                              1, 2]).order_by('-order_placed_date')
         carts = []
         for order in orders:
-            print("Found order: " + str(order.id) +
-                  " " + str(order.order_placed_date))
             order_items = ShoppingCartItem.objects.filter(
                 shopping_cart_id=order.id)
 
-            print("Found order items: " + str(order_items))
 
             items = []
             for item in order_items:
@@ -558,7 +537,6 @@ def get_orders(request):
                 }
                 items.append(item_dict)
 
-            print("Made it to cart_dict")
             cart_dict = {
                 'id': order.id,
                 'order_status': order.order_status,
@@ -570,7 +548,6 @@ def get_orders(request):
             'carts': carts,
         }
 
-        print("Returning orders for user: " + str(user), data)
         return JsonResponse(data, status=200)
     else:
         data = {
@@ -606,8 +583,6 @@ def get_seller_products(request):
 
         product_id = request.GET.get('product_id')
         if product_id:
-            print("Loading product: " + str(product_id) +
-                  " for seller: " + str(user_id))
             product = get_object_or_404(Product, id=product_id, seller=user_id)
             data = {
                 'products': [
