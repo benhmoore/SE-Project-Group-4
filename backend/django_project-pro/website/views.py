@@ -218,8 +218,8 @@ def get_product_info(request):
                 'inventory': eachProduct.inventory,
                 'approval_status': eachProduct.approval_status
             }
-            return JsonResponse(returnProduct, safe=False)
-    return JsonResponse({})
+            return JsonResponse(returnProduct, safe=False, status = 200)
+    return JsonResponse({}, status = 401)
 
 def return_user_cart(request):
     user_id = authenticate_request(request)
