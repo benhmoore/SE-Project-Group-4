@@ -34,6 +34,10 @@ class AddProductForm(forms.Form):
     approval_status = forms.IntegerField()
     description = forms.CharField(max_length=255)
 
+class updateQuantity(forms.Form):
+    id = forms.CharField(max_length=255)
+    quantity = forms.IntegerField()
+
 ######################################################################################
 class RemoveProductForm(forms.Form):
     product_id = forms.IntegerField()
