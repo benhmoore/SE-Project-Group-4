@@ -5,6 +5,16 @@ from django.http import JsonResponse
 from django.utils import timezone
 import random, secrets, string
 
+
+def get_user_shopping_cart(user_id):
+    shopping_cart = get_object_or_404(ShoppingCart, user_id=user_id, order_status=0)
+    return shopping_cart
+
+def get_user_from_shopping_cart(shopping_cart_id):
+    shopping_cart = get_object_or_404(ShoppingCart, id=shopping_cart_id)
+    user = get_object_or_404(User, id=shopping_cart.user_id)
+    return user
+
 def authenticate_request(request):
     """Authenticates requests that require a user to be logged in.
 
@@ -297,13 +307,15 @@ def add_cart_item(request):
     if form.is_valid():
         item_id = form.cleaned_data['item_id']
         product = get_object_or_404(Product, id=item_id)
-        #Change userId to shoppingCartId
-        cart_item = ShoppingCartItem.objects.filter(shopping_cart_id=user_id, product_id=product.id).first()
+        print("Looking for shopping cart for user: " + str(user_id))
+        shopping_cart = get_user_shopping_cart(user_id)
+        print("Found shopping cart: " + str(shopping_cart.id))
+        cart_item = ShoppingCartItem.objects.filter(shopping_cart_id=shopping_cart.id, product_id=product.id).first()
         if cart_item:
             cart_item.quantity += 1
             cart_item.save()
         else:
-            cart_item = ShoppingCartItem(shopping_cart_id=user_id, product_id=product.id, quantity=1)
+            cart_item = ShoppingCartItem(shopping_cart_id=shopping_cart.id, product_id=product.id, quantity=1)
             cart_item.save()
         cart_items = []
 
@@ -341,7 +353,8 @@ def remove_cart_item(request):
         return JsonResponse({'error': 'Invalid input'}, status = 400)
 
     item_id = form.cleaned_data['item_id']
-    cart_item = get_object_or_404(ShoppingCartItem, id=item_id, shopping_cart_id=user_id)
+    shopping_cart = get_user_shopping_cart(user_id)
+    cart_item = get_object_or_404(ShoppingCartItem, id=item_id, shopping_cart_id=shopping_cart.id)
     cart_item.delete()
     cart_items = []
 
@@ -373,7 +386,7 @@ def get_shopping_cart_items(request):
                 }
                 return JsonResponse(data, status=401)
 
-            cart_items = ShoppingCartItem.objects.filter(shopping_cart_id=user)
+            cart_items = ShoppingCartItem.objects.filter(user_id=user)
 
             items = []
             for cart_item in cart_items:
@@ -409,13 +422,28 @@ def place_order(request):
         if user_id == -1:
             return JsonResponse({'error': 'Authentication failed'}, status=401)
 
-        newOrder = ShoppingCart(
-            user_id = user_id,
-            order_status = 1,
-            order_placed_date = timezone.now().date()
-        )
+        # Update previous cart to order status
+        # Get previous cart by order_status = 0
 
-        newOrder.save()
+        print("User id: " + str(user_id), "Order status: 0")
+        existingCart = ShoppingCart.objects.filter(user_id=user_id, order_status=0).first()
+        print("Existing cart: " + str(existingCart.id))
+        if existingCart:
+            print("Got existing cart")
+            existingCart.order_status = 1
+            print("Updated order status", existingCart.order_status)
+            existingCart.order_placed_date = timezone.now().date()
+            print("Updated order date", existingCart.order_placed_date)
+            try:
+                existingCart.save()
+            except Exception as e:
+                print("Error saving existing cart: " + str(e))
+            print("Saved existing cart")
+
+        # Create a new shopping cart for the user
+        newCart = ShoppingCart(user_id=user_id, order_status=0, order_placed_date=timezone.now().date())
+        newCart.save()
+
         return JsonResponse({'message': "Order Place Successfully"}, status = 200)
     return JsonResponse({'error': "Invalid Input"}, status = 401)
 
@@ -431,8 +459,9 @@ def update_quantity_cartItem(request):
     item_id = form.cleaned_data['id']
     quantity = form.cleaned_data['quantity']
 
+    shopping_cart = get_user_shopping_cart(user_id)
     cart_item = get_object_or_404(ShoppingCartItem,
-                                  id=item_id, shopping_cart_id=user_id)
+                                  id=item_id, shopping_cart_id=shopping_cart.id)
 
     cart_item.quantity = quantity
     cart_item.save()
