@@ -41,7 +41,12 @@ const AccountMenu = ({
       .catch((error) => {
         console.log(error);
       });
-    setShouldUpdateCartBadge(false);
+
+    try {
+      setShouldUpdateCartBadge(false);
+    } catch (error) {
+      console.log(error);
+    }
   }, [shouldUpdateCartBadge]);
 
   if (!authenticated)
