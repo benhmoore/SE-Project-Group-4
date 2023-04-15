@@ -8,7 +8,8 @@ import json
 class SignInTestCase(TestCase):
     def setUp(self):
         self.client = Client()
-        add_account(0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        add_account(0, "MaxLam", "passM", "Maxwell",
+                    "Lam", "123 Street", "102.10", "Cash")
 
     def test_correct_info(self):
         url = reverse('basic_login')
@@ -50,20 +51,22 @@ class SignInTestCase(TestCase):
         responseIncorrectPassword = self.client.post(url, justWrong)
         self.assertEqual(responseIncorrectPassword.status_code, 401)
 
+
 class productTest(TestCase):
 
     def setup(self):
         self.client = Client()
 
     def test_add_product(self):
-        #Grab JSON response which includes token
-        tokenData = add_account(0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        # Grab JSON response which includes token
+        tokenData = add_account(
+            0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
         data = json.loads(tokenData.content)
         chosenToken = data['token']
 
         url = reverse("add_product")
         form_data = {
-            'token': chosenToken, #Uses token
+            'token': chosenToken,  # Uses token
             'category': 'Books',
             'name': 'The Great Gatsby',
             'price': 12.99,
@@ -83,6 +86,7 @@ class productTest(TestCase):
         responseNoForm = self.client.post(url, {})
         self.assertEqual(responseNoForm.status_code, 401)
 
+
 class findProduct(TestCase):
     def setup(self):
         self.client = Client()
@@ -90,8 +94,9 @@ class findProduct(TestCase):
     def test_find_product(self):
         url = reverse("add_product")
 
-        #Grab JSON response which includes token
-        tokenData = add_account(0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        # Grab JSON response which includes token
+        tokenData = add_account(
+            0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
         data = json.loads(tokenData.content)
         chosenToken = data['token']
 
@@ -144,15 +149,16 @@ class findProduct(TestCase):
         self.assertEqual(response.status_code, 200)
 
         newUrl = reverse('get_product_info')
-        response = self.client.get(newUrl, {'id':2})
+        response = self.client.get(newUrl, {'id': 2})
         data = json.loads(response.content)
         productName = data['name']
 
         self.assertEqual(productName, 'Cheese')
         self.assertEqual(response.status_code, 200)
 
-        responseWrong = self.client.get(newUrl, {'id':999})
-        self.assertEqual(responseWrong.status_code, 401)
+        responseWrong = self.client.get(newUrl, {'id': 999})
+        self.assertEqual(responseWrong.status_code, 404)
+
 
 class place_orderTestCases(TestCase):
 
@@ -162,12 +168,13 @@ class place_orderTestCases(TestCase):
     def test_place_order_correct_token(self):
         url = reverse("place_order")
 
-        #Grab JSON response which includes token
-        tokenData = add_account(0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        # Grab JSON response which includes token
+        tokenData = add_account(
+            0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
         data = json.loads(tokenData.content)
         chosenToken = data['token']
 
-        place_order_response = self.client.post(url, {'token':chosenToken})
+        place_order_response = self.client.post(url, {'token': chosenToken})
         self.assertEqual(place_order_response.status_code, 200)
 
     def test_place_order_no_token(self):
@@ -182,21 +189,24 @@ class place_orderTestCases(TestCase):
         place_order_response = self.client.post(url, {'token': "WRONG"})
         self.assertEqual(place_order_response.status_code, 401)
 
+
 class return_orderTestCases(TestCase):
     def setUp(self):
         self.client = Client()
 
     def test_return_order(self):
-        tokenData = add_account(0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        tokenData = add_account(
+            0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
         data = json.loads(tokenData.content)
         chosenToken = data['token']
 
         url = reverse("place_order")
-        place_order_response = self.client.post(url, {'token':chosenToken})
+        place_order_response = self.client.post(url, {'token': chosenToken})
         self.assertEqual(place_order_response.status_code, 200)
 
         returnUrl = reverse('return_order')
-        return_orderResponse = self.client.post(returnUrl, {'token':chosenToken, 'order_id':1})
+        return_orderResponse = self.client.post(
+            returnUrl, {'token': chosenToken, 'order_id': 1})
         self.assertEqual(return_orderResponse.status_code, 200)
 
     def test_return_no_token(self):
@@ -205,16 +215,139 @@ class return_orderTestCases(TestCase):
         self.assertEqual(place_order_response.status_code, 401)
 
     def test_return_no_formInput(self):
-        tokenData = add_account(0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        tokenData = add_account(
+            0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
         data = json.loads(tokenData.content)
         chosenToken = data['token']
 
         url = reverse("return_order")
-        place_order_response = self.client.post(url, {'token':chosenToken})
+        place_order_response = self.client.post(url, {'token': chosenToken})
         self.assertEqual(place_order_response.status_code, 400)
 
 
+class SellerTest(TestCase):
 
+    def __init__(self, *args, **kwargs):
+        super(SellerTest, self).__init__(*args, **kwargs)
+        self.chosenToken = ""
 
+    def setup(self):
+        self.client = Client()
 
+        # Create a seller
+        tokenData = add_account(
+            0, "benmoore", "12345678", "Ben", "Moore", "123 Street", "0", "1234 1234 1234 1234")
+        data = json.loads(tokenData.content)
 
+        print("Token: " + data['token'])
+
+        self.chosenToken = data['token']
+
+        url = reverse("add_product")
+        form_data = {
+            'token': self.chosenToken,  # Uses token
+            'category': 'Books',
+            'name': 'The Great Gatsby',
+            'price': 12.99,
+            'seller': 1,
+            'image_id': "ImageHere",
+            'num_sales': 10,
+            'inventory': 50,
+            'approval_status': 1,
+            'description': 'A classic novel by F. Scott Fitzgerald',
+        }
+
+        response = self.client.post(url, form_data)
+
+    def test_edit_product(self):
+        """Tests whether a seller can edit a product and whether the changes are reflected in the database
+        """
+        self.setup()
+
+        url = reverse("edit_seller_product")
+
+        form_data = {
+            'token': self.chosenToken,  # Uses token
+            'product_id': 1,
+            'price': 19.99,
+            'description': 'A classic novel by F. Scott Fitzgerald, priced by inflation.',
+        }
+
+        response = self.client.post(url, form_data)
+        self.assertEqual(response.status_code, 200)
+
+        # Load the product info
+        url = reverse("get_product_info")
+        response = self.client.get(url, {'id': 1})
+        data = json.loads(response.content)
+
+        # See if the price was updated
+        self.assertEqual(data['price'], "19.99")
+
+    def test_negative_inventory(self):
+        """Tests whether a seller can add a product with negative inventory
+        """
+        self.setup()
+
+        url = reverse("edit_seller_product")
+
+        form_data = {
+            'token': self.chosenToken,  # Uses token
+            'product_id': 1,
+            'inventory': -1,
+        }
+
+        response = self.client.post(url, form_data)
+        self.assertEqual(response.status_code, 400)
+
+    def test_edit_product_no_token(self):
+        """Tests whether a seller can edit a product without a token
+        """
+        self.setup()
+
+        url = reverse("edit_seller_product")
+
+        form_data = {
+            'product_id': 1,
+            'price': 19.99,
+            'description': 'A classic novel by F. Scott Fitzgerald, priced by inflation.',
+        }
+
+        response = self.client.post(url, form_data)
+        self.assertEqual(response.status_code, 401)
+
+    def test_edit_product_no_product_id(self):
+        """Tests whether a seller can edit a product without a product_id
+        """
+        self.setup()
+
+        url = reverse("edit_seller_product")
+
+        form_data = {
+            'token': self.chosenToken,  # Uses token
+            'price': 19.99,
+            'description': 'A classic novel by F. Scott Fitzgerald, priced by inflation.',
+        }
+
+        response = self.client.post(url, form_data)
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_product(self):
+        """_summary_: Tests whether a seller can remove a product and whether the changes are reflected in the database
+        """
+        self.setup()
+
+        url = reverse("delete_seller_product")
+
+        form_data = {
+            'token': self.chosenToken,  # Uses token
+            'product_id': 1,
+        }
+
+        response = self.client.post(url, form_data)
+        self.assertEqual(response.status_code, 200)
+
+        # Load the product info
+        url = reverse("get_product_info")
+        response = self.client.get(url, {'id': 1, 'token': self.chosenToken})
+        self.assertEqual(response.status_code, 404)
