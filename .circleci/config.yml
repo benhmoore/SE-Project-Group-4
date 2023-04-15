@@ -3,23 +3,29 @@ jobs:
   build:
     docker:
       - image: cimg/node:19.8.1
-      - image: cimg/python:3.9.9
+      - image: cimg/python:3.9.10
     steps:
       - checkout
       - run:
-          name: Install dependencies
+          name: Install frontend dependencies
           command: |
             cd frontend
             npm install
-            cd ../backend/django_project-pro/website
-            pip install -r requirements.txt
       - run:
-          name: Run tests
+          name: Run frontend tests
           command: |
             cd frontend
             npm test
-            cd ../backend/django_project-pro/website
-            python -m unittest discover -s tests -p '*_test.py'
+      - run:
+          name: Install backend dependencies
+          command: |
+            cd backend/django_project-pro/website
+            pip install -r requirements.txt
+      - run:
+          name: Run backend tests
+          command: |
+            cd backend/django_project-pro/website
+            python manage.py test
       - store_test_results:
           path: test-results.xml
 workflows:
