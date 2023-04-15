@@ -1,9 +1,15 @@
-version: 2
-jobs:
-  build:
+version: 2.1
+executors:
+  node-executor:
     docker:
       - image: cimg/node:19.8.1
+  python-executor:
+    docker:
       - image: cimg/python:3.9.10
+
+jobs:
+  build_frontend:
+    executor: node-executor
     steps:
       - checkout
       - run:
@@ -16,6 +22,12 @@ jobs:
           command: |
             cd frontend
             npm test
+      - store_test_results:
+          path: test-results.xml
+  build_backend:
+    executor: python-executor
+    steps:
+      - checkout
       - run:
           name: Install backend dependencies
           command: |
@@ -28,8 +40,10 @@ jobs:
             python manage.py test
       - store_test_results:
           path: test-results.xml
+
 workflows:
   version: 2
   build-and-test:
     jobs:
-      - build
+      - build_frontend
+      - build_backend
