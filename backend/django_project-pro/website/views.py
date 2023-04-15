@@ -237,8 +237,8 @@ def get_product_info(request):
                 'inventory': eachProduct.inventory,
                 'approval_status': eachProduct.approval_status
             }
-            return JsonResponse(returnProduct, safe=False, status = 200)
-    return JsonResponse({}, status = 401)
+            return JsonResponse(returnProduct, safe=False, status=200)
+    return JsonResponse({}, status=404)
 
 
 def return_user_cart(request):
@@ -519,7 +519,6 @@ def get_orders(request):
             order_items = ShoppingCartItem.objects.filter(
                 shopping_cart_id=order.id)
 
-
             items = []
             for item in order_items:
                 try:
@@ -632,6 +631,8 @@ def edit_seller_product(request):
         if 'num_sales' in request.POST:
             product.num_sales = request.POST.get('num_sales')
         if 'inventory' in request.POST:
+            if int(request.POST.get('inventory')) < 0:
+                return JsonResponse({'error': 'Invalid inventory value'}, status=400)
             product.inventory = request.POST.get('inventory')
         if 'approval_status' in request.POST:
             product.approval_status = request.POST.get('approval_status')
