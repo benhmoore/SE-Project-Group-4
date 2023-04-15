@@ -31,12 +31,12 @@ jobs:
       - run:
           name: Install backend dependencies
           command: |
-            cd backend/django_project-pro/website
-            pip install -r ../requirements.txt
+            cd backend/django_project-pro
+            pip install -r requirements.txt
       - run:
           name: Run backend tests
           command: |
-            cd backend/django_project-pro/website
+            cd backend/django_project-pro
             python manage.py test
       - store_test_results:
           path: test-results.xml
