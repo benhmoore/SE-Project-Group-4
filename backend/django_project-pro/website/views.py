@@ -470,6 +470,16 @@ def place_order(request):
         if existingCart:
             existingCart.order_status = 1
             existingCart.order_placed_date = timezone.datetime.now()
+
+            cartItems = ShoppingCartItem.objects.filter(
+                shopping_cart_id=existingCart.id)
+            for cartItem in cartItems:
+                product = Product.objects.filter(
+                    id=cartItem.product_id).first()
+                product.inventory -= cartItem.quantity
+                product.num_sales += cartItem.quantity
+                product.save()
+
             try:
                 existingCart.save()
             except Exception as e:
