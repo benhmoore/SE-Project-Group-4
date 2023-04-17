@@ -17,6 +17,11 @@ const CreateAccount = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
     // Create account
     let form = new FormData();
     form.append("userRole", "2");
@@ -24,12 +29,11 @@ const CreateAccount = () => {
     form.append("password", password);
     form.append("firstname", firstName);
     form.append("lastname", lastName);
-    form.append("address", "_"); 
+    form.append("address", "_");
     form.append("balance", "0");
     form.append("payment_method", "_");
     Axios.post("http://127.0.0.1:8000/user/create", form)
       .then((res) => {
-
         // Login to user
         handleLogin(username, password);
 
@@ -129,6 +133,7 @@ const CreateAccount = () => {
                       id="floatingPassword"
                       placeholder="Password"
                       value={confirmPassword}
+                      min={8}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
                     />
