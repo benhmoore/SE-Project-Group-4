@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, Form, Navigate } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
-
 import axios from "axios";
 
 const SignIn = () => {
@@ -9,12 +8,38 @@ const SignIn = () => {
 
   if (authenticated) return <Navigate to="/" />;
 
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    handleLogin(username, password);
+    const isUsernameValid = validateUsername(username);
+    const isPasswordValid = validatePassword(password);
+    if (isUsernameValid && isPasswordValid) {
+      handleLogin(username, password);
+    }
+  };
+
+  const validateUsername = (value: string) => {
+    if (!value) {
+      setUsernameError("Username is required.");
+      return false;
+    } else {
+      setUsernameError("");
+      return true;
+    }
+  };
+
+  const validatePassword = (value: string) => {
+    if (!value) {
+      setPasswordError("Password is required.");
+      return false;
+    } else {
+      setPasswordError("");
+      return true;
+    }
   };
 
   return (
@@ -39,9 +64,13 @@ const SignIn = () => {
                     id="floatingInput"
                     placeholder="name@example.com"
                     onChange={(e) => setUsername(e.target.value)}
+                    onBlur={(e) => validateUsername(e.target.value)}
                     required
                   />
                   <label htmlFor="floatingInput">Username</label>
+                  {usernameError && (
+                    <span className="text-danger">{usernameError}</span>
+                  )}
                 </div>
                 <div className="form-floating">
                   <input
@@ -50,9 +79,13 @@ const SignIn = () => {
                     id="floatingPassword"
                     placeholder="Password"
                     onChange={(e) => setPassword(e.target.value)}
+                    onBlur={(e) => validatePassword(e.target.value)}
                     required
                   />
                   <label htmlFor="floatingPassword">Password</label>
+                  {passwordError && (
+                    <span className="text-danger">{passwordError}</span>
+                  )}
                 </div>
                 <button
                   type="submit"
