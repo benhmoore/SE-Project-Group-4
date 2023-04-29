@@ -32,6 +32,9 @@ class ShoppingCart(models.Model):
     order_status = models.IntegerField()
     order_placed_date = models.DateTimeField()
 
+class userActivities(models.Model):
+    user_id = models.IntegerField()
+    action_description = models.CharField(max_length=255)
 
 class ShoppingCartItem(models.Model):
     shopping_cart_id = models.IntegerField()
@@ -39,7 +42,6 @@ class ShoppingCartItem(models.Model):
     quantity = models.IntegerField()
 
 ############################################################################
-
 
 class OrderStatus(Enum):
     PENDING = 1

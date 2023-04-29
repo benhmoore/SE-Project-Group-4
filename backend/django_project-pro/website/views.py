@@ -665,3 +665,10 @@ def delete_seller_product(request):
         return JsonResponse({'message': 'Product deleted successfully'}, status=200)
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+def add_user_activity(request):
+    if request.method == 'POST':
+        user_id = authenticate_request(request)
+        if user_id == -1:
+            return JsonResponse({'error': 'Authentication failed.'}, status=401)
