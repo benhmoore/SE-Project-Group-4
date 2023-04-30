@@ -121,6 +121,14 @@ const AccountMenu = ({
             <hr className="dropdown-divider" />
           </li>
           <li>
+            <Link to={"/admin"} className="dropdown-item">
+              Admin
+            </Link>
+          </li>
+          <li>
+            <hr className="dropdown-divider" />
+          </li>
+          <li>
             <Link to={"#"} onClick={handleLogout} className="dropdown-item">
               Sign Out
             </Link>

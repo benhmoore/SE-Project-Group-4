@@ -14,6 +14,7 @@ import Product from "../../components/product/Product";
 
 const ProductPage = () => {
   const navigate = useNavigate();
+
   // Get the product ID from the URL
   const { id, compareId } = useParams();
 
