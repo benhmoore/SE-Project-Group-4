@@ -1,7 +1,9 @@
 import datetime
 from django.shortcuts import render, get_object_or_404
-from .models import User, Product, ShoppingCart, ShoppingCartItem, Order, OrderItem, OrderStatus, Seller
-from .forms import SigninForm, accountForm, updateQuantity, deleteAccountForm, updateAccountForm, AddProductForm, RemoveProductForm, AddToCartForm, RemoveFromCartForm, ReturnOrderForm
+from .models import User, Product, ShoppingCart, ShoppingCartItem, Order, OrderItem, OrderStatus, Seller, userActivities
+from .forms import SigninForm, accountForm, updateQuantity, \
+    deleteAccountForm, updateAccountForm, AddProductForm, RemoveProductForm, \
+    AddToCartForm, RemoveFromCartForm, ReturnOrderForm, actionForm
 from django.http import JsonResponse
 from django.utils import timezone
 import random
@@ -667,8 +669,27 @@ def delete_seller_product(request):
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-def add_user_activity(request):
+def add_user_activity(inputID, inputAction):
+    newAction = userActivities(
+        user_id = inputID,
+        action_description = inputAction,
+    )
+
+    newAction.save()
+    return JsonResponse({'message': 'Logged Action added successfully!'}, status = 200)
+
+def return_activities(request):
     if request.method == 'POST':
         user_id = authenticate_request(request)
         if user_id == -1:
             return JsonResponse({'error': 'Authentication failed.'}, status=401)
+
+        # actionHistory = userActivities.objects.filter(user_id=user_id)
+        actionHistory = userActivities.objects.all()
+
+        actions = [{
+            'user_id': eachAction.user_id,
+            'action_description': eachAction.action_description
+        } for eachAction in actionHistory]
+
+        return JsonResponse(actions, safe=False)
