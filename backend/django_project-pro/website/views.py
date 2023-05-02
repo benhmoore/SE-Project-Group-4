@@ -693,3 +693,31 @@ def return_activities(request):
         } for eachAction in actionHistory]
 
         return JsonResponse(actions, safe=False)
+
+###############################################################################################################################
+def GetListofAccounts(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+    user_id = authenticate_request(request)
+    if user_id == -1:
+        return JsonResponse({'error': 'Authentication failed'}, status=401)
+
+    users = User.objects.all()
+
+    user_list = []
+    for user in users:
+        user_dict = {
+            'id': user.id,
+            'user_role': user.user_role,
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'address': user.address,
+            'balance': str(user.balance),
+            'payment_method': user.payment_method
+        }
+        user_list.append(user_dict)
+
+    return JsonResponse({'users': user_list}, status=200)
+
