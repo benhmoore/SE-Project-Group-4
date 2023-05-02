@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BsBagHeartFill,
   BsBarChartFill,
@@ -10,6 +10,7 @@ import {
 import { MdDashboard } from "react-icons/md";
 import { IoStorefront } from "react-icons/io5";
 import { useOutletContext, Navigate } from "react-router-dom";
+import Axios from "axios";
 
 const AdminDashboard = () => {
   if (!useOutletContext().authenticated) return <Navigate to="/user/signin" />;
@@ -19,6 +20,88 @@ const AdminDashboard = () => {
 
   // Keep track of active tab with states
   const [activeTab, setActiveTab] = React.useState("dashboard");
+
+  const [buyers, setBuyers] = React.useState([]);
+  const [sellers, setSellers] = React.useState([]);
+  const [admins, setAdmins] = React.useState([]);
+
+  const [products, setProducts] = React.useState([]);
+  const [approvedProducts, setApprovedProducts] = React.useState([]);
+  const [pendingProducts, setPendingProducts] = React.useState([]);
+
+  const [activity, setActivity] = React.useState([]);
+
+  // Get users
+  useEffect(() => {
+    console.log("Use effect called");
+    console.log("Use effect called");
+    Axios.get("/admin1/users/list", {
+      params: {
+        token,
+      },
+    })
+      .then((response) => {
+        // Split users into buyers, sellers, and admins
+        const buyers = response.data.users.filter(
+          (user) => user.user_role === 1
+        );
+        const sellers = response.data.users.filter(
+          (user) => user.user_role === 2
+        );
+        const admins = response.data.users.filter(
+          (user) => user.user_role === 3
+        );
+
+        // Store the users in state
+        setBuyers(buyers);
+        setSellers(sellers);
+        setAdmins(admins);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [activeTab]);
+
+  // Get products
+  useEffect(() => {
+    Axios.get("/products/list", {
+      params: {
+        token,
+      },
+    })
+      .then((response) => {
+        // Split products into approved and pending
+        const approvedProducts = response.data.products.filter(
+          (product) => product.approval_status === 1
+        );
+        const pendingProducts = response.data.products.filter(
+          (product) => product.approval_status === 0
+        );
+
+        // Store the products in state
+        setApprovedProducts(approvedProducts);
+        setPendingProducts(pendingProducts);
+
+        // Store all products in state
+        setProducts(response.data.products);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [activeTab]);
+
+  // Get activity
+  useEffect(() => {
+    let form = new FormData();
+    form.append("token", token);
+    Axios.post("http://127.0.0.1:8000/admin1/activity", form)
+      .then((response) => {
+        setActivity(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [activeTab]);
 
   return (
     <div className="container">
@@ -143,7 +226,11 @@ const AdminDashboard = () => {
                           Sellers
                         </h3>
                         <p className="text-light">
-                          This is the first quadrant.
+                          There are{" "}
+                          <h3 style={{ display: "inline" }}>
+                            {sellers.length}
+                          </h3>{" "}
+                          active sellers on the platform.
                         </p>
                       </div>
                     </div>
@@ -158,7 +245,9 @@ const AdminDashboard = () => {
                           Buyers
                         </h3>
                         <p className="text-light">
-                          This is the second quadrant.
+                          There are{" "}
+                          <h3 style={{ display: "inline" }}>{buyers.length}</h3>{" "}
+                          active buyers on the platform.
                         </p>
                       </div>
                     </div>
@@ -173,7 +262,15 @@ const AdminDashboard = () => {
                           Products
                         </h3>
                         <p className="text-light">
-                          This is the third quadrant.
+                          There are{" "}
+                          <h3 style={{ display: "inline" }}>
+                            {approvedProducts.length}
+                          </h3>{" "}
+                          approved products and{" "}
+                          <h3 style={{ display: "inline" }}>
+                            {pendingProducts.length}
+                          </h3>{" "}
+                          unapproved products on the platform.
                         </p>
                       </div>
                     </div>
@@ -203,7 +300,7 @@ const AdminDashboard = () => {
                   aria-labelledby="v-pills-sellers-tab"
                 >
                   <h2>Sellers</h2>
-                  <p>Placeholder content for Sellers tab.</p>
+                  <p>View and remove platform sellers.</p>
                   <table className="table table-hover mt-4">
                     <thead>
                       <tr>
@@ -221,25 +318,9 @@ const AdminDashboard = () => {
                         <td>10</td>
                         <td>$1000</td>
                         <td>
-                          <button className="btn btn-danger">Ban Seller</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Jane</td>
-                        <td>Smith</td>
-                        <td>5</td>
-                        <td>$500</td>
-                        <td>
-                          <button className="btn btn-danger">Ban Seller</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Bob</td>
-                        <td>Johnson</td>
-                        <td>2</td>
-                        <td>$200</td>
-                        <td>
-                          <button className="btn btn-danger">Ban Seller</button>
+                          <button className="btn btn-danger">
+                            Remove Seller
+                          </button>
                         </td>
                       </tr>
                     </tbody>
@@ -277,6 +358,23 @@ const AdminDashboard = () => {
                 >
                   <h2>Activity Tab</h2>
                   <p>Placeholder content for Activity tab.</p>
+                  {/* Loop through activity array and display activity in table */}
+                  <table className="table table-hover mt-4">
+                    <thead>
+                      <tr>
+                        <th>User</th>
+                        <th>Action Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {activity.map((activity) => (
+                        <tr className="">
+                          <td>{activity.user_id}</td>
+                          <td>{activity.action_description}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
