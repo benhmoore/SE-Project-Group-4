@@ -10,6 +10,32 @@ import random
 import secrets
 import string
 
+def add_user_activity(inputID, inputAction):
+    newAction = userActivities(
+        user_id = inputID,
+        action_description = inputAction,
+    )
+
+    newAction.save()
+    return JsonResponse({'message': 'Logged Action added successfully!'}, status = 200)
+
+def return_activities(request):
+    if request.method == 'POST':
+        user_id = authenticate_request(request)
+        if user_id == -1:
+            return JsonResponse({'error': 'Authentication failed.'}, status=401)
+
+        # actionHistory = userActivities.objects.filter(user_id=user_id)
+        actionHistory = userActivities.objects.all()
+
+        actions = [{
+            'user_id': eachAction.user_id,
+            'action_description': eachAction.action_description
+        } for eachAction in actionHistory]
+
+        return JsonResponse(actions, safe=False)
+
+
 
 def get_user_shopping_cart(user_id):
     shopping_cart = get_object_or_404(
@@ -93,6 +119,7 @@ def basic_login(request):
                             tokenSwitch = check_token(token)
 
                         edit_token(oneRow.id, token)
+
                         return JsonResponse({'message': 'Success!', 'token': token}, status=200)
             # If can't find username,
             return JsonResponse({'message': 'Authentication Failed'}, status=401)
@@ -127,7 +154,6 @@ def add_account(roleInput, usernameInput, passwordInput, firstInput, lastInput, 
     newCart.save()
 
     return JsonResponse({'message': 'Success!', 'token': token}, status=200)
-
 
 def create_account(request):
     if request.method == 'POST':
@@ -178,6 +204,7 @@ def update_account_info(request):
             foundUser.address = matching_address
             foundUser.payment_method = matching_payment_info
             foundUser.save()
+            add_user_activity(user_id, "Update Account Info")
             return JsonResponse({'message': 'Success!'}, status=200)
     return JsonResponse({'message': 'Account Update Failed'}, status=401)
 
@@ -199,6 +226,8 @@ def get_account_info(request):
         'payment_method': user.payment_method,
         'token_id': user.token_id
     }
+
+    add_user_activity(user_id, "Get Account Info")
     return JsonResponse(returnUser, safe=False, status=200)
 
 
@@ -266,6 +295,9 @@ def return_user_cart(request):
                 'image': product.image_id,
                 'quantity': cart_item.quantity
             })
+
+        add_user_activity(user_id, "Return User Cart")
+
         return JsonResponse({
             'cartItems': cart_items,
             'order_status': shopping_cart.order_status,
@@ -287,6 +319,7 @@ def return_user_cart(request):
                     'quantity': cart_item.quantity
                 })
 
+    add_user_activity(user_id, "Get Cart Items")
     return JsonResponse({
         'cartItems': cart_items
     }, status=200)
@@ -312,6 +345,7 @@ def add_product(request):
                 description=form.cleaned_data['description'],
             )
             product.save()
+            add_user_activity(user_id, "Add Product")
             return JsonResponse({'message': 'Product added successfully!'}, status=200)
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
@@ -374,6 +408,7 @@ def add_cart_item(request):
         data = {
             'cartItems': cart_items
         }
+        add_user_activity(user_id, "Add Cart Item")
         return JsonResponse(data, status=200)
     else:
         data = {
@@ -414,6 +449,8 @@ def remove_cart_item(request):
     data = {
         'cartItems': cart_items
     }
+
+    add_user_activity(user_id, "Remove Cart Item")
     return JsonResponse(data, status=200)
 
 
@@ -445,6 +482,7 @@ def get_shopping_cart_items(request):
             data = {
                 'cartItems': items
             }
+            add_user_activity(user, "Get Shopping Cart Items")
             return JsonResponse(data, status=200)
         except Exception as e:
             data = {
@@ -492,6 +530,7 @@ def place_order(request):
             user_id=user_id, order_status=0, order_placed_date=timezone.datetime.now())
         newCart.save()
 
+        add_user_activity(user_id, "Order Placed")
         return JsonResponse({'message': "Order Place Successfully"}, status=200)
     return JsonResponse({'error': "Invalid Input"}, status=401)
 
@@ -514,6 +553,7 @@ def update_quantity_cartItem(request):
 
     cart_item.quantity = quantity
     cart_item.save()
+    add_user_activity(user_id, "Updated Quantity")
     return JsonResponse({'quantity': quantity}, status=200)
 
 
@@ -558,7 +598,7 @@ def get_orders(request):
         data = {
             'carts': carts,
         }
-
+        add_user_activity(user, "Get Order")
         return JsonResponse(data, status=200)
     else:
         data = {
@@ -582,6 +622,7 @@ def return_order(request):
         shopping_cart = get_object_or_404(ShoppingCart, id=cart_id)
         shopping_cart.order_status = 2
         shopping_cart.save()
+        add_user_activity(user_id, "Return Order")
         return JsonResponse({'message': "Order Returned Successfully"}, status=200)
     return JsonResponse({'error': "Invalid Input"}, status=400)
 
@@ -617,6 +658,8 @@ def get_seller_products(request):
         data = {
             'products': list(products.values())
         }
+
+        add_user_activity(user_id, "Get Seller Products")
         return JsonResponse(data, status=200)
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
@@ -649,6 +692,8 @@ def edit_seller_product(request):
         if 'approval_status' in request.POST:
             product.approval_status = request.POST.get('approval_status')
         product.save()
+
+        add_user_activity(user_id, "Update Seller Info")
         return JsonResponse({'message': 'Product updated successfully'}, status=200)
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
@@ -664,8 +709,8 @@ def delete_seller_product(request):
         product = get_object_or_404(Product, id=product_id, seller=user_id)
         product.delete()
 
+        add_user_activity(user_id, "Delete Seller Product")
         return JsonResponse({'message': 'Product deleted successfully'}, status=200)
-
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
@@ -720,4 +765,3 @@ def GetListofAccounts(request):
         user_list.append(user_dict)
 
     return JsonResponse({'users': user_list}, status=200)
-
