@@ -56,8 +56,7 @@ const ProductPage = () => {
     console.log("Trying to load ", productId);
     Axios.get(`http://127.0.0.1:8000/products?id=${productId}`)
       .then((response) => {
-        console.log(response.data);
-        if (response.data.length === 0) {
+        if (response.data.length === 0 || response.data.approval_status === 0) {
           return navigate("/");
         }
         setProduct(response.data);

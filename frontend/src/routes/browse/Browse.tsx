@@ -33,9 +33,17 @@ const Browse = ({ compareProduct = false }: Props) => {
   React.useEffect(() => {
     Axios.get("http://127.0.0.1:8000/products/list")
       .then((response) => {
+        // Remove any products that have an approval_status of 0
         response.data.products = response.data.filter((product: any) => {
-          return product.name.toLowerCase().includes(searchQuery.toLowerCase());
+          return product.approval_status === 1;
         });
+        response.data.products = response.data.products.filter(
+          (product: any) => {
+            return product.name
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase());
+          }
+        );
         setProducts(response.data.products);
         setLoading(false);
       })

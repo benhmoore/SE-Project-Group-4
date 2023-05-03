@@ -25,6 +25,8 @@ const AdminDashboard = () => {
   const [sellers, setSellers] = React.useState([]);
   const [admins, setAdmins] = React.useState([]);
 
+  const [users, setUsers] = React.useState([]);
+
   const [products, setProducts] = React.useState([]);
   const [approvedProducts, setApprovedProducts] = React.useState([]);
   const [pendingProducts, setPendingProducts] = React.useState([]);
@@ -34,8 +36,7 @@ const AdminDashboard = () => {
   // Get users
   useEffect(() => {
     console.log("Use effect called");
-    console.log("Use effect called");
-    Axios.get("/admin1/users/list", {
+    Axios.get("http://127.0.0.1:8000/admin1/users/list", {
       params: {
         token,
       },
@@ -43,7 +44,7 @@ const AdminDashboard = () => {
       .then((response) => {
         // Split users into buyers, sellers, and admins
         const buyers = response.data.users.filter(
-          (user) => user.user_role === 1
+          (user) => user.user_role === 1 || user.user_role === 2
         );
         const sellers = response.data.users.filter(
           (user) => user.user_role === 2
@@ -56,6 +57,9 @@ const AdminDashboard = () => {
         setBuyers(buyers);
         setSellers(sellers);
         setAdmins(admins);
+
+        // Store all users in state
+        setUsers(response.data.users);
       })
       .catch((error) => {
         console.log(error);
@@ -64,17 +68,17 @@ const AdminDashboard = () => {
 
   // Get products
   useEffect(() => {
-    Axios.get("/products/list", {
+    Axios.get("http://127.0.0.1:8000/products/list", {
       params: {
         token,
       },
     })
       .then((response) => {
         // Split products into approved and pending
-        const approvedProducts = response.data.products.filter(
+        const approvedProducts = response.data.filter(
           (product) => product.approval_status === 1
         );
-        const pendingProducts = response.data.products.filter(
+        const pendingProducts = response.data.filter(
           (product) => product.approval_status === 0
         );
 
@@ -83,7 +87,7 @@ const AdminDashboard = () => {
         setPendingProducts(pendingProducts);
 
         // Store all products in state
-        setProducts(response.data.products);
+        setProducts(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -96,6 +100,34 @@ const AdminDashboard = () => {
     form.append("token", token);
     Axios.post("http://127.0.0.1:8000/admin1/activity", form)
       .then((response) => {
+        console.log(response.data);
+        // Remove consecutive duplicates with the same description
+        let prevDescription = "";
+        let prevUserId = -1;
+        response.data.forEach((activity) => {
+          if (
+            activity.action_description === prevDescription &&
+            activity.user_id === prevUserId
+          ) {
+            activity.action_description = "";
+            activity.user_id = -1;
+          } else {
+            prevDescription = activity.action_description;
+            prevUserId = activity.user_id;
+          }
+        });
+
+        // Filter out any actions with user_id = -1
+        response.data = response.data.filter(
+          (activity) => activity.user_id !== -1
+        );
+
+        // Get user's username by user_id from users list
+        response.data.forEach((activity) => {
+          const user = users.find((user) => user.id === activity.user_id);
+          activity.username = user.username;
+        });
+
         setActivity(response.data);
       })
       .catch((error) => {
@@ -285,7 +317,8 @@ const AdminDashboard = () => {
                           Activity
                         </h3>
                         <p className="text-light">
-                          This is the fourth quadrant.
+                          Operation Status:{" "}
+                          <h3 style={{ display: "inline" }}>OK</h3>
                         </p>
                       </div>
                     </div>
@@ -306,23 +339,24 @@ const AdminDashboard = () => {
                       <tr>
                         <th>First Name</th>
                         <th>Last Name</th>
-                        <th>Products</th>
-                        <th>Revenue</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className="">
-                        <td>John</td>
-                        <td>Doe</td>
-                        <td>10</td>
-                        <td>$1000</td>
-                        <td>
-                          <button className="btn btn-danger">
-                            Remove Seller
-                          </button>
-                        </td>
-                      </tr>
+                      {sellers.map((seller) => (
+                        <tr key={seller.id}>
+                          <td>{seller.first_name}</td>
+                          <td>{seller.last_name}</td>
+                          <td>
+                            <button
+                              className="btn btn-danger"
+                              onClick={() => removeSeller(seller.id)}
+                            >
+                              Block Seller
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -334,8 +368,26 @@ const AdminDashboard = () => {
                   role="tabpanel"
                   aria-labelledby="v-pills-buyers-tab"
                 >
-                  <h2>Buyers Tab</h2>
-                  <p>Placeholder content for Buyers tab.</p>
+                  <h2>Buyers</h2>
+                  <p>View platform buyers.</p>
+                  <table className="table table-hover mt-4">
+                    <thead>
+                      <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Username</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {buyers.map((buyer) => (
+                        <tr key={buyer.id}>
+                          <td>{buyer.first_name}</td>
+                          <td>{buyer.last_name}</td>
+                          <td>{buyer.username}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
                 <div
                   className={`tab-pane ${
@@ -345,8 +397,44 @@ const AdminDashboard = () => {
                   role="tabpanel"
                   aria-labelledby="v-pills-products-tab"
                 >
-                  <h2>Products Tab</h2>
-                  <p>Placeholder content for Products tab.</p>
+                  <h2>Products</h2>
+                  <p>View platform products.</p>
+                  <table className="table table-hover mt-4">
+                    <thead>
+                      <tr>
+                        <th>Product Name</th>
+                        <th>Product Description</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {products.map((product) => (
+                        <tr key={product.id}>
+                          <td>
+                            <strong>{product.name}</strong>
+                          </td>
+                          <td>{product.description}</td>
+                          <td>
+                            {product.approval_status == 0 && (
+                              <span className="badge bg-warning">Pending</span>
+                            )}
+                            {product.approval_status == 1 && (
+                              <span className="badge bg-success">Approved</span>
+                            )}
+                          </td>
+                          <td>
+                            <button
+                              className="btn btn-danger"
+                              onClick={() => removeProduct(product.id)}
+                            >
+                              Edit
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
                 <div
                   className={`tab-pane ${
@@ -356,20 +444,20 @@ const AdminDashboard = () => {
                   role="tabpanel"
                   aria-labelledby="v-pills-activity-tab"
                 >
-                  <h2>Activity Tab</h2>
-                  <p>Placeholder content for Activity tab.</p>
+                  <h2>Activity</h2>
+                  <p>View recent activity on the platform.</p>
                   {/* Loop through activity array and display activity in table */}
                   <table className="table table-hover mt-4">
                     <thead>
                       <tr>
-                        <th>User</th>
+                        <th>Username</th>
                         <th>Action Description</th>
                       </tr>
                     </thead>
                     <tbody>
                       {activity.map((activity) => (
                         <tr className="">
-                          <td>{activity.user_id}</td>
+                          <td>{activity.username}</td>
                           <td>{activity.action_description}</td>
                         </tr>
                       ))}
