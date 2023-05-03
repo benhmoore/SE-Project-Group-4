@@ -1,7 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from django.http import JsonResponse
-from website.views import add_account, add_product
+from website.views import add_account, add_product, add_user_activity
 import json
 
 
@@ -51,7 +50,6 @@ class SignInTestCase(TestCase):
         responseIncorrectPassword = self.client.post(url, justWrong)
         self.assertEqual(responseIncorrectPassword.status_code, 401)
 
-
 class productTest(TestCase):
 
     def setup(self):
@@ -85,7 +83,6 @@ class productTest(TestCase):
         url = reverse("add_product")
         responseNoForm = self.client.post(url, {})
         self.assertEqual(responseNoForm.status_code, 401)
-
 
 class findProduct(TestCase):
     def setup(self):
@@ -159,7 +156,6 @@ class findProduct(TestCase):
         responseWrong = self.client.get(newUrl, {'id': 999})
         self.assertEqual(responseWrong.status_code, 404)
 
-
 class place_orderTestCases(TestCase):
 
     def setUp(self):
@@ -188,7 +184,6 @@ class place_orderTestCases(TestCase):
 
         place_order_response = self.client.post(url, {'token': "WRONG"})
         self.assertEqual(place_order_response.status_code, 401)
-
 
 class return_orderTestCases(TestCase):
     def setUp(self):
@@ -224,7 +219,6 @@ class return_orderTestCases(TestCase):
         place_order_response = self.client.post(url, {'token': chosenToken})
         self.assertEqual(place_order_response.status_code, 400)
 
-
 class SellerTest(TestCase):
 
     def __init__(self, *args, **kwargs):
@@ -238,8 +232,6 @@ class SellerTest(TestCase):
         tokenData = add_account(
             0, "benmoore", "12345678", "Ben", "Moore", "123 Street", "0", "1234 1234 1234 1234")
         data = json.loads(tokenData.content)
-
-        print("Token: " + data['token'])
 
         self.chosenToken = data['token']
 
@@ -351,3 +343,32 @@ class SellerTest(TestCase):
         url = reverse("get_product_info")
         response = self.client.get(url, {'id': 1, 'token': self.chosenToken})
         self.assertEqual(response.status_code, 404)
+
+class logActivities_TestCases(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_add_activity(self):
+        tokenData = add_user_activity(1, "Testing Log Activites 1")
+        data = json.loads(tokenData.content)
+        chosenToken = data['message']
+
+        self.assertEqual(chosenToken, "Logged Action added successfully!")
+
+    def test_return_activites(self):
+        tokenData = add_user_activity(1, "Testing Log Activites 1")
+
+        tokenData = add_account(
+            0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        data = json.loads(tokenData.content)
+        chosenToken = data['token']
+
+        url = reverse("return_activities")
+
+        returnActivites = self.client.post(url, {'token': chosenToken})
+        data = json.loads(returnActivites.content)
+
+        data1 = data[0]
+        matchDescription = data1["action_description"]
+
+        self.assertEqual(matchDescription, "Testing Log Activites 1")
