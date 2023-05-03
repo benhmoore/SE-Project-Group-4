@@ -21,7 +21,7 @@ from website.views import get_account_info, basic_login, create_account, delete_
     return_user_cart, add_product, remove_product, \
     add_cart_item, remove_cart_item, update_quantity_cartItem, place_order, return_order,\
     get_orders, update_account_info, get_seller_products, \
-    edit_seller_product, delete_seller_product, return_activities
+    edit_seller_product, delete_seller_product, return_activities, GetListofAccounts, UpdateAccount, updateproductapproval
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -56,5 +56,8 @@ urlpatterns = [
          name='delete_seller_product'),
 
     path('admin1/activity', return_activities, name = 'return_activities'),
+    path('admin1/users/list', GetListofAccounts, name= 'GetListofAccounts'),
+    path('admin1/users', UpdateAccount, name= 'UpdateAccount'),
+    path('admin1/products', updateproductapproval, name= 'updateproductapproval'),
 
 ]

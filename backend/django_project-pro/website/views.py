@@ -765,3 +765,50 @@ def GetListofAccounts(request):
         user_list.append(user_dict)
 
     return JsonResponse({'users': user_list}, status=200)
+
+def UpdateAccount(request):
+    if request.method == 'POST':
+        # Authenticate user
+        user_id = authenticate_request(request)
+        if user_id == -1:
+            return JsonResponse({'error': 'Authentication failed.'}, status=401)
+
+        user_id = request.POST.get('user_id')
+        user = get_object_or_404(User, id=user_id)
+
+        attribute = request.POST.get('attribute')
+        value = request.POST.get('value')
+
+        # Update the user's attribute
+        if attribute == 'username':
+            user.username = value
+        elif attribute == 'user_role':
+            user.user_role = int(value)
+        elif attribute == 'first_name':
+            user.first_name = value
+        elif attribute == 'last_name':
+            user.last_name = value
+        elif attribute == 'address':
+            user.address = value
+        else:
+            return JsonResponse({'error': 'Invalid attribute.'}, status=400)
+
+        # Save the updated user
+        user.save()
+
+        return JsonResponse({'user_id': user_id}, status = 200)
+
+def updateproductapproval(request):
+    if request.method == 'POST':
+        user_id = authenticate_request(request)
+        if user_id == -1:
+            return JsonResponse({'error': 'Authentication failed.'}, status=401)
+
+        product_id = request.POST.get('product_id')
+        approval_status = request.POST.get('approval_status')
+        product = get_object_or_404(Product, id=product_id)
+        product.approval_status = int(approval_status)
+        product.save()
+        return JsonResponse({'message': 'Product approval updated successfully'}, status=200)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
