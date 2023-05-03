@@ -19,23 +19,6 @@ def add_user_activity(inputID, inputAction):
     newAction.save()
     return JsonResponse({'message': 'Logged Action added successfully!'}, status = 200)
 
-def return_activities(request):
-    if request.method == 'POST':
-        user_id = authenticate_request(request)
-        if user_id == -1:
-            return JsonResponse({'error': 'Authentication failed.'}, status=401)
-
-        # actionHistory = userActivities.objects.filter(user_id=user_id)
-        actionHistory = userActivities.objects.all()
-
-        actions = [{
-            'user_id': eachAction.user_id,
-            'action_description': eachAction.action_description
-        } for eachAction in actionHistory]
-
-        return JsonResponse(actions, safe=False)
-
-
 
 def get_user_shopping_cart(user_id):
     shopping_cart = get_object_or_404(
@@ -66,6 +49,42 @@ def authenticate_request(request):
     except User.DoesNotExist:
         return -1
 
+
+def get_name(request):
+    """Authenticates requests that require a user to be logged in.
+
+    Returns:
+        integer: -1 if authentication fails, otherwise the user id
+    """
+    token = request.POST.get('token')
+    if token is None:
+        token = request.GET.get('token')
+        if token is None:
+            return -1
+    try:
+        user = User.objects.get(token_id=token)
+        return user.username
+    except User.DoesNotExist:
+        return -1
+
+def return_activities(request):
+    if request.method == 'POST':
+        user_id = authenticate_request(request)
+        if user_id == -1:
+            return JsonResponse({'error': 'Authentication failed.'}, status=401)
+
+        name = get_name(request)
+
+        # actionHistory = userActivities.objects.filter(user_id=user_id)
+        actionHistory = userActivities.objects.all()
+
+        actions = [{
+            'user_id': eachAction.user_id,
+            'name': name,
+            'action_description': eachAction.action_description
+        } for eachAction in actionHistory]
+
+        return JsonResponse(actions, safe=False)
 
 def example_authenticated_route(request):
     """ Example of an authenticated route using the authenticate_request function. """
@@ -712,32 +731,6 @@ def delete_seller_product(request):
         add_user_activity(user_id, "Delete Seller Product")
         return JsonResponse({'message': 'Product deleted successfully'}, status=200)
     return JsonResponse({'error': 'Invalid request method'}, status=400)
-
-
-def add_user_activity(inputID, inputAction):
-    newAction = userActivities(
-        user_id = inputID,
-        action_description = inputAction,
-    )
-
-    newAction.save()
-    return JsonResponse({'message': 'Logged Action added successfully!'}, status = 200)
-
-def return_activities(request):
-    if request.method == 'POST':
-        user_id = authenticate_request(request)
-        if user_id == -1:
-            return JsonResponse({'error': 'Authentication failed.'}, status=401)
-
-        # actionHistory = userActivities.objects.filter(user_id=user_id)
-        actionHistory = userActivities.objects.all()
-
-        actions = [{
-            'user_id': eachAction.user_id,
-            'action_description': eachAction.action_description
-        } for eachAction in actionHistory]
-
-        return JsonResponse(actions, safe=False)
 
 ###############################################################################################################################
 def GetListofAccounts(request):
