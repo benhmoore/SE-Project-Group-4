@@ -364,7 +364,6 @@ class logActivities_TestCases(TestCase):
         chosenToken = data['token']
 
         url = reverse("return_activities")
-
         returnActivites = self.client.post(url, {'token': chosenToken})
         data = json.loads(returnActivites.content)
 
@@ -372,3 +371,69 @@ class logActivities_TestCases(TestCase):
         matchDescription = data1["action_description"]
 
         self.assertEqual(matchDescription, "Testing Log Activites 1")
+
+class adminFunctions(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_get_account_list(self):
+        tokenData = add_account(
+            0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        data = json.loads(tokenData.content)
+        chosenToken = data['token']
+
+        tokenData1 = add_account(
+            0, "MaxLam2", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        tokenData2 = add_account(
+            0, "MaxLam3", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+
+        url = reverse("GetListofAccounts")
+        returnActivites = self.client.get(url, {'token': chosenToken})
+        data = json.loads(returnActivites.content)
+
+        data = data['users']
+
+        data0 = data[0]
+        data1 = data[1]
+        data2 = data[2]
+
+        self.assertEqual(data0['username'], "MaxLam")
+        self.assertEqual(data1['username'], "MaxLam2")
+        self.assertEqual(data2['username'], "MaxLam3")
+
+    def test_update_product_approval(self):
+        tokenData = add_account(
+            0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        data = json.loads(tokenData.content)
+        chosenToken = data['token']
+
+        url = reverse("add_product")
+        form_data = {
+            'token': chosenToken,  # Uses token
+            'category': 'Books',
+            'name': 'The Great Gatsby',
+            'price': 12.99,
+            'seller': 1,
+            'image_id': "ImageHere",
+            'num_sales': 10,
+            'inventory': 50,
+            'approval_status': 1,
+            'description': 'A classic novel by F. Scott Fitzgerald',
+        }
+
+        response = self.client.post(url, form_data)
+        self.assertEqual(response.status_code, 200)
+
+        url = reverse("updateproductapproval")
+        productApproval1 = self.client.post(url, {'token': chosenToken, 'product_id':1, 'approval_status': 0})
+        self.assertEqual(productApproval1.status_code, 200)
+
+    def test_updateAccount(self):
+        tokenData = add_account(
+            0, "MaxLam", "passM", "Maxwell", "Lam", "123 Street", "102.10", "Cash")
+        data = json.loads(tokenData.content)
+        chosenToken = data['token']
+
+        url = reverse("UpdateAccount")
+        response = self.client.post(url, {"token":chosenToken, "user_id": 1, "attribute": "username", "value":"MaxLam2"})
+        self.assertEqual(response.status_code, 200)
