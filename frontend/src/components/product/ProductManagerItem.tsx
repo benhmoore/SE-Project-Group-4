@@ -31,6 +31,7 @@ const ProductManagerItem = ({
   const [productQuantity, setProductQuantity] = React.useState(0);
   const [productSales, setProductSales] = React.useState(0);
   const [productRevenue, setProductRevenue] = React.useState(0);
+  const [productStatus, setProductStatus] = React.useState(0);
 
   const [showDialog, setShowDialog] = React.useState(false);
 
@@ -62,6 +63,7 @@ const ProductManagerItem = ({
         setProductQuantity(product.inventory);
         setProductSales(product.num_sales);
         setProductRevenue(product.revenue);
+        setProductStatus(product.approval_status);
       })
       .catch((err) => {
         console.log(err);
@@ -82,6 +84,13 @@ const ProductManagerItem = ({
         <td>{productQuantity}</td>
         <td>{productSales}</td>
         <td>{priceFormatter.format(productRevenue)}</td>
+        <td>
+          {productStatus === 0 ? (
+            <span className="badge bg-warning text-dark">Pending</span>
+          ) : (
+            <span className="badge bg-success">Approved</span>
+          )}
+        </td>
         <td>
           <button
             className="btn btn-primary"

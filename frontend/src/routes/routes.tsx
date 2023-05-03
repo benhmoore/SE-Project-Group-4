@@ -12,6 +12,7 @@ import { Navigate } from "react-router-dom";
 import SellerDashboard from "./sell/SellerDashboard";
 import Account from "./account/Account";
 import ReturnSummary from "./order/ReturnSummary";
+import AdminDashboard from "./administrate/AdminDashboard";
 
 export const routes = [
   {
@@ -80,6 +81,12 @@ export const routes = [
       {
         path: "/sell",
         element: <SellerDashboard />,
+      },
+
+      // Admin Routes
+      {
+        path: "/admin",
+        element: <AdminDashboard />,
       },
     ],
   },

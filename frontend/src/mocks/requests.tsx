@@ -1,7 +1,7 @@
 // // This file is used to mock requests to the backend
 
-// import axios from "axios";
-// import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
+import MockAdapter from "axios-mock-adapter";
 
 // // This sets the mock adapter on the default instance
 // var mock = new MockAdapter(axios);
@@ -17,6 +17,20 @@
 //   address: "123 Main St",
 // });
 
+// mock.onGet("/admin1/users/list").reply(200, {
+//   users: [
+//     {
+//       user_role: 1, // Buyer
+//     },
+//     {
+//       user_role: 2, // Seller
+//     },
+//     {
+//       user_role: 3, // Admin
+//     },
+//   ],
+// });
+
 // mock.onPost("/user").reply(200, {});
 
 // mock.onGet("/products/list").reply(200, {
@@ -28,6 +42,7 @@
 //         "This is a longer product description that demonstrates omission of text when a description reaches a certain length determined by a magic variable.",
 //       price: 10.99,
 //       image_id: "https://picsum.photos/600/600",
+//       approval_status: 1,
 //     },
 //     {
 //       id: 2,
@@ -35,6 +50,7 @@
 //       description: "Product 2 description",
 //       price: 20.99,
 //       image_id: "https://picsum.photos/600/600",
+//       approval_status: 1,
 //     },
 //     {
 //       id: 3,
@@ -42,6 +58,7 @@
 //       description: "Product 3 description",
 //       price: 30.99,
 //       image_id: "https://picsum.photos/600/600",
+//       approval_status: 0,
 //     },
 //   ],
 // });
