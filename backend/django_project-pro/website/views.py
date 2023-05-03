@@ -711,5 +711,57 @@ def delete_seller_product(request):
 
         add_user_activity(user_id, "Delete Seller Product")
         return JsonResponse({'message': 'Product deleted successfully'}, status=200)
-
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+def add_user_activity(inputID, inputAction):
+    newAction = userActivities(
+        user_id = inputID,
+        action_description = inputAction,
+    )
+
+    newAction.save()
+    return JsonResponse({'message': 'Logged Action added successfully!'}, status = 200)
+
+def return_activities(request):
+    if request.method == 'POST':
+        user_id = authenticate_request(request)
+        if user_id == -1:
+            return JsonResponse({'error': 'Authentication failed.'}, status=401)
+
+        # actionHistory = userActivities.objects.filter(user_id=user_id)
+        actionHistory = userActivities.objects.all()
+
+        actions = [{
+            'user_id': eachAction.user_id,
+            'action_description': eachAction.action_description
+        } for eachAction in actionHistory]
+
+        return JsonResponse(actions, safe=False)
+
+###############################################################################################################################
+def GetListofAccounts(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+    user_id = authenticate_request(request)
+    if user_id == -1:
+        return JsonResponse({'error': 'Authentication failed'}, status=401)
+
+    users = User.objects.all()
+
+    user_list = []
+    for user in users:
+        user_dict = {
+            'id': user.id,
+            'user_role': user.user_role,
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'address': user.address,
+            'balance': str(user.balance),
+            'payment_method': user.payment_method
+        }
+        user_list.append(user_dict)
+
+    return JsonResponse({'users': user_list}, status=200)
