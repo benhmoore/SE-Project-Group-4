@@ -18,7 +18,7 @@ const PricePill = ({ price, productId = -1 }: Props) => {
   const navigate = useNavigate();
 
   const handleAddToCart = () => {
-    let formData = new FormData();
+    const formData = new FormData();
     formData.append("token", token);
     formData.append("item_id", productId);
     Axios.post("http://127.0.0.1:8000/cart/add", formData)

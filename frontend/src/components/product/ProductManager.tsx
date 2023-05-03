@@ -57,7 +57,7 @@ const ProductManager = ({
       return handleEditProduct(e);
     }
 
-    let form = new FormData();
+    const form = new FormData();
     form.append("token", token);
     form.append("name", productName);
     form.append("price", productPrice);
@@ -76,7 +76,7 @@ const ProductManager = ({
 
   const handleEditProduct = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let form = new FormData();
+    const form = new FormData();
     form.append("token", token);
     form.append("product_id", productId.toString());
     form.append("name", productName);

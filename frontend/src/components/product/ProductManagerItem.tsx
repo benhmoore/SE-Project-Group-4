@@ -36,7 +36,7 @@ const ProductManagerItem = ({
   const [showDialog, setShowDialog] = React.useState(false);
 
   const handleDeleteProduct = () => {
-    let form = new FormData();
+    const form = new FormData();
     form.append("token", token);
     form.append("product_id", productId.toString());
     Axios.post("http://127.0.0.1:8000/seller/products/delete", form)

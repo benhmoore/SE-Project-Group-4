@@ -23,7 +23,7 @@ const ProductCard = ({
   productId = -1,
   compareProductId = -1,
 }: Props) => {
-  var navigate = useNavigate();
+  const navigate = useNavigate();
   const handleClick = () => {
     if (compareProductId === -1)
       return navigate(`/product/${productId}`, {
